@@ -1,0 +1,369 @@
+import logging
+import asyncio
+import os
+from datetime import datetime
+from typing import AsyncGenerator, Optional
+from boundier.chatgpt.driver import PlaywrightDriver
+from boundier.chatgpt.selectors import ChatGPTSelectors
+
+logger = logging.getLogger("boundier.chatgpt_service")
+
+class ChatGPTService:
+    def __init__(self, driver: PlaywrightDriver):
+        self.driver = driver
+
+    @property
+    def selectors(self) -> ChatGPTSelectors:
+        return self.driver.selectors
+
+    @property
+    def page(self):
+        if not self.driver.page:
+            raise RuntimeError("Browser page not initialized. Start the driver first.")
+        return self.driver.page
+
+    async def save_diagnostics_screenshot(self, context_name: str = "error"):
+        """Captures page viewport screenshot and saves it to logs/diagnostics/ folder for debugging."""
+        try:
+            os.makedirs("logs/diagnostics", exist_ok=True)
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"logs/diagnostics/{context_name}_{timestamp}.png"
+            await self.page.screenshot(path=filename, full_page=False)
+            logger.info(f"Diagnostics screenshot captured and saved to: {filename}")
+        except Exception as e:
+            logger.warning(f"Failed to capture diagnostics screenshot: {e}")
+
+    async def open_conversation(self, chat_id: str) -> bool:
+        """Navigates to an existing ChatGPT conversation by its unique URL UUID suffix."""
+        url = f"https://chatgpt.com/c/{chat_id}"
+        if f"/c/{chat_id}" in self.page.url:
+            logger.info(f"Already on conversation page: {chat_id}. Skipping navigation.")
+            return True
+            
+        logger.info(f"Opening existing ChatGPT conversation: {url}")
+        
+        try:
+            await self.page.goto(url, wait_until="domcontentloaded", timeout=self.driver.config.playwright.timeout_ms)
+            await self.page.wait_for_selector(self.selectors.chat_input, timeout=self.driver.config.playwright.timeout_ms)
+            logger.info(f"Successfully opened conversation: {chat_id}")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to open conversation {chat_id}: {e}", exc_info=True)
+            await self.save_diagnostics_screenshot("open_conv_error")
+            return False
+
+    async def create_new_conversation(self) -> bool:
+        """Navigates to ChatGPT portal to begin a new chat session."""
+        url = "https://chatgpt.com"
+        logger.info("Initializing new ChatGPT conversation...")
+        
+        try:
+            if self.page.url == url or self.page.url == f"{url}/":
+                input_locator = self.page.locator(self.selectors.chat_input)
+                if await input_locator.count() > 0 and await input_locator.first.is_visible():
+                    logger.info("Already on a new ChatGPT conversation screen and input is visible.")
+                    return True
+            
+            await self.page.goto(url, wait_until="domcontentloaded", timeout=self.driver.config.playwright.timeout_ms)
+            await self.page.wait_for_selector(self.selectors.chat_input, timeout=self.driver.config.playwright.timeout_ms)
+            logger.info("New ChatGPT conversation screen loaded.")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to create new conversation: {e}", exc_info=True)
+            await self.save_diagnostics_screenshot("new_conv_error")
+            return False
+
+    def extract_chat_id(self) -> Optional[str]:
+        """Parses the current browser URL to extract the unique ChatGPT chat ID."""
+        url = self.page.url
+        if "/c/" in url:
+            parts = url.split("/c/")
+            if len(parts) > 1:
+                return parts[1].split("?")[0].split("/")[0]
+        return None
+
+    async def send_prompt_stream(self, prompt: str, file_paths: Optional[list] = None, skip_settle: bool = False, is_edit: bool = False) -> AsyncGenerator[str, None]:
+        """Submits a prompt and optional file attachments to ChatGPT and yields response stream."""
+        # Wait for any async page history loading to settle (only if not skipping settle)
+        if not skip_settle:
+            await asyncio.sleep(0.4)
+            
+        logger.info(f"Submitting prompt (is_edit={is_edit})...")
+        
+        try:
+            if is_edit:
+                logger.info("Executing prompt edit in ChatGPT browser tab...")
+                js_edit = """
+                async (newText) => {
+                    const userMessages = document.querySelectorAll('div[data-message-author-role="user"]');
+                    if (userMessages.length === 0) throw new Error("No user messages found to edit.");
+                    
+                    const lastUser = userMessages[userMessages.length - 1];
+                    
+                    // Trigger hover events to reveal action buttons
+                    lastUser.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+                    lastUser.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+                    await new Promise(resolve => setTimeout(resolve, 150));
+                    
+                    let editBtn = lastUser.querySelector('button[aria-label*="Edit" i]');
+                    if (!editBtn) {
+                        const buttons = lastUser.querySelectorAll('button');
+                        for (const btn of buttons) {
+                            const label = (btn.getAttribute('aria-label') || btn.getAttribute('title') || '').toLowerCase();
+                            if (label.includes('edit')) {
+                                editBtn = btn;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if (!editBtn) throw new Error("Edit button not found.");
+                    editBtn.click();
+                    
+                    for (let i = 0; i < 20; i++) {
+                        const textarea = lastUser.querySelector('textarea');
+                        if (textarea) {
+                            textarea.value = newText;
+                            textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                            
+                            const saveBtn = lastUser.querySelector('button.btn-primary, button[class*="primary"], button:not([class*="secondary"]):not([aria-label*="Cancel" i])');
+                            if (saveBtn) {
+                                saveBtn.click();
+                                return true;
+                            }
+                        }
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                    }
+                    throw new Error("Edit textarea or submit button did not appear.");
+                }
+                """
+                await self.page.evaluate(js_edit, prompt)
+            else:
+                # Handle attachments upload
+                if file_paths:
+                    logger.info(f"Uploading file attachments to ChatGPT: {file_paths}")
+                    file_input = self.page.locator(self.selectors.file_input)
+                    await file_input.wait_for(state="attached", timeout=5000)
+                    await file_input.set_input_files(file_paths)
+                    logger.info("File uploaded, waiting for send button to enable...")
+                    submit_sel = 'button[data-testid="send-button"]:not([disabled]):not([aria-disabled="true"]), button[aria-label*="Send"]:not([disabled]):not([aria-disabled="true"])'
+                    try:
+                        await self.page.wait_for_selector(submit_sel, timeout=10000)
+                        logger.info("Upload completed (send button enabled).")
+                    except Exception as e:
+                        logger.warning(f"Timeout waiting for enabled send button: {e}. Fallback to brief sleep.")
+                        await asyncio.sleep(1.5)
+                    
+                existing_count = await self.page.locator(self.selectors.response_containers).count()
+                logger.info(f"Existing response container count: {existing_count}")
+                
+                # Direct JavaScript Submission to bypass all Playwright click & fill actionability delays
+                js_submit = """
+                async (text) => {
+                    const textarea = document.querySelector('div#prompt-textarea, textarea[placeholder*="ChatGPT"]');
+                    if (!textarea) throw new Error("Chat input textarea not found.");
+                    
+                    if (textarea.tagName === 'DIV') {
+                        textarea.textContent = text;
+                    } else {
+                        textarea.value = text;
+                    }
+                    textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                    textarea.dispatchEvent(new Event('change', { bubbles: true }));
+                    
+                    for (let i = 0; i < 30; i++) {
+                        const submitBtn = document.querySelector('button[data-testid="send-button"], button[aria-label*="Send"]');
+                        if (submitBtn) {
+                            submitBtn.click();
+                            return true;
+                        }
+                        await new Promise(resolve => setTimeout(resolve, 50));
+                    }
+                    throw new Error("Submit button not found.");
+                }
+                """
+                await self.page.evaluate(js_submit, prompt)
+                logger.info("Prompt submitted via JS, waiting for response container...")
+        except Exception as e:
+            logger.error(f"Failed to submit prompt (is_edit={is_edit}): {e}", exc_info=True)
+            await self.save_diagnostics_screenshot("submit_prompt_error")
+            raise
+            
+        try:
+            timeout = 45.0
+            start_time = asyncio.get_event_loop().time()
+            if is_edit:
+                # For edits, wait for streaming indicator to appear (indicating generation has started)
+                while True:
+                    is_generating = await self.page.locator(self.selectors.streaming_indicators).count() > 0
+                    if is_generating:
+                        break
+                    if asyncio.get_event_loop().time() - start_time > timeout:
+                        logger.warning("Timeout waiting for edit streaming to start. Continuing...")
+                        break
+                    await asyncio.sleep(0.2)
+            else:
+                while True:
+                    current_count = await self.page.locator(self.selectors.response_containers).count()
+                    if current_count > existing_count:
+                        break
+                    if asyncio.get_event_loop().time() - start_time > timeout:
+                        raise TimeoutError("Timeout waiting for ChatGPT response generation to start.")
+                    await asyncio.sleep(0.2)
+        except Exception as e:
+            logger.error(f"Error waiting for response bubble (is_edit={is_edit}): {e}", exc_info=True)
+            await self.save_diagnostics_screenshot("bubble_wait_error")
+            raise
+            
+        response_locator = self.page.locator(self.selectors.response_containers).last
+        logger.info("Scraping ChatGPT response stream...")
+        last_text = ""
+        unchanged_polls = 0
+        max_unchanged_polls = 6
+        
+        while True:
+            try:
+                 is_generating = await self.page.locator(self.selectors.streaming_indicators).count() > 0
+                 js_script = """
+                  (element) => {
+                      if (!element) return "";
+                      
+                       const htmlToMarkdown = (node) => {
+                           if (!node) return "";
+                           if (node.nodeType === 3) { // TEXT_NODE
+                               if (node.parentNode) {
+                                   const parentTag = node.parentNode.tagName.toUpperCase();
+                                   if (['UL', 'OL', 'TR', 'TABLE', 'TBODY', 'THEAD'].includes(parentTag)) {
+                                       if (!node.textContent.trim()) {
+                                           return "";
+                                       }
+                                   }
+                               }
+                               return node.textContent;
+                           }
+                           if (node.nodeType === 1) { // ELEMENT_NODE
+                               const tagName = node.tagName.toUpperCase();
+                               if (node.classList.contains('sr-only') || node.style.display === 'none') {
+                                   return "";
+                               }
+                               
+                               const parseChildren = () => {
+                                   return Array.from(node.childNodes).map(htmlToMarkdown).join("");
+                               };
+                               
+                               switch (tagName) {
+                                   case 'P': {
+                                       const parentTag = node.parentNode ? node.parentNode.tagName.toUpperCase() : "";
+                                       const suffix = (parentTag === 'LI') ? "" : "\\n\\n";
+                                       return parseChildren() + suffix;
+                                   }
+                                   case 'H1': return "# " + parseChildren() + "\\n\\n";
+                                   case 'H2': return "## " + parseChildren() + "\\n\\n";
+                                   case 'H3': return "### " + parseChildren() + "\\n\\n";
+                                   case 'H4': return "#### " + parseChildren() + "\\n\\n";
+                                   case 'H5': return "##### " + parseChildren() + "\\n\\n";
+                                   case 'H6': return "###### " + parseChildren() + "\\n\\n";
+                                   case 'STRONG':
+                                   case 'B':
+                                       return "**" + parseChildren() + "**";
+                                   case 'EM':
+                                   case 'I':
+                                       return "*" + parseChildren() + "*";
+                                   case 'CODE':
+                                       if (node.parentNode && node.parentNode.tagName === 'PRE') {
+                                           return parseChildren();
+                                       }
+                                       return "`" + parseChildren() + "`";
+                                   case 'PRE': {
+                                       const codeEl = node.querySelector('code');
+                                       let lang = "";
+                                       if (codeEl) {
+                                           const classList = Array.from(codeEl.classList);
+                                           const langClass = classList.find(c => c.startsWith('language-'));
+                                           if (langClass) {
+                                               lang = langClass.replace('language-', '');
+                                           }
+                                       }
+                                       const codeText = codeEl ? Array.from(codeEl.childNodes).map(htmlToMarkdown).join("") : node.textContent;
+                                       return "\\n```" + lang + "\\n" + codeText.trim() + "\\n```\\n\\n";
+                                   }
+                                   case 'A': {
+                                       const href = node.getAttribute('href');
+                                       const text = parseChildren();
+                                       if (href && href.startsWith('http')) {
+                                           return "[" + text + "](" + href + ")";
+                                       }
+                                       return text;
+                                   }
+                                   case 'BLOCKQUOTE':
+                                       return "> " + parseChildren().trim().replace(/\\n/g, "\\n> ") + "\\n\\n";
+                                   case 'UL':
+                                       return parseChildren() + "\\n";
+                                   case 'OL':
+                                       return parseChildren() + "\\n";
+                                   case 'LI': {
+                                       const isOrdered = node.parentNode && node.parentNode.tagName === 'OL';
+                                       const prefix = isOrdered ? "1. " : "- ";
+                                       const content = parseChildren().trim();
+                                       return prefix + content + "\\n";
+                                   }
+                                   case 'BR':
+                                       return "\\n";
+                                   case 'TABLE':
+                                       return "\\n" + parseChildren() + "\\n";
+                                   case 'TR':
+                                       return parseChildren() + "\\n";
+                                   case 'TD':
+                                   case 'TH':
+                                       return parseChildren() + " | ";
+                                   default:
+                                       return parseChildren();
+                               }
+                           }
+                           return "";
+                       };
+                      
+                      let txt = htmlToMarkdown(element);
+                      txt = txt.replace(/^(Analyzing\\s*(image|file|data)?\\.{0,3}\\s*(\\r?\\n)+)|^(Analyzing\\s*(image|file|data)?\\.{0,3}\\s*$)/i, "");
+                      txt = txt.replace(/^(\\[Speaker:\\s*Boundier\\]\\s*(\\r?\\n)*)/i, "");
+                      return txt.trim();
+                  }
+                  """
+                 current_text = await response_locator.evaluate(js_script)
+                 current_text = current_text.strip() if current_text else ""
+            except Exception as e:
+                 logger.error(f"Error reading response stream: {e}", exc_info=True)
+                 await self.save_diagnostics_screenshot("stream_read_error")
+                 raise
+                 
+            if current_text != last_text:
+                delta = current_text[len(last_text):]
+                if delta:
+                    yield delta
+                last_text = current_text
+                unchanged_polls = 0
+            else:
+                unchanged_polls += 1
+                
+            if not is_generating and unchanged_polls >= max_unchanged_polls:
+                if current_text != "":
+                    break
+                    
+            if unchanged_polls >= 50:
+                logger.warning("Generation stream stalled. Terminating reader.")
+                break
+                
+            await asyncio.sleep(0.15)
+
+    async def get_sidebar_title_by_id(self, chat_id: str) -> Optional[str]:
+        """Looks for the conversation in the sidebar by its ID and returns its title text."""
+        try:
+            selector = f'a[href*="{chat_id}"]'
+            locator = self.page.locator(selector)
+            if await locator.count() > 0:
+                title = await locator.first.text_content()
+                if title:
+                    return title.strip()
+        except Exception as e:
+            logger.warning(f"Failed to get sidebar title for chat {chat_id}: {e}")
+        return None

@@ -1,0 +1,24 @@
+chatgpt:
+  # Input text box where query is typed in ChatGPT Web
+  chat_input: 'div#prompt-textarea, textarea[placeholder*="ChatGPT"]'
+  
+  # Button to send the prompt (submit)
+  submit_button: 'button[data-testid="send-button"], button[aria-label*="Send"]'
+  
+  # Button or link to start a new conversation
+  new_chat_button: 'a[href="/"], button[aria-label*="New chat"]'
+  
+  # CSS class or tag for response bubbles containing assistant markdown prose
+  response_containers: 'div[data-message-author-role="assistant"] div.markdown'
+  
+  # Selector that is present only while text is streaming/generating (like stop button)
+  streaming_indicators: 'button[data-testid="stop-button"], .result-streaming'
+  
+  # Elements in the sidebar representing historical chat conversation links
+  sidebar_history_items: 'a[href^="/c/"], a[href*="/c/"]'
+  
+  # Profile menu button indicating a logged-in user session
+  profile_menu_button: '[data-testid="profile-menu-button"]'
+  
+  # File input selector for uploading files
+  file_input: 'input#upload-files'

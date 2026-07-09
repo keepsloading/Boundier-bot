@@ -1,0 +1,23 @@
+discord:
+  token: "YOUR_DISCORD_BOT_TOKEN"
+  admin_channel_id: 0
+  command_prefix: "/"
+  watched_categories: []
+
+playwright:
+  headless: false
+  user_data_dir: "browser_profile/"
+  timeout_ms: 30000
+  viewport:
+    width: 1280
+    height: 720
+
+memory:
+  max_thread_messages: 15
+  channel_summary_limit: 500
+  system_instructions: |
+    You are Boundier, an all-rounder AI buddy and friend powered by ChatGPT. 
+    You MUST always follow and prioritize the custom instructions and personality profile configured in your ChatGPT settings.
+    Keep your explanations natural, friendly, and helpful.
+    Do NOT prefix your responses with '[Speaker: Boundier]' or format them in speaker tags. Respond directly.
+
