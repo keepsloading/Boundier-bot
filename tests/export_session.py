@@ -37,9 +37,17 @@ def get_master_key(user_data_path: str) -> bytes:
         return None
 
 def decrypt_cookie(val: bytes, key: bytes) -> str:
-    if not val.startswith(b'v10') and not val.startswith(b'v11'):
-        return val.decode('utf-8', errors='ignore')
-    return AESGCM(key).decrypt(val[3:15], val[15:], None).decode('utf-8')
+    if val.startswith(b'v10') or val.startswith(b'v11'):
+        try:
+            return AESGCM(key).decrypt(val[3:15], val[15:], None).decode('utf-8')
+        except Exception:
+            return None
+    if not val.startswith(b'v10') and not val.startswith(b'v11') and not val.startswith(b'v20'):
+        try:
+            return val.decode('utf-8')
+        except Exception:
+            return None
+    return None
 
 def extract_cookies_from_db(db_path: str, key: bytes):
     temp_db = "temp_export_cookies.db"
@@ -96,6 +104,20 @@ def extract_cookies_from_db(db_path: str, key: bytes):
         pass
     return cookies_list
 
+def check_for_v20_cookies(db_path: str) -> bool:
+    try:
+        temp_db = "temp_check_v20.db"
+        shutil.copyfile(db_path, temp_db)
+        conn = sqlite3.connect(temp_db)
+        cursor = conn.cursor()
+        cursor.execute("SELECT encrypted_value FROM cookies WHERE host_key LIKE '%chatgpt.com%'")
+        rows = cursor.fetchall()
+        conn.close()
+        os.remove(temp_db)
+        return any(row[0].startswith(b'v20') for row in rows)
+    except Exception:
+        return False
+
 def main():
     if sys.platform != "win32":
         print("This exporter is designed to run on Windows where your local browser session is stored.")
@@ -113,6 +135,7 @@ def main():
     }
     
     found_any = False
+    v20_detected = False
     
     for name, user_data in paths_to_check.items():
         if not os.path.exists(user_data):
@@ -137,6 +160,9 @@ def main():
             if not os.path.exists(db_path):
                 continue
                 
+            if check_for_v20_cookies(db_path):
+                v20_detected = True
+                
             try:
                 cookies = extract_cookies_from_db(db_path, key)
                 chatgpt_cookies = [c for c in cookies if 'chatgpt' in c.get('domain', '')]
@@ -160,7 +186,22 @@ def main():
                 pass
                 
     if not found_any:
-        print("\nNo active login cookies found. Please make sure you are logged into ChatGPT in one of your browsers (Chrome, Edge, Brave, or the bot browser) first!")
+        print("\nNo active login cookies found.")
+        if v20_detected:
+            print("\n" + "!"*80)
+            print("ATTENTION: APP-BOUND ENCRYPTION (v20) DETECTED")
+            print("Your personal browsers (Chrome/Edge/Brave) protect cookies using Windows App-Bound Encryption.")
+            print("External scripts cannot decrypt these cookies. You must extract them from the bot's own browser.")
+            print("Please follow these steps to log in directly inside the bot:")
+            print("1. Start the bot locally in headed mode:")
+            print("   python -m boundier.main")
+            print("2. Log in manually inside the browser window that opens.")
+            print("3. Once logged in, close the bot and run this exporter again:")
+            print("   python -m tests.export_session")
+            print("This will successfully export decryptable (v10) cookies from the bot's own browser profile!")
+            print("!"*80 + "\n")
+        else:
+            print("Please make sure you are logged into ChatGPT in one of your browsers (Chrome, Edge, Brave, or the bot browser) first!")
 
 if __name__ == "__main__":
     main()
