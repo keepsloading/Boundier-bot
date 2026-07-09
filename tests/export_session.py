@@ -29,8 +29,17 @@ async def export():
                     user_data_dir=path,
                     headless=True
                 )
+                page = await context.new_page()
+                try:
+                    # Navigate to chatgpt.com to force Chromium to decrypt and load cookies for the domain
+                    await page.goto("https://chatgpt.com", wait_until="domcontentloaded", timeout=15000)
+                except Exception as goto_err:
+                    # Even if navigation times out or hits cloudflare, we try to grab whatever was loaded
+                    print(f"Navigation note: {goto_err}")
+                
                 found_cookies = await context.cookies()
                 await context.close()
+                
                 # Check if we found cookies for chatgpt
                 has_chatgpt = any("chatgpt" in c.get("domain", "") for c in found_cookies)
                 if found_cookies and (has_chatgpt or not cookies):
