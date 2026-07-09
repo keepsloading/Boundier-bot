@@ -52,14 +52,17 @@ def load_config(config_path: str = "config.yaml") -> BoundierConfig:
             raw_config["discord"] = {}
         raw_config["discord"]["token"] = os.environ["DISCORD_TOKEN"]
         
-    # Override headless mode if set in environment or running in Docker/Render
+    # Override headless mode if set in environment or running in a headless Linux/Docker container
+    import sys
     is_headless = False
     if "PLAYWRIGHT_HEADLESS" in os.environ:
         is_headless = os.environ["PLAYWRIGHT_HEADLESS"].lower() in ("true", "1", "yes")
+    elif sys.platform != "win32" and "DISPLAY" not in os.environ:
+        is_headless = True
     elif os.environ.get("RENDER") == "true" or os.path.exists("/.dockerenv"):
         is_headless = True
         
-    if is_headless or "PLAYWRIGHT_HEADLESS" in os.environ or os.environ.get("RENDER") == "true" or os.path.exists("/.dockerenv"):
+    if is_headless:
         if "playwright" not in raw_config:
             raw_config["playwright"] = {}
         raw_config["playwright"]["headless"] = True
