@@ -53,6 +53,22 @@ class PlaywrightDriver:
         
         self.context.set_default_timeout(self.config.playwright.timeout_ms)
         
+        # Inject storage state cookies if provided via environment variable
+        storage_state_str = os.environ.get("CHATGPT_STORAGE_STATE")
+        if storage_state_str:
+            try:
+                import json
+                cookies = json.loads(storage_state_str)
+                if isinstance(cookies, dict) and "cookies" in cookies:
+                    cookies = cookies["cookies"]
+                if isinstance(cookies, list):
+                    await self.context.add_cookies(cookies)
+                    logger.info("Successfully injected session cookies from CHATGPT_STORAGE_STATE environment variable.")
+                else:
+                    logger.warning("CHATGPT_STORAGE_STATE environment variable is not in a valid JSON list/object format.")
+            except Exception as e:
+                logger.error(f"Error parsing/injecting CHATGPT_STORAGE_STATE: {e}")
+        
         pages = self.context.pages
         if pages:
             self.page = pages[0]
@@ -147,6 +163,14 @@ class PlaywrightDriver:
             logger.info("Session is active after page reload. Proceeding.")
             return True
             
+        # Check if headless mode is forced/mandatory (e.g. running on Linux without DISPLAY)
+        import sys
+        if sys.platform != "win32" and "DISPLAY" not in os.environ:
+            logger.error("ChatGPT session is unauthenticated. Headless Linux environment detected: Cannot launch headed browser for manual authentication.")
+            logger.error("Please run the session exporter script locally: 'python -m tests.export_session'")
+            logger.error("Then add the output as the 'CHATGPT_STORAGE_STATE' environment variable in your Render dashboard to authenticate.")
+            return False
+
         logger.warning("ChatGPT session has expired or is invalid. Relaunching in HEADED mode for manual authentication...")
         
         # If running headless, we must stop and restart in headed mode
