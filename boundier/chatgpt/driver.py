@@ -61,6 +61,8 @@ class PlaywrightDriver:
         )
         
         self.context.set_default_timeout(self.config.playwright.timeout_ms)
+        # Add init script to remove webdriver trace
+        await self.context.add_init_script("delete Object.getPrototypeOf(navigator).webdriver;")
         
         # Inject storage state cookies if provided via environment variable
         storage_state_str = os.environ.get("CHATGPT_STORAGE_STATE")
