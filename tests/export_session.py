@@ -170,7 +170,7 @@ def main():
                 
             try:
                 cookies = extract_cookies_from_db(db_path, key)
-                chatgpt_cookies = [c for c in cookies if 'chatgpt' in c.get('domain', '')]
+                chatgpt_cookies = [c for c in cookies if 'chatgpt' in c.get('domain', '') or 'openai' in c.get('domain', '')]
                 
                 if chatgpt_cookies:
                     has_session = any("session-token" in c["name"] for c in chatgpt_cookies)
