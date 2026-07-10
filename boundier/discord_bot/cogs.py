@@ -12,7 +12,7 @@ from typing import Optional
 logger = logging.getLogger("boundier.discord.cogs")
 
 def parse_citations(text: str):
-    """Extracts external markdown URLs [text](url), replaces them with clean index references [1], and returns mapped URLs list."""
+    """Extracts external markdown URLs [text](url), replaces them with clean references, and returns mapped URLs list."""
     pattern = r'\[([^\]]+)\]\((https?://[^\)]+)\)'
     urls = []
     url_to_index = {}
@@ -31,10 +31,14 @@ def parse_citations(text: str):
         if link_text.strip().isdigit() or link_text.strip().lower() in ("source", "†source", "source link"):
             return f"[{index}]"
         else:
-            return f"{link_text} [{index}]"
+            # Clean up trailing "+1", "+2", etc.
+            clean_name = re.sub(r'\s*\+\s*\d+\s*$', '', link_text).strip()
+            return f"[{clean_name}]"
             
     cleaned_text = re.sub(pattern, replace_link, text)
-    return cleaned_text, urls
+    # Remove consecutive empty lines (replace 3 or more newlines with exactly 2 newlines)
+    cleaned_text = re.sub(r'\n{3,}', '\n\n', cleaned_text)
+    return cleaned_text.strip(), urls
 
 
 class CitationsButton(discord.ui.Button):
