@@ -225,134 +225,139 @@ class ChatGPTService:
         unchanged_polls = 0
         max_unchanged_polls = 60
         
+        js_scrape_stream = """
+        (selector_indicator) => {
+            const hasIndicator = document.querySelector(selector_indicator) !== null;
+            
+            const sendBtn = document.querySelector('button[data-testid="send-button"], button[aria-label*="Send"]');
+            let sendBtnEnabled = false;
+            if (sendBtn) {
+                const isdisabled = sendBtn.disabled || sendBtn.getAttribute('disabled') !== null || sendBtn.getAttribute('aria-disabled') === 'true';
+                sendBtnEnabled = !isdisabled;
+            }
+            
+            const isGenerating = hasIndicator || !sendBtnEnabled;
+            
+            const htmlToMarkdown = (node) => {
+                if (!node) return "";
+                if (node.nodeType === 3) {
+                    if (node.parentNode) {
+                        const parentTag = node.parentNode.tagName.toUpperCase();
+                        if (['UL', 'OL', 'TR', 'TABLE', 'TBODY', 'THEAD'].includes(parentTag)) {
+                            if (!node.textContent.trim()) return "";
+                        }
+                    }
+                    return node.textContent;
+                }
+                if (node.nodeType === 1) {
+                    const tagName = node.tagName.toUpperCase();
+                    if (node.classList.contains('sr-only') || node.style.display === 'none') {
+                        return "";
+                    }
+                    const parseChildren = () => {
+                        return Array.from(node.childNodes).map(htmlToMarkdown).join("");
+                    };
+                    switch (tagName) {
+                        case 'P': {
+                            const parentTag = node.parentNode ? node.parentNode.tagName.toUpperCase() : "";
+                            const suffix = (parentTag === 'LI') ? "" : "\\n\\n";
+                            return parseChildren() + suffix;
+                        }
+                        case 'H1': return "# " + parseChildren() + "\\n\\n";
+                        case 'H2': return "## " + parseChildren() + "\\n\\n";
+                        case 'H3': return "### " + parseChildren() + "\\n\\n";
+                        case 'H4': return "#### " + parseChildren() + "\\n\\n";
+                        case 'H5': return "##### " + parseChildren() + "\\n\\n";
+                        case 'H6': return "###### " + parseChildren() + "\\n\\n";
+                        case 'STRONG':
+                        case 'B':
+                            return "**" + parseChildren() + "**";
+                        case 'EM':
+                        case 'I':
+                            return "*" + parseChildren() + "*";
+                        case 'CODE':
+                            if (node.parentNode && node.parentNode.tagName === 'PRE') {
+                                return parseChildren();
+                            }
+                            return "`" + parseChildren() + "`";
+                        case 'PRE': {
+                            const codeEl = node.querySelector('code');
+                            let lang = "";
+                            if (codeEl) {
+                                const classList = Array.from(codeEl.classList);
+                                const langClass = classList.find(c => c.startsWith('language-'));
+                                if (langClass) {
+                                    lang = langClass.replace('language-', '');
+                                }
+                            }
+                            const codeText = codeEl ? Array.from(codeEl.childNodes).map(htmlToMarkdown).join("") : node.textContent;
+                            return "\\n```" + lang + "\\n" + codeText.trim() + "\\n```\\n\\n";
+                        }
+                        case 'A': {
+                            const href = node.getAttribute('href');
+                            const text = parseChildren();
+                            if (href && href.startsWith('http')) {
+                                return "[" + text + "](" + href + ")";
+                            }
+                            return text;
+                        }
+                        case 'BLOCKQUOTE':
+                            return "> " + parseChildren().trim().replace(/\\n/g, "\\n> ") + "\\n\\n";
+                        case 'UL':
+                        case 'OL':
+                            return parseChildren() + "\\n";
+                        case 'LI': {
+                            const isOrdered = node.parentNode && node.parentNode.tagName === 'OL';
+                            const prefix = isOrdered ? "1. " : "- ";
+                            const content = parseChildren().trim();
+                            return prefix + content + "\\n";
+                        }
+                        case 'BR':
+                            return "\\n";
+                        case 'TABLE':
+                            return "\\n" + parseChildren() + "\\n";
+                        case 'TR':
+                            return parseChildren() + "\\n";
+                        case 'TD':
+                        case 'TH':
+                            return parseChildren() + " | ";
+                        default:
+                            return parseChildren();
+                    }
+                }
+                return "";
+            };
+            
+            const assistants = document.querySelectorAll('div[data-message-author-role="assistant"]');
+            let text = "";
+            if (assistants.length > 0) {
+                const lastAssistant = assistants[assistants.length - 1];
+                const responseEl = lastAssistant.querySelector('div.markdown');
+                if (responseEl) {
+                    let txt = htmlToMarkdown(responseEl);
+                    txt = txt.replace(/^(Analyzing\\s*(image|file|data)?\\.{0,3}\\s*(\\r?\\n)+)|^(Analyzing\\s*(image|file|data)?\\.{0,3}\\s*$)/i, "");
+                    txt = txt.replace(/^(\\[Speaker:\\s*Boundier\\]\\s*(\\r?\\n)*)/i, "");
+                    text = txt.trim();
+                }
+            }
+            
+            return {
+                isGenerating: isGenerating,
+                text: text
+            };
+        }
+        """
+
         while True:
             try:
-                 is_generating = await self.page.locator(self.selectors.streaming_indicators).count() > 0
-                 
-                 # If send button is enabled, then we are NOT generating
-                 send_btn = self.page.locator('button[data-testid="send-button"]')
-                 if await send_btn.count() > 0:
-                     is_disabled = await send_btn.is_disabled()
-                     aria_disabled = await send_btn.get_attribute("aria-disabled") == "true"
-                     if not is_disabled and not aria_disabled:
-                         is_generating = False
-                         
-                 current_text = ""
-                 if await response_locator.count() > 0:
-                     js_script = """
-                      (element) => {
-                          if (!element) return "";
-                          
-                           const htmlToMarkdown = (node) => {
-                               if (!node) return "";
-                               if (node.nodeType === 3) { // TEXT_NODE
-                                   if (node.parentNode) {
-                                       const parentTag = node.parentNode.tagName.toUpperCase();
-                                       if (['UL', 'OL', 'TR', 'TABLE', 'TBODY', 'THEAD'].includes(parentTag)) {
-                                           if (!node.textContent.trim()) {
-                                               return "";
-                                           }
-                                       }
-                                   }
-                                   return node.textContent;
-                               }
-                               if (node.nodeType === 1) { // ELEMENT_NODE
-                                   const tagName = node.tagName.toUpperCase();
-                                   if (node.classList.contains('sr-only') || node.style.display === 'none') {
-                                       return "";
-                                   }
-                                   
-                                   const parseChildren = () => {
-                                       return Array.from(node.childNodes).map(htmlToMarkdown).join("");
-                                   };
-                                   
-                                   switch (tagName) {
-                                       case 'P': {
-                                           const parentTag = node.parentNode ? node.parentNode.tagName.toUpperCase() : "";
-                                           const suffix = (parentTag === 'LI') ? "" : "\\n\\n";
-                                           return parseChildren() + suffix;
-                                       }
-                                       case 'H1': return "# " + parseChildren() + "\\n\\n";
-                                       case 'H2': return "## " + parseChildren() + "\\n\\n";
-                                       case 'H3': return "### " + parseChildren() + "\\n\\n";
-                                       case 'H4': return "#### " + parseChildren() + "\\n\\n";
-                                       case 'H5': return "##### " + parseChildren() + "\\n\\n";
-                                       case 'H6': return "###### " + parseChildren() + "\\n\\n";
-                                       case 'STRONG':
-                                       case 'B':
-                                           return "**" + parseChildren() + "**";
-                                       case 'EM':
-                                       case 'I':
-                                           return "*" + parseChildren() + "*";
-                                       case 'CODE':
-                                           if (node.parentNode && node.parentNode.tagName === 'PRE') {
-                                               return parseChildren();
-                                           }
-                                           return "`" + parseChildren() + "`";
-                                       case 'PRE': {
-                                           const codeEl = node.querySelector('code');
-                                           let lang = "";
-                                           if (codeEl) {
-                                               const classList = Array.from(codeEl.classList);
-                                               const langClass = classList.find(c => c.startsWith('language-'));
-                                               if (langClass) {
-                                                   lang = langClass.replace('language-', '');
-                                               }
-                                           }
-                                           const codeText = codeEl ? Array.from(codeEl.childNodes).map(htmlToMarkdown).join("") : node.textContent;
-                                           return "\\n```" + lang + "\\n" + codeText.trim() + "\\n```\\n\\n";
-                                       }
-                                       case 'A': {
-                                           const href = node.getAttribute('href');
-                                           const text = parseChildren();
-                                           if (href && href.startsWith('http')) {
-                                               return "[" + text + "](" + href + ")";
-                                           }
-                                           return text;
-                                       }
-                                       case 'BLOCKQUOTE':
-                                           return "> " + parseChildren().trim().replace(/\\n/g, "\\n> ") + "\\n\\n";
-                                       case 'UL':
-                                           return parseChildren() + "\\n";
-                                       case 'OL':
-                                           return parseChildren() + "\\n";
-                                       case 'LI': {
-                                           const isOrdered = node.parentNode && node.parentNode.tagName === 'OL';
-                                           const prefix = isOrdered ? "1. " : "- ";
-                                           const content = parseChildren().trim();
-                                           return prefix + content + "\\n";
-                                       }
-                                       case 'BR':
-                                           return "\\n";
-                                       case 'TABLE':
-                                           return "\\n" + parseChildren() + "\\n";
-                                       case 'TR':
-                                           return parseChildren() + "\\n";
-                                       case 'TD':
-                                       case 'TH':
-                                           return parseChildren() + " | ";
-                                       default:
-                                           return parseChildren();
-                                   }
-                               }
-                               return "";
-                           };
-                          
-                          let txt = htmlToMarkdown(element);
-                          txt = txt.replace(/^(Analyzing\\s*(image|file|data)?\\.{0,3}\\s*(\\r?\\n)+)|^(Analyzing\\s*(image|file|data)?\\.{0,3}\\s*$)/i, "");
-                          txt = txt.replace(/^(\\[Speaker:\\s*Boundier\\]\\s*(\\r?\\n)*)/i, "");
-                          return txt.trim();
-                      }
-                     """
-                     current_text = await response_locator.first.evaluate(js_script)
-                     current_text = current_text.strip() if current_text else ""
-                 else:
-                     current_text = ""
+                result = await self.page.evaluate(js_scrape_stream, self.selectors.streaming_indicators)
+                is_generating = result["isGenerating"]
+                current_text = result["text"]
             except Exception as e:
-                 logger.error(f"Error reading response stream: {e}", exc_info=True)
-                 await self.save_diagnostics_screenshot("stream_read_error")
-                 raise
-                 
+                logger.error(f"Error reading response stream: {e}", exc_info=True)
+                await self.save_diagnostics_screenshot("stream_read_error")
+                raise
+                
             if current_text != last_text:
                 delta = current_text[len(last_text):]
                 if delta:
@@ -362,7 +367,8 @@ class ChatGPTService:
             else:
                 unchanged_polls += 1
                 
-            if not is_generating and unchanged_polls >= max_unchanged_polls:
+            # If ChatGPT has finished generating (send button is active), settle within 5 ticks (0.25s)
+            if not is_generating and unchanged_polls >= 5:
                 if current_text != "":
                     break
                     
