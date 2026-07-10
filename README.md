@@ -9,10 +9,19 @@
 ---
 
 > [!WARNING]
-> **DISCLAIMER: FOR LEARNING & EXPERIMENTAL PURPOSES ONLY**
-> Boundier is an experimental hobbyist project built exclusively to explore browser automation, headless session injection, and anti-bot evasion techniques. Because it operates by automating the ChatGPT Web UI via Playwright, it is **not** a sustainable, reliable, or recommended method for production workloads. 
-> 
-> Automating web interactions violates OpenAI's Terms of Service, and any updates or layouts modifications to the ChatGPT web interface will break the bot's selectors. Use this codebase strictly for personal learning and research.
+> ## DISCLAIMER: FOR LEARNING & EXPERIMENTAL PURPOSES ONLY
+>
+> **Boundier** is an experimental hobby project created to explore browser automation, Playwright, persistent browser sessions, and Discord-native AI workflows. It is **not intended for production use, commercial deployment, or as a replacement for official APIs.**
+>
+> **This project is built with genuine respect for OpenAI and its work.** Boundier is **not affiliated with, endorsed by, or supported by OpenAI**, and is not intended to undermine or compete with OpenAI's official products or services.
+>
+> **⚠️ IMPORTANT:** Boundier includes browser automation techniques designed to maintain a stable, authenticated browser session and improve automation reliability. These mechanisms exist solely to support the project's intended functionality and **must not** be used to abuse services, evade platform protections for malicious purposes, or violate applicable terms or policies.
+>
+> Browser automation is inherently fragile and may stop working at any time due to changes in the ChatGPT web interface. Future updates may require code or selector changes before the project functions correctly again.
+>
+> **Use this software entirely at your own risk.** You are solely responsible for how you use it and for ensuring that your usage complies with OpenAI's Terms of Use and any other applicable policies.
+>
+> This repository exists purely as a personal learning and research project for developers interested in browser automation, software architecture, and Discord integrations.
 ---
 
 ## 🌟 Key Features
