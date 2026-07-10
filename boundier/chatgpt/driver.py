@@ -55,7 +55,11 @@ class PlaywrightDriver:
                 "--disable-background-timer-throttling",
                 "--disable-renderer-backgrounding",
                 "--disable-software-rasterizer",
-                "--no-first-run"
+                "--no-first-run",
+                "--single-process",
+                "--no-zygote",
+                "--mute-audio",
+                "--js-flags=--max-old-space-size=256"
             ]
         )
         
