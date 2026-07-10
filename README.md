@@ -27,10 +27,11 @@
 ## 🌟 Key Features
 
 * 👤 **Direct ChatGPT Integration:** Avoids expensive API token fees by driving a **real headless Chromium browser** authenticated under your personal ChatGPT account.
-* 🛡️ **Session Management & Stability:** Configured with **robust browser profiles**, matching user-agent strings, locale headers, and platform synchronization to ensure a **stable and reliable browser session** on headless server environments.
+* 🔄 **Private Gist Session Syncing:** Encrypts and syncs browser cookies/storage states seamlessly to a private GitHub Gist, allowing the cloud host to boot up authenticated and auto-renew tokens back to the Gist during runtime.
+* 🔒 **Dynamic User Restriction:** Restricts bot access to a maximum of **5 registered users** per bot instance. The first 5 distinct users who send commands are whitelisted dynamically, protecting browser contexts and rate limits from abuse.
 * 🧵 **Dynamic Thread Routing:** Automatically creates and organizes conversations inside **Discord text threads**, matching titles to ChatGPT's auto-generated sidebar topics.
-* 💾 **Session Injection & Export:** Run a simple local script to extract active authenticated login cookies and inject them as an environment variable (`CHATGPT_STORAGE_STATE`) to deploy headlessly on cloud servers.
-* ⚡ **Resource Optimization:** Consolidates all Chromium browser, renderer, and GPU operations into unified configurations. Operates stably under tight resource constraints (runs comfortably on Render's **512 MB RAM** free tier).
+* ⚡ **Resource & IPC Optimization:** Custom JS evaluations (`page.evaluate`) and throttled poll loops keep CPU/IPC footprints minimal and eliminate event-loop lag. Operates stably on Render's **512 MB RAM** free tier.
+* 📸 **Web-based Troubleshooting / Diagnostics:** Exposes a secure web endpoint serving browser diagnostics screenshots (`/diagnostics/session_unverified.png` or `bubble_wait_error.png`) on port 10000.
 * 🎛️ **Interactive UI Elements:** Responses are rendered inside **clean white Discord embeds** with interactive buttons to view the original prompt, copy text, or retry generations.
 
 ---
@@ -40,52 +41,58 @@
 ```mermaid
 graph TD
     A[Discord Client] -->|Slash Commands / Threads| B(Discord Bot Cogs)
+    B -->|Check Whitelist| H[(SQLite Store)]
     B -->|Submit Query| C{Conversation Manager}
-    C -->|Retrieve Mappings| D[(SQLite Store)]
-    C -->|Browser Lock| E[ChatGPT Web Service]
-    E -->|Automate Textarea| F[Playwright Headless Chrome]
-    F -->|Bypass Captcha| G[ChatGPT Portal]
-    G -->|Stream Markdown| F
-    F -->|Yield Delta| E
+    C -->|Acquire Lock| E[ChatGPT Web Service]
+    E -->|Inject Cookies| F[Playwright Headless Chrome]
+    F -->|Turnstile Bypass| G[ChatGPT Portal]
+    G -->|Stream Response| F
+    F -->|JS Evaluation| E
+    E -->|Gist Sync Encryption| I[(GitHub Gist)]
     E -->|Stream Message| B
     B -->|Update Embed| A
 ```
 
-* **`PlaywrightDriver` ([driver.py](file:///app/boundier/chatgpt/driver.py)):** Manages persistent Chromium contexts, launches Chrome with custom sandbox and memory flags, injects session cookies, and runs page initialization scripts to strip automated signatures.
-* **`ChatGPTService` ([service.py](file:///app/boundier/chatgpt/service.py)):** Performs page actions such as submitting prompts via JavaScript, checking the status of the Send/Stop buttons, and scraping the streaming response markdown.
-* **`SQLiteStore` ([sqlite_store.py](file:///app/boundier/storage/sqlite_store.py)):** Manages mapping persistence between Discord thread/channel IDs and ChatGPT conversation UUIDs.
-* **`BoundierBot` ([bot.py](file:///app/boundier/discord_bot/bot.py)):** Initializes the Discord client, registers slash commands (`/ask`, `/new`, `/archive`), and listens to message events.
+* **`PlaywrightDriver` ([driver.py](file:///app/boundier/chatgpt/driver.py)):** Manages persistent Chromium contexts, injects decrypted session cookies, and handles Cloudflare Turnstile hydration checks.
+* **`ChatGPTService` ([service.py](file:///app/boundier/chatgpt/service.py)):** Performs page actions such as submitting prompts and files via JavaScript, polling generation streams, and capturing diagnostic screenshots.
+* **`SQLiteStore` ([sqlite_store.py](file:///app/boundier/storage/sqlite_store.py)):** Manages thread mappings, SQLite summaries, and user whitelist registration.
+* **`BoundierBot` ([bot.py](file:///app/boundier/discord_bot/bot.py)):** Initializes the Discord client, registers slash commands (`/ask`, `/new`), and listens to message events.
 
 ---
 
 ## 🛠️ Installation & Setup
 
-### Prerequisite: Local Browser Session Export
-Because cloud servers (like Render) run in headless environments, you cannot perform manual login challenges or verify captchas on them. You must first log in locally:
+### Prerequisite: Private Gist & Session Setup
+Because cloud servers run in headless environments, you must log in locally first to solve the initial authentication challenge:
 
 1. Clone the repository and install dependencies:
    ```bash
    pip install -r requirements.txt
    playwright install chromium
    ```
-2. Launch the bot locally in headed mode:
-   * Edit `config.yaml` and set `playwright.headless: false`.
-   * Run the bot: `python -m boundier.main`
-   * A Chromium window will open. Go to `https://chatgpt.com`, log in with your account, and close the browser.
-3. Export your login session cookies:
+2. Create a **Private GitHub Gist** and generate a **GitHub Personal Access Token (PAT)** with `gist` scope.
+3. Configure `config.yaml` with `playwright.headless: false` for your local runs.
+4. Launch the local sync script:
    ```bash
-   python -m tests.export_session
+   $env:PYTHONPATH="."
+   python scratch/sync_local_to_gist.py
    ```
-   Copy the generated JSON array output. This contains your active login cookies.
+   * Enter an **`ENCRYPTION_KEY`** (passphrase) of your choice when prompted.
+   * A Chromium window will open. Go to `https://chatgpt.com`, log in manually with your account (Google, email, etc.), and complete the process.
+   * Once successfully authenticated, the script will automatically encrypt the session cookies and push them to your private Gist.
+
+---
 
 ### Cloud Deployment (e.g., Render)
 
 1. Create a new **Web Service** on Render connected to your repository.
 2. Render will automatically detect the `Dockerfile` and build it.
-3. Configure the following **Environment Variables** in Render:
-   * `DISCORD_TOKEN`: Your Discord application bot token.
-   * `CHATGPT_STORAGE_STATE`: The JSON cookie array copied from the exporter script.
-   * `PORT`: Set to `10000` (Render's health check binds here).
+3. Configure the following **Environment Variables** in the Render Dashboard:
+   * `DISCORD_TOKEN`: Your Discord bot application token.
+   * `GITHUB_PAT`: The GitHub PAT with `gist` access.
+   * `ENCRYPTION_KEY`: The passphrase chosen during your local sync run (used to decrypt cookies on boot).
+   * `PORT`: Set to `10000` (Render health check).
+
 ---
 
 ## 📝 Configuration (`config.yaml`)
