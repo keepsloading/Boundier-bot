@@ -140,11 +140,11 @@ class PlaywrightDriver:
             has_login = False
             
             if current_url != "about:blank":
-                # Wait for either chat input or login button to hydrate/become visible (up to 60 seconds)
-                logger.info("Waiting for page elements to hydrate (polling up to 60 seconds)...")
+                # Wait for either chat input or login button to hydrate/become visible (up to 120 seconds)
+                logger.info("Waiting for page elements to hydrate (polling up to 120 seconds)...")
                 import asyncio
                 start_wait = asyncio.get_event_loop().time()
-                while asyncio.get_event_loop().time() - start_wait < 60.0:
+                while asyncio.get_event_loop().time() - start_wait < 120.0:
                     chat_input = self.page.locator(self.selectors.chat_input).first
                     login_btn = self.page.locator('[data-testid="login-button"]').first
                     
