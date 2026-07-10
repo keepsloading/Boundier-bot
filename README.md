@@ -40,15 +40,15 @@
 
 ```mermaid
 graph TD
-    A[Discord Client] -->|Slash Commands / Threads| B(Discord Bot Cogs)
-    B -->|Check Whitelist| H[(SQLite Store)]
-    B -->|Submit Query| C{Conversation Manager}
+    A[Discord Client] -->|Slash Commands| B(Discord Bot Cogs)
+    B -->|Check Whitelist| H[SQLite Store]
+    B -->|Submit Query| C[Conversation Manager]
     C -->|Acquire Lock| E[ChatGPT Web Service]
     E -->|Inject Cookies| F[Playwright Headless Chrome]
     F -->|Turnstile Bypass| G[ChatGPT Portal]
     G -->|Stream Response| F
     F -->|JS Evaluation| E
-    E -->|Gist Sync Encryption| I[(GitHub Gist)]
+    E -->|Gist Sync Encryption| I[GitHub Gist]
     E -->|Stream Message| B
     B -->|Update Embed| A
 ```
