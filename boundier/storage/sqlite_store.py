@@ -193,3 +193,35 @@ class SQLiteStore:
             return [dict(r) for r in cursor.fetchall()]
         finally:
             conn.close()
+
+    def check_or_register_user(self, user_id: int, username: str) -> bool:
+        """
+        Checks if a user is registered. If not, attempts to register them
+        if the total registered users count is less than 5.
+        Returns True if the user is registered/allowed, False if the limit of 5 is exceeded.
+        """
+        conn = self._get_conn()
+        try:
+            cursor = conn.cursor()
+            # Check if user is already registered
+            cursor.execute("SELECT 1 FROM registered_users WHERE user_id = ?", (user_id,))
+            if cursor.fetchone():
+                return True
+                
+            # Count registered users
+            cursor.execute("SELECT COUNT(*) FROM registered_users")
+            count = cursor.fetchone()[0]
+            
+            if count < 5:
+                with conn:
+                    conn.execute(
+                        "INSERT OR IGNORE INTO registered_users (user_id, username) VALUES (?, ?)",
+                        (user_id, username)
+                    )
+                logger.info(f"Registered user {username} ({user_id}). Total registered: {count + 1}/5")
+                return True
+                
+            logger.warning(f"Registration rejected for user {username} ({user_id}). Max 5 users limit reached.")
+            return False
+        finally:
+            conn.close()

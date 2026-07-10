@@ -19,3 +19,10 @@ CREATE TABLE IF NOT EXISTS threads (
     last_active TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (channel_id) REFERENCES channels(channel_id) ON DELETE CASCADE
 );
+
+-- Whitelist / Registration table to limit the bot to 5 distinct users
+CREATE TABLE IF NOT EXISTS registered_users (
+    user_id INTEGER PRIMARY KEY,
+    username TEXT,
+    registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
