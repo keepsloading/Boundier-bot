@@ -568,8 +568,6 @@ class BoundierCog(commands.Cog):
         app_commands.Choice(name="New Channel", value="new_channel"),
         app_commands.Choice(name="New Thread in Existing Channel", value="new_thread")
     ])
-    @app_commands.allowed_installs(guilds=True, users=True)
-    @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
     async def new_chat(
         self,
         interaction: discord.Interaction,
@@ -592,6 +590,11 @@ class BoundierCog(commands.Cog):
         guild = interaction.guild
         if not guild:
             await interaction.followup.send("Commands can only be used in servers.")
+            return
+            
+        # Enforce that the bot has Administrator permissions in the server
+        if not guild.me.guild_permissions.administrator:
+            await interaction.followup.send("⚠️ This command requires the bot to have Administrator permissions in the server.")
             return
             
         author_name = interaction.user.display_name
