@@ -566,8 +566,9 @@ class BoundierCog(commands.Cog):
         self,
         interaction: discord.Interaction,
         type: str,
-        channel: discord.TextChannel,
         prompt: str,
+        name: Optional[str] = None,
+        channel: Optional[discord.TextChannel] = None,
         attachment: Optional[discord.Attachment] = None
     ):
         """Creates a new channel or starts a thread in an existing chosen channel."""
@@ -593,8 +594,11 @@ class BoundierCog(commands.Cog):
             file_paths = await self._download_attachments([attachment])
         
         # Derive temporary title
-        words = prompt.split()[:5]
-        temp_title = " ".join(words)[:50] + "..." if len(words) >= 5 else prompt[:50]
+        if name:
+            temp_title = name.strip()
+        else:
+            words = prompt.split()[:5]
+            temp_title = " ".join(words)[:50] + "..." if len(words) >= 5 else prompt[:50]
         
         rename_parent = False
         if type == "new_channel":
