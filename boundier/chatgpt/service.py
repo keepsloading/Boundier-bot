@@ -142,17 +142,28 @@ class ChatGPTService:
                 # Handle attachments upload
                 if file_paths:
                     logger.info(f"Uploading file attachments to ChatGPT: {file_paths}")
-                    file_input = self.page.locator(self.selectors.file_input)
-                    await file_input.wait_for(state="attached", timeout=5000)
+                    try:
+                        file_input = self.page.locator(self.selectors.file_input)
+                        await file_input.wait_for(state="attached", timeout=5000)
+                    except Exception as upload_err:
+                        logger.critical(
+                            f"[CRITICAL] ChatGPT UI change detected! File input element ('{self.selectors.file_input}') was not found. "
+                            f"Please check selectors.yaml."
+                        )
+                        raise RuntimeError(f"File upload element not found: {upload_err}")
+                        
                     await file_input.set_input_files(file_paths)
-                    logger.info("File uploaded, waiting for send button to enable...")
+                    logger.info("File uploaded, waiting for send button to enable (up to 30 seconds)...")
                     submit_sel = 'button[data-testid="send-button"]:not([disabled]):not([aria-disabled="true"]), button[aria-label*="Send"]:not([disabled]):not([aria-disabled="true"])'
                     try:
-                        await self.page.wait_for_selector(submit_sel, timeout=10000)
+                        await self.page.wait_for_selector(submit_sel, timeout=30000)
                         logger.info("Upload completed (send button enabled).")
                     except Exception as e:
-                        logger.warning(f"Timeout waiting for enabled send button: {e}. Fallback to brief sleep.")
-                        await asyncio.sleep(1.5)
+                        logger.critical(
+                            f"[CRITICAL] ChatGPT UI change detected or file upload failed! Send button did not enable after 30 seconds. "
+                            f"Please check selectors.yaml."
+                        )
+                        raise TimeoutError(f"Timeout waiting for enabled send button after file upload: {e}")
                     
                 existing_count = await self.page.locator('div[data-message-author-role="assistant"]').count()
                 logger.info(f"Existing assistant response bubble count: {existing_count}")
@@ -185,7 +196,14 @@ class ChatGPTService:
                 await self.page.evaluate(js_submit, prompt)
                 logger.info("Prompt submitted via JS, waiting for response container...")
         except Exception as e:
-            logger.error(f"Failed to submit prompt (is_edit={is_edit}): {e}", exc_info=True)
+            err_str = str(e)
+            if "not found" in err_str or "selector" in err_str.lower():
+                logger.critical(
+                    f"[CRITICAL] ChatGPT UI change detected! Selector error during submission: {e}. "
+                    f"Please check selectors.yaml or download the screenshot."
+                )
+            else:
+                logger.error(f"Failed to submit prompt (is_edit={is_edit}): {e}", exc_info=True)
             await self.save_diagnostics_screenshot("submit_prompt_error")
             raise
             
@@ -211,7 +229,13 @@ class ChatGPTService:
                         raise TimeoutError("Timeout waiting for ChatGPT response generation to start.")
                     await asyncio.sleep(0.2)
         except Exception as e:
-            logger.error(f"Error waiting for response bubble (is_edit={is_edit}): {e}", exc_info=True)
+            if isinstance(e, TimeoutError):
+                logger.critical(
+                    f"[CRITICAL] ChatGPT UI change detected or request stalled! Response bubble ('div[data-message-author-role=\"assistant\"]') did not appear after {timeout} seconds. "
+                    f"Please check selectors.yaml or download the screenshot."
+                )
+            else:
+                logger.error(f"Error waiting for response bubble (is_edit={is_edit}): {e}", exc_info=True)
             await self.save_diagnostics_screenshot("bubble_wait_error")
             raise
             

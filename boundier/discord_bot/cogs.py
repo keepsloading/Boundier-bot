@@ -268,6 +268,16 @@ class BoundierCog(commands.Cog):
             if not (is_pinged or is_reply_to_bot):
                 return
             
+        # Check user restriction (Max 5 users)
+        author_id = message.author.id
+        author_name = message.author.name
+        if not self.bot.store.check_or_register_user(author_id, author_name):
+            try:
+                await message.reply("⚠️ Bot usage is restricted to a maximum of 5 registered users. The limit has been reached.")
+            except Exception:
+                pass
+            return
+            
         # Download attachments if user uploaded images/files in follow-up chat
         file_paths = []
         if message.attachments:
@@ -378,6 +388,16 @@ class BoundierCog(commands.Cog):
             else:
                 return # Not a tracked ChatGPT thread
             
+        # Check user restriction (Max 5 users)
+        author_id = after.author.id
+        author_name = after.author.name
+        if not self.bot.store.check_or_register_user(author_id, author_name):
+            try:
+                await after.reply("⚠️ Bot usage is restricted to a maximum of 5 registered users. The limit has been reached.")
+            except Exception:
+                pass
+            return
+            
         # Verify that this edited message is indeed the latest user message in the thread
         last_user_msg = None
         async for msg in after.channel.history(limit=10):
@@ -478,6 +498,13 @@ class BoundierCog(commands.Cog):
         guild = interaction.guild
         if not guild:
             await interaction.followup.send("Commands can only be used in servers.")
+            return
+            
+        # Check user restriction (Max 5 users)
+        author_id = interaction.user.id
+        author_name = interaction.user.name
+        if not self.bot.store.check_or_register_user(author_id, author_name):
+            await interaction.followup.send("⚠️ Bot usage is restricted to a maximum of 5 registered users. The limit has been reached.")
             return
             
         current_channel = interaction.channel
@@ -590,6 +617,13 @@ class BoundierCog(commands.Cog):
         guild = interaction.guild
         if not guild:
             await interaction.followup.send("Commands can only be used in servers.")
+            return
+            
+        # Check user restriction (Max 5 users)
+        author_id = interaction.user.id
+        author_name = interaction.user.name
+        if not self.bot.store.check_or_register_user(author_id, author_name):
+            await interaction.followup.send("⚠️ Bot usage is restricted to a maximum of 5 registered users. The limit has been reached.")
             return
             
         # Enforce that the bot has Administrator permissions in the server
