@@ -1,1 +1,0 @@
-# Gemini automation layer package
