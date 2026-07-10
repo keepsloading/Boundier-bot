@@ -4,9 +4,9 @@
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![Playwright](https://img.shields.io/badge/Playwright-Stealth-orange?style=for-the-badge&logo=playwright&logoColor=white)](https://playwright.dev)
 
-**Boundier** is an autonomous browser-based Discord AI companion that operates directly through ChatGPT's web interface using headless browser automation. The name signifies **"Breaking Boundaries"**—representing the ability of the bot to break out of the standard ChatGPT web interface constraints and pipe intelligent conversations directly into your Discord community workspace.
+**Boundier** is an autonomous browser-based Discord AI companion that operates directly through ChatGPT's web interface using headless browser automation. The name signifies **"Breaking Boundaries"**, representing the ability of the bot to break out of the standard ChatGPT web interface constraints and pipe intelligent conversations directly into your Discord community workspace.
 
----
+, -
 
 > [!WARNING]
 > **DISCLAIMER: FOR LEARNING & EXPERIMENTAL PURPOSES ONLY**
@@ -14,7 +14,7 @@
 > 
 > Automating web interactions violates OpenAI's Terms of Service, and any updates or layouts modifications to the ChatGPT web interface will break the bot's selectors. Use this codebase strictly for personal learning and research.
 
----
+, -
 
 ## 🌟 Key Features
 
@@ -25,22 +25,22 @@
 * ⚡ **Resource Optimization:** Consolidates all Chromium browser, renderer, and GPU operations into unified configurations. Operates stably under tight resource constraints (runs comfortably on Render's **512 MB RAM** free tier).
 * 🎛️ **Interactive UI Elements:** Responses are rendered inside clean white Discord embeds with interactive buttons to view the original prompt, copy text, or retry generations.
 
----
+, -
 
 ## 🏗️ Architecture
 
 ```mermaid
 graph TD
-    A[Discord Client] -->|Slash Commands / Threads| B(Discord Bot Cogs)
-    B -->|Submit Query| C{Conversation Manager}
-    C -->|Retrieve Mappings| D[(SQLite Store)]
-    C -->|Browser Lock| E[ChatGPT Web Service]
-    E -->|Automate Textarea| F[Playwright Headless Chrome]
-    F -->|Bypass Captcha| G[ChatGPT Portal]
-    G -->|Stream Markdown| F
-    F -->|Yield Delta| E
-    E -->|Stream Message| B
-    B -->|Update Embed| A
+    A[Discord Client] , >|Slash Commands / Threads| B(Discord Bot Cogs)
+    B , >|Submit Query| C{Conversation Manager}
+    C , >|Retrieve Mappings| D[(SQLite Store)]
+    C , >|Browser Lock| E[ChatGPT Web Service]
+    E , >|Automate Textarea| F[Playwright Headless Chrome]
+    F , >|Bypass Captcha| G[ChatGPT Portal]
+    G , >|Stream Markdown| F
+    F , >|Yield Delta| E
+    E , >|Stream Message| B
+    B , >|Update Embed| A
 ```
 
 * **`PlaywrightDriver` ([driver.py](file:///app/boundier/chatgpt/driver.py)):** Manages persistent Chromium contexts, launches Chrome with custom sandbox and memory flags, injects session cookies, and runs page initialization scripts to strip automated signatures.
@@ -48,7 +48,7 @@ graph TD
 * **`SQLiteStore` ([sqlite_store.py](file:///app/boundier/storage/sqlite_store.py)):** Manages mapping persistence between Discord thread/channel IDs and ChatGPT conversation UUIDs.
 * **`BoundierBot` ([bot.py](file:///app/boundier/discord_bot/bot.py)):** Initializes the Discord client, registers slash commands (`/ask`, `/new`, `/archive`), and listens to message events.
 
----
+, -
 
 ## 🛠️ Installation & Setup
 
@@ -80,7 +80,7 @@ Because cloud servers (like Render) run in headless environments, you cannot per
    * `PORT`: Set to `10000` (Render's health check binds here).
 4. Deploy the service! The bot will initialize, bypass Cloudflare using the injected session, and go online.
 
----
+, -
 
 ## 📝 Configuration (`config.yaml`)
 
@@ -103,4 +103,5 @@ playwright:
 ---
 
 ## 💡 Naming Context
-*I always liked the name **Boundier** and originally named a hackathon project after it. However, that name is far more suited for this project ("Breaking Boundaries" from ChatGPT's web UI). The original hackathon repository has been renamed to **Cognitive Firewall**.*
+> [!NOTE]
+> I always liked the name **Boundier** and originally named a hackathon project after it. However, that name is far more suited for this project ("Breaking Boundaries" from ChatGPT's web UI). The original hackathon repository has been renamed to **Cognitive Firewall**.
