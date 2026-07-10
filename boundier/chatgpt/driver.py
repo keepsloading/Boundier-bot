@@ -70,8 +70,14 @@ class PlaywrightDriver:
         """
         await self.context.add_init_script(init_script)
         
-        # Inject storage state cookies if provided via environment variable
-        storage_state_str = os.environ.get("CHATGPT_STORAGE_STATE")
+        # Inject storage state cookies (from Gist if enabled, otherwise fallback to environment variable)
+        storage_state_str = None
+        if os.environ.get("GITHUB_PAT") and os.environ.get("ENCRYPTION_KEY"):
+            storage_state_str = await self._load_gist_session_state()
+            
+        if not storage_state_str:
+            storage_state_str = os.environ.get("CHATGPT_STORAGE_STATE")
+            
         if storage_state_str:
             try:
                 import json
@@ -80,11 +86,11 @@ class PlaywrightDriver:
                     cookies = cookies["cookies"]
                 if isinstance(cookies, list):
                     await self.context.add_cookies(cookies)
-                    logger.info("Successfully injected session cookies from CHATGPT_STORAGE_STATE environment variable.")
+                    logger.info("Successfully injected session cookies into browser context.")
                 else:
-                    logger.warning("CHATGPT_STORAGE_STATE environment variable is not in a valid JSON list/object format.")
+                    logger.warning("Session cookies format is not in a valid JSON list/object format.")
             except Exception as e:
-                logger.error(f"Error parsing/injecting CHATGPT_STORAGE_STATE: {e}")
+                logger.error(f"Error parsing/injecting session cookies: {e}")
         
         pages = self.context.pages
         if pages:
@@ -130,22 +136,25 @@ class PlaywrightDriver:
                 logger.warning(f"Session unverified: Redirected to landing page/login URL: {current_url}")
                 return False
 
-            if current_url != "about:blank":
-                # Wait for either chat input or login button to be attached (indicates React hydration is complete)
-                combined_selector = f'{self.selectors.chat_input}, [data-testid="login-button"]'
-                try:
-                    logger.info("Waiting for page elements to hydrate...")
-                    await self.page.locator(combined_selector).first.wait_for(state="attached", timeout=15000)
-                    logger.info("Page elements hydrated successfully.")
-                except Exception as wait_err:
-                    logger.warning(f"Timeout waiting for elements to hydrate: {wait_err}")
-                
-            # Direct check: active input exists, and no login button is present
-            chat_input = self.page.locator(self.selectors.chat_input).first
-            login_btn = self.page.locator('[data-testid="login-button"]').first
+            has_input = False
+            has_login = False
             
-            has_input = await chat_input.count() > 0
-            has_login = await login_btn.count() > 0
+            if current_url != "about:blank":
+                # Wait for either chat input or login button to hydrate/become visible (up to 60 seconds)
+                logger.info("Waiting for page elements to hydrate (polling up to 60 seconds)...")
+                import asyncio
+                start_wait = asyncio.get_event_loop().time()
+                while asyncio.get_event_loop().time() - start_wait < 60.0:
+                    chat_input = self.page.locator(self.selectors.chat_input).first
+                    login_btn = self.page.locator('[data-testid="login-button"]').first
+                    
+                    has_input = await chat_input.count() > 0 and await chat_input.is_visible()
+                    has_login = await login_btn.count() > 0 and await login_btn.is_visible()
+                    
+                    if has_input or has_login:
+                        break
+                    await asyncio.sleep(2.0)
+                logger.info(f"Page elements checking complete. has_input={has_input}, has_login={has_login}")
             
             # Log post-hydration diagnostics
             current_url = self.page.url
@@ -204,12 +213,14 @@ class PlaywrightDriver:
         is_active = await self.check_session_active(navigate=False)
         if is_active:
             logger.info("Session is active (cached). Proceeding.")
+            await self.save_gist_session_state()
             return True
             
         # If not detected on active DOM, reload chatgpt.com once to be sure
         is_active = await self.check_session_active(navigate=True)
         if is_active:
             logger.info("Session is active after page reload. Proceeding.")
+            await self.save_gist_session_state()
             return True
             
         # Check if headless mode is forced/mandatory (e.g. running on Linux without DISPLAY)
@@ -246,6 +257,8 @@ class PlaywrightDriver:
         
         if authenticated:
             logger.info("Authentication successful!")
+            # Save storage state on successful login
+            await self.save_gist_session_state()
             # If we temporarily switched to headed mode, restart in the user's configured mode
             if was_headless:
                 logger.info("Re-applying headless mode config and restarting browser driver...")
@@ -256,3 +269,170 @@ class PlaywrightDriver:
         else:
             logger.error("Authentication failed or timed out.")
             return False
+
+    def _get_fernet_key(self, passphrase: str) -> bytes:
+        import base64
+        import hashlib
+        key_hash = hashlib.sha256(passphrase.encode('utf-8')).digest()
+        return base64.urlsafe_b64encode(key_hash)
+
+    async def _load_gist_session_state(self) -> Optional[str]:
+        """Loads and decrypts CHATGPT_STORAGE_STATE from a private GitHub Gist using GITHUB_PAT and ENCRYPTION_KEY."""
+        github_pat = os.environ.get("GITHUB_PAT")
+        encryption_key = os.environ.get("ENCRYPTION_KEY")
+        if not github_pat or not encryption_key:
+            return None
+
+        logger.info("Sync: GITHUB_PAT and ENCRYPTION_KEY detected. Looking for persistent session Gist...")
+        try:
+            import json
+            import urllib.request
+            import urllib.error
+            from cryptography.fernet import Fernet
+
+            # 1. Find the Gist ID
+            url = "https://api.github.com/gists"
+            headers = {
+                "Authorization": f"token {github_pat}",
+                "Accept": "application/vnd.github.v3+json",
+                "User-Agent": "Boundier-Bot"
+            }
+            req = urllib.request.Request(url, headers=headers)
+            
+            loop = asyncio.get_running_loop()
+            def run_get():
+                try:
+                    with urllib.request.urlopen(req) as res:
+                        return json.loads(res.read().decode("utf-8"))
+                except Exception as err:
+                    logger.warning(f"Error listing Gists: {err}")
+                    return []
+                    
+            gists = await loop.run_in_executor(None, run_get)
+            
+            raw_url = None
+            for gist in gists:
+                if "boundier_session.enc" in gist["files"]:
+                    raw_url = gist["files"]["boundier_session.enc"]["raw_url"]
+                    break
+
+            if not raw_url:
+                logger.info("Sync: No existing session Gist found. Will create a new one on successful login.")
+                return None
+
+            # 2. Fetch raw encrypted content
+            req_raw = urllib.request.Request(raw_url, headers=headers)
+            def run_get_raw():
+                try:
+                    with urllib.request.urlopen(req_raw) as res:
+                        return res.read().decode("utf-8")
+                except Exception as err:
+                    logger.warning(f"Error fetching Gist file raw content: {err}")
+                    return ""
+
+            encrypted_data = await loop.run_in_executor(None, run_get_raw)
+            if not encrypted_data:
+                return None
+
+            # 3. Decrypt
+            fernet_key = self._get_fernet_key(encryption_key)
+            fernet = Fernet(fernet_key)
+            decrypted_data = fernet.decrypt(encrypted_data.encode('utf-8')).decode('utf-8')
+            logger.info("Sync: Successfully loaded and decrypted persistent session from Gist.")
+            return decrypted_data
+
+        except Exception as e:
+            logger.warning(f"Sync: Failed to load persistent session from Gist: {e}")
+            return None
+
+    async def save_gist_session_state(self):
+        """Encrypts and pushes the current browser storage state to a private GitHub Gist."""
+        github_pat = os.environ.get("GITHUB_PAT")
+        encryption_key = os.environ.get("ENCRYPTION_KEY")
+        if not github_pat or not encryption_key or not self.context:
+            return
+
+        try:
+            import json
+            import urllib.request
+            from cryptography.fernet import Fernet
+
+            logger.info("Sync: Exporting and encrypting browser storage state to persist on Gist...")
+            state = await self.context.storage_state()
+            state_str = json.dumps(state)
+
+            fernet_key = self._get_fernet_key(encryption_key)
+            fernet = Fernet(fernet_key)
+            encrypted_data = fernet.encrypt(state_str.encode('utf-8')).decode('utf-8')
+
+            # 1. Find existing Gist
+            url_list = "https://api.github.com/gists"
+            headers = {
+                "Authorization": f"token {github_pat}",
+                "Accept": "application/vnd.github.v3+json",
+                "User-Agent": "Boundier-Bot"
+            }
+            
+            loop = asyncio.get_running_loop()
+            
+            def find_and_save():
+                # Find Gist ID
+                req = urllib.request.Request(url_list, headers=headers)
+                try:
+                    with urllib.request.urlopen(req) as res:
+                        gists = json.loads(res.read().decode("utf-8"))
+                except Exception as err:
+                    logger.warning(f"Sync: Error listing Gists during save: {err}")
+                    gists = []
+                    
+                gist_id = None
+                for gist in gists:
+                    if "boundier_session.enc" in gist["files"]:
+                        gist_id = gist["id"]
+                        break
+
+                if gist_id:
+                    # Update existing Gist
+                    url_update = f"https://api.github.com/gists/{gist_id}"
+                    data = {
+                        "files": {
+                            "boundier_session.enc": {
+                                "content": encrypted_data
+                            }
+                        }
+                    }
+                    req_update = urllib.request.Request(
+                        url_update, 
+                        headers=headers, 
+                        method="PATCH", 
+                        data=json.dumps(data).encode("utf-8")
+                    )
+                    with urllib.request.urlopen(req_update) as res:
+                        res.read()
+                    logger.info(f"Sync: Successfully updated existing session Gist: {gist_id}")
+                else:
+                    # Create new Gist
+                    url_create = "https://api.github.com/gists"
+                    data = {
+                        "description": "Boundier Bot Encrypted Session Storage State",
+                        "public": False,
+                        "files": {
+                            "boundier_session.enc": {
+                                "content": encrypted_data
+                            }
+                        }
+                    }
+                    req_create = urllib.request.Request(
+                        url_create, 
+                        headers=headers, 
+                        method="POST", 
+                        data=json.dumps(data).encode("utf-8")
+                    )
+                    with urllib.request.urlopen(req_create) as res:
+                        new_gist = json.loads(res.read().decode("utf-8"))
+                    logger.info(f"Sync: Successfully created new private session Gist: {new_gist['id']}")
+
+            await loop.run_in_executor(None, find_and_save)
+
+        except Exception as e:
+            logger.warning(f"Sync: Failed to save persistent session state to Gist: {e}")
