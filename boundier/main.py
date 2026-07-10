@@ -17,7 +17,28 @@ async def health_check_server():
     
     async def handle_client(reader, writer):
         try:
-            await reader.readline()
+            line = await reader.readline()
+            if not line:
+                return
+            parts = line.decode("utf-8").split()
+            if len(parts) >= 2:
+                path = parts[1]
+                if path.startswith("/diagnostics/") and ".." not in path:
+                    filename = path.replace("/diagnostics/", "")
+                    file_path = os.path.join("logs", "diagnostics", filename)
+                    if os.path.isfile(file_path):
+                        with open(file_path, "rb") as f:
+                            content = f.read()
+                        response = (
+                            f"HTTP/1.1 200 OK\r\n"
+                            f"Content-Type: image/png\r\n"
+                            f"Content-Length: {len(content)}\r\n"
+                            f"Connection: close\r\n\r\n"
+                        ).encode("utf-8") + content
+                        writer.write(response)
+                        await writer.drain()
+                        return
+            
             response = (
                 "HTTP/1.1 200 OK\r\n"
                 "Content-Type: text/plain\r\n"
