@@ -110,23 +110,25 @@ class PlaywrightDriver:
             if navigate:
                 logger.info(f"Checking session status by loading: {url}")
                 await self.page.goto(url, wait_until="domcontentloaded", timeout=self.config.playwright.timeout_ms)
-                # Wait a brief moment to allow dynamic overlay popups to load
-                await asyncio.sleep(3.0)
             
             # Check redirect status
             current_url = self.page.url
             page_title = await self.page.title()
             logger.info(f"Session check diagnostics - URL: {current_url} | Title: {page_title}")
-            try:
-                text_content = await self.page.locator("body").text_content()
-                clean_text = text_content.strip()[:400].replace('\n', ' ')
-                logger.info(f"Page text content snippet: {clean_text}")
-            except Exception:
-                pass
-                
+            
             if "auth" in current_url or "login" in current_url:
                 logger.warning(f"Session unverified: Redirected to landing page/login URL: {current_url}")
                 return False
+
+            if current_url != "about:blank":
+                # Wait for either chat input or login button to be attached (indicates React hydration is complete)
+                combined_selector = f'{self.selectors.chat_input}, [data-testid="login-button"]'
+                try:
+                    logger.info("Waiting for page elements to hydrate...")
+                    await self.page.locator(combined_selector).first.wait_for(state="attached", timeout=15000)
+                    logger.info("Page elements hydrated successfully.")
+                except Exception as wait_err:
+                    logger.warning(f"Timeout waiting for elements to hydrate: {wait_err}")
                 
             # Direct check: active input exists, and no login button is present
             chat_input = self.page.locator(self.selectors.chat_input).first
@@ -134,6 +136,17 @@ class PlaywrightDriver:
             
             has_input = await chat_input.count() > 0
             has_login = await login_btn.count() > 0
+            
+            # Log post-hydration diagnostics
+            current_url = self.page.url
+            page_title = await self.page.title()
+            logger.info(f"Post-hydration diagnostics - URL: {current_url} | Title: {page_title}")
+            try:
+                text_content = await self.page.locator("body").text_content()
+                clean_text = text_content.strip()[:400].replace('\n', ' ')
+                logger.info(f"Page text content snippet: {clean_text}")
+            except Exception:
+                pass
             
             if has_input and not has_login:
                 logger.info("Session verified: Chat input found and login button is absent (authenticated).")
