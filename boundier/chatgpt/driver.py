@@ -60,8 +60,12 @@ class PlaywrightDriver:
         )
         
         self.context.set_default_timeout(self.config.playwright.timeout_ms)
-        # Add init script to remove webdriver trace
-        await self.context.add_init_script("delete Object.getPrototypeOf(navigator).webdriver;")
+        # Add init script to remove webdriver trace and spoof Win32 platform matching user_agent
+        init_script = """
+        delete Object.getPrototypeOf(navigator).webdriver;
+        Object.defineProperty(navigator, 'platform', { get: () => 'Win32' });
+        """
+        await self.context.add_init_script(init_script)
         
         # Inject storage state cookies if provided via environment variable
         storage_state_str = os.environ.get("CHATGPT_STORAGE_STATE")
@@ -84,6 +88,10 @@ class PlaywrightDriver:
             self.page = pages[0]
         else:
             self.page = await self.context.new_page()
+            
+        # Register console and exception listeners for headless diagnostics
+        self.page.on("console", lambda msg: logger.info(f"BROWSER CONSOLE: [{msg.type}] {msg.text}"))
+        self.page.on("pageerror", lambda err: logger.error(f"BROWSER EXCEPTION: {err}"))
             
         logger.info("Playwright driver initialized successfully.")
 
