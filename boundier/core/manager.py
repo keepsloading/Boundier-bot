@@ -450,3 +450,46 @@ class ConversationManager:
             except Exception as e:
                 logger.error(f"Failed to classify channel routing: {e}", exc_info=True)
                 return "general"
+
+    async def find_chat_id_by_title(self, title: str) -> Optional[str]:
+        """Tries to find a conversation ID in the ChatGPT sidebar that matches the given title."""
+        logger.info(f"Searching ChatGPT sidebar for title: '{title}'...")
+        async with self._lock:
+            try:
+                # Ensure authentication
+                authenticated = await self.service.driver.ensure_authenticated()
+                if not authenticated:
+                    return None
+                    
+                # If not already on chatgpt.com portal, load home page to get access to sidebar links
+                if "chatgpt.com" not in self.service.page.url:
+                    await self.service.page.goto("https://chatgpt.com", wait_until="domcontentloaded")
+                    await self.service.page.wait_for_selector(self.service.selectors.chat_input, timeout=10000)
+                    
+                conversations = await self.service.get_sidebar_conversations()
+                logger.info(f"Found {len(conversations)} conversations in ChatGPT sidebar.")
+                
+                clean_title = title.strip().lower().replace("...", "")
+                if not clean_title:
+                    return None
+                    
+                # 1. Try exact/prefix match
+                for conv in conversations:
+                    conv_title = conv["title"].strip().lower()
+                    if clean_title == conv_title or conv_title.startswith(clean_title) or clean_title.startswith(conv_title):
+                        logger.info(f"Match found: '{conv['title']}' -> ID: {conv['id']}")
+                        return conv["id"]
+                        
+                # 2. Try partial match (word intersection)
+                clean_words = set(clean_title.split())
+                for conv in conversations:
+                    conv_title = conv["title"].strip().lower()
+                    conv_words = set(conv_title.split())
+                    if len(clean_words & conv_words) >= min(len(clean_words), 3):
+                        logger.info(f"Fuzzy match found: '{conv['title']}' -> ID: {conv['id']}")
+                        return conv["id"]
+                        
+            except Exception as e:
+                logger.error(f"Error searching sidebar for title '{title}': {e}", exc_info=True)
+                
+            return None

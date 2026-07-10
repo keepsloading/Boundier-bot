@@ -384,3 +384,29 @@ class ChatGPTService:
         except Exception as e:
             logger.warning(f"Failed to get sidebar title for chat {chat_id}: {e}")
         return None
+
+    async def get_sidebar_conversations(self) -> list:
+        """Scrapes all conversation titles and IDs visible in the sidebar."""
+        js_get_sidebar = """
+        () => {
+            const items = [];
+            const links = document.querySelectorAll('a[href*="/c/"]');
+            for (const link of links) {
+                const href = link.getAttribute('href') || '';
+                const parts = href.split('/c/');
+                if (parts.length > 1) {
+                    const id = parts[1].split('?')[0].split('/')[0];
+                    const title = (link.textContent || '').trim();
+                    if (id && title) {
+                        items.push({ id: id, title: title });
+                    }
+                }
+            }
+            return items;
+        }
+        """
+        try:
+            return await self.page.evaluate(js_get_sidebar)
+        except Exception as e:
+            logger.warning(f"Failed to scrape sidebar conversations: {e}")
+            return []

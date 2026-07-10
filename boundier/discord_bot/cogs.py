@@ -230,7 +230,27 @@ class BoundierCog(commands.Cog):
         
         thread_record = self.bot.store.get_thread(thread_id)
         if not thread_record:
-            return # Not a tracked ChatGPT thread
+            if is_thread and message.channel.owner_id == self.bot.user.id:
+                parent_channel_id = message.channel.parent_id
+                logger.info(f"Thread mapping missing for bot-owned thread '{message.channel.name}'. Attempting sidebar recovery...")
+                chat_id = await self.bot.manager.find_chat_id_by_title(message.channel.name)
+                if chat_id:
+                    self.bot.store.save_channel(parent_channel_id, message.channel.parent.name, "")
+                    self.bot.store.save_thread(
+                        thread_id=thread_id,
+                        channel_id=parent_channel_id,
+                        chatgpt_chat_id=chat_id,
+                        title=message.channel.name,
+                        summary="",
+                        message_count=0
+                    )
+                    thread_record = self.bot.store.get_thread(thread_id)
+                    logger.info(f"Self-healing successful: Restored thread '{message.channel.name}' -> ChatGPT Chat ID {chat_id}")
+                else:
+                    logger.warning(f"Could not find matching conversation in ChatGPT sidebar for thread '{message.channel.name}'.")
+                    return
+            else:
+                return # Not a tracked ChatGPT thread
             
         if not is_thread:
             # For direct/on-the-spot channels, only reply if pinged or if replying to bot's message
@@ -334,7 +354,27 @@ class BoundierCog(commands.Cog):
         thread_id = after.channel.id
         thread_record = self.bot.store.get_thread(thread_id)
         if not thread_record:
-            return # Not a tracked ChatGPT thread
+            if is_thread and after.channel.owner_id == self.bot.user.id:
+                parent_channel_id = after.channel.parent_id
+                logger.info(f"Thread mapping missing for bot-owned thread '{after.channel.name}'. Attempting sidebar recovery...")
+                chat_id = await self.bot.manager.find_chat_id_by_title(after.channel.name)
+                if chat_id:
+                    self.bot.store.save_channel(parent_channel_id, after.channel.parent.name, "")
+                    self.bot.store.save_thread(
+                        thread_id=thread_id,
+                        channel_id=parent_channel_id,
+                        chatgpt_chat_id=chat_id,
+                        title=after.channel.name,
+                        summary="",
+                        message_count=0
+                    )
+                    thread_record = self.bot.store.get_thread(thread_id)
+                    logger.info(f"Self-healing successful: Restored thread '{after.channel.name}' -> ChatGPT Chat ID {chat_id}")
+                else:
+                    logger.warning(f"Could not find matching conversation in ChatGPT sidebar for thread '{after.channel.name}'.")
+                    return
+            else:
+                return # Not a tracked ChatGPT thread
             
         # Verify that this edited message is indeed the latest user message in the thread
         last_user_msg = None
