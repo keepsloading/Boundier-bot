@@ -454,6 +454,13 @@ class ConversationManager:
     async def find_chat_id_by_title(self, title: str) -> Optional[str]:
         """Tries to find a conversation ID in the ChatGPT sidebar that matches the given title."""
         logger.info(f"Searching ChatGPT sidebar for title: '{title}'...")
+        
+        def normalize(t: str) -> str:
+            # Convert to lowercase, strip trailing dots, and keep only alphanumeric characters and spaces
+            t_clean = t.lower().strip().replace("...", "")
+            # Filter out non-ASCII, emojis, and punctuation
+            return "".join(c for c in t_clean if c.isalnum() or c.isspace())
+
         async with self._lock:
             try:
                 # Ensure authentication
@@ -469,23 +476,22 @@ class ConversationManager:
                 conversations = await self.service.get_sidebar_conversations()
                 logger.info(f"Found {len(conversations)} conversations in ChatGPT sidebar.")
                 
-                clean_title = title.strip().lower().replace("...", "")
-                if not clean_title:
+                normalized_target = normalize(title)
+                if not normalized_target:
                     return None
                     
-                # 1. Try exact/prefix match
+                # 1. Try exact/prefix match on normalized strings
                 for conv in conversations:
-                    conv_title = conv["title"].strip().lower()
-                    if clean_title == conv_title or conv_title.startswith(clean_title) or clean_title.startswith(conv_title):
+                    normalized_conv = normalize(conv["title"])
+                    if normalized_target == normalized_conv or normalized_conv.startswith(normalized_target) or normalized_target.startswith(normalized_conv):
                         logger.info(f"Match found: '{conv['title']}' -> ID: {conv['id']}")
                         return conv["id"]
                         
-                # 2. Try partial match (word intersection)
-                clean_words = set(clean_title.split())
+                # 2. Try partial match (word intersection) on normalized strings
+                target_words = set(normalized_target.split())
                 for conv in conversations:
-                    conv_title = conv["title"].strip().lower()
-                    conv_words = set(conv_title.split())
-                    if len(clean_words & conv_words) >= min(len(clean_words), 3):
+                    conv_words = set(normalize(conv["title"]).split())
+                    if len(target_words & conv_words) >= min(len(target_words), 3):
                         logger.info(f"Fuzzy match found: '{conv['title']}' -> ID: {conv['id']}")
                         return conv["id"]
                         

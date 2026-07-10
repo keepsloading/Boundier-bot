@@ -230,9 +230,9 @@ class BoundierCog(commands.Cog):
         
         thread_record = self.bot.store.get_thread(thread_id)
         if not thread_record:
-            if is_thread and message.channel.owner_id == self.bot.user.id:
+            if is_thread:
                 parent_channel_id = message.channel.parent_id
-                logger.info(f"Thread mapping missing for bot-owned thread '{message.channel.name}'. Attempting sidebar recovery...")
+                logger.info(f"Thread mapping missing for thread '{message.channel.name}'. Attempting sidebar recovery...")
                 chat_id = await self.bot.manager.find_chat_id_by_title(message.channel.name)
                 if chat_id:
                     self.bot.store.save_channel(parent_channel_id, message.channel.parent.name, "")
@@ -354,9 +354,9 @@ class BoundierCog(commands.Cog):
         thread_id = after.channel.id
         thread_record = self.bot.store.get_thread(thread_id)
         if not thread_record:
-            if is_thread and after.channel.owner_id == self.bot.user.id:
+            if is_thread:
                 parent_channel_id = after.channel.parent_id
-                logger.info(f"Thread mapping missing for bot-owned thread '{after.channel.name}'. Attempting sidebar recovery...")
+                logger.info(f"Thread mapping missing for thread '{after.channel.name}'. Attempting sidebar recovery...")
                 chat_id = await self.bot.manager.find_chat_id_by_title(after.channel.name)
                 if chat_id:
                     self.bot.store.save_channel(parent_channel_id, after.channel.parent.name, "")
