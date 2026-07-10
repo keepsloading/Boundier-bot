@@ -104,6 +104,14 @@ class PlaywrightDriver:
             
             # Check redirect status
             current_url = self.page.url
+            page_title = await self.page.title()
+            logger.info(f"Session check diagnostics - URL: {current_url} | Title: {page_title}")
+            try:
+                text_content = await self.page.locator("body").text_content()
+                logger.info(f"Page text content snippet: {text_content.strip()[:400].replace('\n', ' ')}")
+            except Exception:
+                pass
+                
             if "auth" in current_url or "login" in current_url:
                 logger.warning(f"Session unverified: Redirected to landing page/login URL: {current_url}")
                 return False
@@ -120,6 +128,12 @@ class PlaywrightDriver:
                 return True
                 
             logger.warning(f"Session unverified: chat_input_exists={has_input}, login_button_exists={has_login}")
+            try:
+                os.makedirs("logs/diagnostics", exist_ok=True)
+                await self.page.screenshot(path="logs/diagnostics/session_unverified.png")
+                logger.info("Saved diagnostics screenshot to logs/diagnostics/session_unverified.png")
+            except Exception as ss_err:
+                logger.warning(f"Failed to save unverified session screenshot: {ss_err}")
             return False
                 
         except Exception as e:
