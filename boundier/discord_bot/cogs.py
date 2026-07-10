@@ -748,15 +748,12 @@ class BoundierCog(commands.Cog):
         start_time = asyncio.get_event_loop().time()
         
         reply_message = None
-        typing_manager = thread.typing()
-        has_typing = False
-        
         # Start a background task to keep typing continuously until streaming ends
         async def keep_typing_alive():
             try:
                 while True:
-                    await thread.trigger_typing()
-                    await asyncio.sleep(5.0)
+                    async with thread.typing():
+                        await asyncio.sleep(5.0)
             except asyncio.CancelledError:
                 pass
             except Exception as e:
@@ -765,12 +762,6 @@ class BoundierCog(commands.Cog):
         typing_task = asyncio.create_task(keep_typing_alive())
         
         try:
-            try:
-                await typing_manager.__aenter__()
-                has_typing = True
-            except Exception as typing_err:
-                logger.warning(f"Could not trigger typing indicator: {typing_err}")
-                
             # Initialize White Embed for streaming
             embed = discord.Embed(description="▌", color=0xFFFFFF)
             
@@ -863,9 +854,4 @@ class BoundierCog(commands.Cog):
         finally:
             if 'typing_task' in locals() and typing_task:
                 typing_task.cancel()
-            if has_typing:
-                try:
-                    await typing_manager.__aexit__(None, None, None)
-                except Exception:
-                    pass
             self._cleanup_files(file_paths)
