@@ -47,6 +47,9 @@ async def async_main():
     logger = setup_logging()
     logger.info("Initializing Boundier bot bootstrap...")
     
+    # Start background health check server immediately for Render port binding requirements
+    asyncio.create_task(health_check_server())
+    
     try:
         config = load_config("config.yaml")
         
@@ -71,9 +74,6 @@ async def async_main():
         
         # 3. Initialize Discord Bot
         bot = BoundierBot(config, manager, store)
-        
-        # Start background health check server for Render / platforms
-        asyncio.create_task(health_check_server())
         
         # Setup clean exit handlers
         async def cleanup():
