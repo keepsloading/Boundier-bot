@@ -108,7 +108,8 @@ class PlaywrightDriver:
             logger.info(f"Session check diagnostics - URL: {current_url} | Title: {page_title}")
             try:
                 text_content = await self.page.locator("body").text_content()
-                logger.info(f"Page text content snippet: {text_content.strip()[:400].replace('\n', ' ')}")
+                clean_text = text_content.strip()[:400].replace('\n', ' ')
+                logger.info(f"Page text content snippet: {clean_text}")
             except Exception:
                 pass
                 
