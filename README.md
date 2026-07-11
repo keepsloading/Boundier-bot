@@ -67,8 +67,12 @@ graph TD
 
 ## 🎬 Demo
 
-Here is a preview of Boundier in action, showcasing its interactive white embeds and dynamic conversation threading:
+Here is a preview of Boundier in action, showcasing its image generation and vision/analysis capabilities inside Discord:
 
+### 🖼️ Image Generation (ChatGPT Image 2)
+![Sports Car](sports-car.png)
+
+### 👁️ Image Analysis & Vision
 ![GTA-SA](GTA-SA.png)
 
 * **`PlaywrightDriver` ([driver.py](file:///app/boundier/chatgpt/driver.py)):** Manages persistent Chromium contexts, injects decrypted session cookies, and handles Cloudflare Turnstile hydration checks.

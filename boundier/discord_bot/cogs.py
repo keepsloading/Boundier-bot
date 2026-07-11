@@ -888,7 +888,7 @@ class BoundierCog(commands.Cog):
             else:
                 if session and session.generated_assets:
                     embed.description = "🎨 Generated asset(s) attached below."
-                    view = ResponseView(self, thread.id, channel_id, channel_name, user_message, citation_urls=[], author_name=author_name, has_image=True)
+                    view = ResponseView(self, thread.id, channel_id, channel_name, user_message, citation_urls=[], author_name=author_name, has_image=has_image or bool(file_paths))
                     await reply_message.edit(embed=embed, view=view)
                 else:
                     embed.description = "[Empty Response]"
