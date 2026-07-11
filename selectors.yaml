@@ -9,7 +9,7 @@ chatgpt:
   new_chat_button: 'a[href="/"], button[aria-label*="New chat"]'
   
   # CSS class or tag for response bubbles containing assistant markdown prose
-  response_containers: 'div[data-message-author-role="assistant"] div.markdown'
+  response_containers: '[data-message-author-role="assistant"] div.markdown, [data-turn="assistant"] div.markdown'
   
   # Selector that is present only while text is streaming/generating (like stop button)
   streaming_indicators: 'button[data-testid="stop-button"], .result-streaming'

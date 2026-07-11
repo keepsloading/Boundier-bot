@@ -167,7 +167,7 @@ class ChatGPTService:
                     
                 # Get a handle to the last assistant bubble before submitting to prevent history hydration race conditions
                 last_assistant_handle = await self.page.evaluate_handle(
-                    "() => { const els = document.querySelectorAll('div[data-message-author-role=\"assistant\"]'); return els.length ? els[els.length - 1] : null; }"
+                    "() => { const els = document.querySelectorAll('[data-message-author-role=\"assistant\"], [data-turn=\"assistant\"]'); return els.length ? els[els.length - 1] : null; }"
                 )
                 
                 # Direct JavaScript Submission to bypass all Playwright click & fill actionability delays
@@ -227,7 +227,7 @@ class ChatGPTService:
                     while True:
                         is_new_bubble = await self.page.evaluate(
                             """(lastBefore) => {
-                                const els = document.querySelectorAll('div[data-message-author-role="assistant"]');
+                                const els = document.querySelectorAll('[data-message-author-role="assistant"], [data-turn="assistant"]');
                                 const currentLast = els.length ? els[els.length - 1] : null;
                                 return currentLast !== null && currentLast !== lastBefore;
                             }""",
@@ -255,7 +255,7 @@ class ChatGPTService:
             raise
             
         # Locate the last assistant container
-        assistant_locator = self.page.locator('div[data-message-author-role="assistant"]').last
+        assistant_locator = self.page.locator('[data-message-author-role="assistant"], [data-turn="assistant"]').last
         # Scrape inside the markdown child element
         response_locator = assistant_locator.locator('div.markdown')
         
@@ -268,14 +268,7 @@ class ChatGPTService:
         (selector_indicator) => {
             const hasIndicator = document.querySelector(selector_indicator) !== null;
             
-            const sendBtn = document.querySelector('button[data-testid="send-button"], button[aria-label*="Send"]');
-            let sendBtnEnabled = false;
-            if (sendBtn) {
-                const isdisabled = sendBtn.disabled || sendBtn.getAttribute('disabled') !== null || sendBtn.getAttribute('aria-disabled') === 'true';
-                sendBtnEnabled = !isdisabled;
-            }
-            
-            const isGenerating = hasIndicator || !sendBtnEnabled;
+            const isGenerating = hasIndicator;
             
             const htmlToMarkdown = (node) => {
                 if (!node) return "";
@@ -367,7 +360,7 @@ class ChatGPTService:
                 return "";
             };
             
-            const assistants = document.querySelectorAll('div[data-message-author-role="assistant"]');
+            const assistants = document.querySelectorAll('[data-message-author-role="assistant"], [data-turn="assistant"]');
             let text = "";
             if (assistants.length > 0) {
                 const lastAssistant = assistants[assistants.length - 1];
@@ -427,7 +420,10 @@ class ChatGPTService:
                 last_text = current_text
                 unchanged_polls = 0
             else:
-                unchanged_polls += 1
+                if is_generating and current_text == "":
+                    unchanged_polls = 0
+                else:
+                    unchanged_polls += 1
                 
             # If ChatGPT has finished generating (send button is active), settle within 5 ticks (0.25s)
             if not is_generating and unchanged_polls >= 5:
@@ -440,116 +436,115 @@ class ChatGPTService:
                 
             await asyncio.sleep(0.05)
 
-    async def extract_generated_assets(self) -> list:
-        """Scans the last assistant response bubble for GPT Image 2 generated images or downloadable
-        files and captures them via Playwright's native download event (clicking the Download button).
-
-        Must be called AFTER the response stream is complete (isGenerating=False).
-        Returns a list of dicts: { "path": str, "filename": str, "type": "image" | "file" }
+    async def extract_generated_assets(self) -> list[dict]:
+        """
+        Scans the page/last assistant response for downloadable files and images,
+        clicks download triggers (including opening the image lightbox modal if needed),
+        and waits for Playwright download events.
         All files are saved to scratch/attachments/ and must be cleaned up by the caller.
-        Returns [] if no assets are found or on any error (non-fatal).
+        Returns a list of dicts: [{"path": save_path, "filename": filename, "type": "image"|"file"}]
         """
         assets = []
         try:
-            # Step 1: JS scan — detect whether last bubble has any downloadable assets
+            last_assistant_selector = '[data-message-author-role="assistant"], [data-turn="assistant"]'
+            last_assistant = self.page.locator(last_assistant_selector).last
+            
+            # Check if there is a generated image card (wrapper div with role="button" containing img)
+            img_wrapper = last_assistant.locator('div[role="button"][aria-labelledby]')
+            has_image = await img_wrapper.count() > 0
+            
+            if has_image:
+                logger.info("Detected generated image card. Opening lightbox to download...")
+                try:
+                    await img_wrapper.click()
+                    save_button = self.page.locator('button[aria-label="Save"]').first
+                    await save_button.wait_for(state="visible", timeout=6000)
+                    
+                    async with self.page.expect_download(timeout=20000) as dl_info:
+                        await save_button.click()
+                    download = await dl_info.value
+                    
+                    filename = download.suggested_filename or "image.png"
+                    os.makedirs("scratch/attachments", exist_ok=True)
+                    save_path = os.path.abspath(os.path.join("scratch/attachments", filename))
+                    await download.save_as(save_path)
+                    
+                    assets.append({"path": save_path, "filename": filename, "type": "image"})
+                    logger.info(f"Asset captured via lightbox: '{filename}' (image) -> {save_path}")
+                    
+                    # Close lightbox
+                    close_button = self.page.locator('button[aria-label="Close fullscreen view"]').first
+                    if await close_button.count() > 0:
+                        await close_button.click()
+                        await asyncio.sleep(0.5)
+                except Exception as e:
+                    logger.error(f"Error downloading image from lightbox: {e}", exc_info=True)
+                    # Close lightbox if open
+                    try:
+                        close_button = self.page.locator('button[aria-label="Close fullscreen view"]').first
+                        if await close_button.count() > 0:
+                            await close_button.click()
+                    except:
+                        pass
+
+            # Now continue with standard file downloads (like docx, xlsx, txt) if any exist
             js_detect = """
             () => {
                 const results = [];
-                const bubbles = document.querySelectorAll('div[data-message-author-role="assistant"]');
+                const bubbles = document.querySelectorAll('[data-message-author-role="assistant"], [data-turn="assistant"]');
                 if (!bubbles.length) return results;
                 const last = bubbles[bubbles.length - 1];
 
-                // Find all download-triggering buttons/links in the bubble
+                // Find all download-triggering links/buttons in the bubble (excluding image overlays)
                 const candidates = last.querySelectorAll(
-                    'button[aria-label], a[download], a[href*="download"], button[data-testid], button.behavior-btn, a[href^="sandbox:"], a[href*="/files/"], a[href*="oaiusercontent"]'
+                    'a[download], a[href*="download"], button.behavior-btn, a[href^="sandbox:"], a[href*="/files/"], a[href*="oaiusercontent"]'
                 );
                 candidates.forEach(el => {
-                    const label = (
-                        el.getAttribute('aria-label') ||
-                        el.getAttribute('data-testid') ||
-                        el.className ||
-                        el.textContent ||
-                        ''
-                    ).toLowerCase();
-                    
-                    const isDownload = label.includes('download') || 
-                                       (el.tagName === 'A' && (el.getAttribute('download') !== null || /sandbox:|\\/files\\/|oaiusercontent/i.test(el.getAttribute('href') || ''))) ||
-                                       (el.tagName === 'BUTTON' && el.classList.contains('behavior-btn'));
-
-                    if (isDownload) {
-                        let filename = el.getAttribute('download') || '';
-                        if (!filename && el.tagName === 'BUTTON' && el.classList.contains('behavior-btn')) {
-                            filename = el.textContent.trim();
-                        }
-                        if (!filename) {
-                            const img = last.querySelector('img[src^="blob:"], img[src*="oaiusercontent"]');
-                            if (img) {
-                                const src = img.src || '';
-                                filename = src.split('/').pop().split('?')[0] || '';
-                                if (!filename.includes('.')) filename = 'image.png';
-                            }
-                        }
-                        if (!filename) {
-                            const href = el.getAttribute('href') || '';
-                            filename = href.split('/').pop().split('?')[0] || '';
-                        }
-                        if (!filename) filename = 'generated_file';
-                        results.push({ filename: filename });
+                    let filename = el.getAttribute('download') || '';
+                    if (!filename && el.tagName === 'BUTTON' && el.classList.contains('behavior-btn')) {
+                        filename = el.textContent.trim();
                     }
+                    if (!filename) {
+                        const href = el.getAttribute('href') || '';
+                        filename = href.split('/').pop().split('?')[0] || '';
+                    }
+                    if (!filename) filename = 'generated_file';
+                    results.push({ filename: filename });
                 });
                 return results;
-            }
-            """
+            }"""
+            
             detected = await self.page.evaluate(js_detect)
-
-            if not detected:
-                return assets
-
-            logger.info(f"Asset detection: found {len(detected)} downloadable asset(s) in last response bubble.")
-            os.makedirs("scratch/attachments", exist_ok=True)
-
-            # Step 2: Locate download buttons inside the last assistant message bubble natively
-            dl_selector = self.selectors.image_download_button
-            last_assistant = self.page.locator('div[data-message-author-role="assistant"]').last
-            dl_buttons = last_assistant.locator(dl_selector)
-
-            count = await dl_buttons.count()
-            if count == 0:
-                # Fall back to a broader search within the full page if the scoped one finds nothing
-                dl_buttons = self.page.locator(dl_selector)
+            if detected:
+                logger.info(f"Asset detection: found {len(detected)} downloadable document(s) in last response bubble.")
+                os.makedirs("scratch/attachments", exist_ok=True)
+                
+                dl_buttons = last_assistant.locator('a[download], a[href*="download"], button.behavior-btn, a[href^="sandbox:"], a[href*="/files/"], a[href*="oaiusercontent"]')
                 count = await dl_buttons.count()
-
-            if count == 0:
-                logger.warning("Asset download: JS detected assets but no download buttons were locatable. Skipping.")
-                return assets
-
-            for i in range(count):
-                btn = dl_buttons.nth(i)
-                try:
-                    async with self.page.expect_download(timeout=20_000) as dl_info:
-                        await btn.click()
-                    download = await dl_info.value
-
-                    # Derive filename — use browser-suggested name, fallback to hint from JS
-                    hint = detected[i]["filename"] if i < len(detected) else "generated_file"
-                    filename = download.suggested_filename or hint or f"asset_{i}.bin"
-
-                    save_path = os.path.abspath(os.path.join("scratch/attachments", filename))
-                    await download.save_as(save_path)
-
-                    # Determine type by extension
-                    ext = os.path.splitext(filename)[1].lower()
-                    asset_type = "image" if ext in (".png", ".jpg", ".jpeg", ".webp", ".gif") else "file"
-
-                    assets.append({"path": save_path, "filename": filename, "type": asset_type})
-                    logger.info(f"Asset captured: '{filename}' ({asset_type}) -> {save_path}")
-
-                except Exception as dl_err:
-                    logger.warning(f"Failed to download asset [{i}]: {dl_err}")
-                    continue
-
+                
+                for i in range(count):
+                    btn = dl_buttons.nth(i)
+                    try:
+                        async with self.page.expect_download(timeout=20000) as dl_info:
+                            await btn.click()
+                        download = await dl_info.value
+                        
+                        hint = detected[i]["filename"] if i < len(detected) else "generated_file"
+                        filename = download.suggested_filename or hint or f"asset_{i}.bin"
+                        
+                        save_path = os.path.abspath(os.path.join("scratch/attachments", filename))
+                        await download.save_as(save_path)
+                        
+                        ext = os.path.splitext(filename)[1].lower()
+                        asset_type = "image" if ext in (".png", ".jpg", ".jpeg", ".webp", ".gif") else "file"
+                        
+                        assets.append({"path": save_path, "filename": filename, "type": asset_type})
+                        logger.info(f"Asset captured: '{filename}' ({asset_type}) -> {save_path}")
+                    except Exception as dl_err:
+                        logger.warning(f"Failed to download asset [{i}]: {dl_err}")
+                        
         except Exception as e:
-            logger.warning(f"extract_generated_assets() failed (non-fatal): {e}")
+            logger.error(f"Error in extract_generated_assets: {e}", exc_info=True)
 
         return assets
 
