@@ -67,13 +67,20 @@ graph TD
 
 ## 🎬 Demo
 
-Here is a preview of Boundier in action, showcasing its image generation and vision/analysis capabilities inside Discord:
+Here is a preview of Boundier in action, showcasing its DALL-E image generation, document generation, and vision/analysis capabilities inside Discord:
 
 ### 🖼️ Image Generation (ChatGPT Image 2)
 ![Sports Car](sports-car.png)
 
-### 👁️ Image Analysis & Vision
+### 📄 Document Generation (File Downloads)
+![Word Doc](word-doc.png)
+
+### 👁️ Image Analysis & Vision (File Uploads)
 ![GTA-SA](GTA-SA.png)
+
+---
+
+## 📂 Codebase Structure
 
 * **`PlaywrightDriver` ([driver.py](file:///app/boundier/chatgpt/driver.py)):** Manages persistent Chromium contexts, injects decrypted session cookies, and handles Cloudflare Turnstile hydration checks.
 * **`ChatGPTService` ([service.py](file:///app/boundier/chatgpt/service.py)):** Performs page actions such as submitting prompts and files via JavaScript, polling generation streams, and capturing diagnostic screenshots.
