@@ -19,6 +19,7 @@ class Session:
         self.cached_summary: str = ""
         self.message_count: int = 0
         self.rename_parent: bool = False
+        self.generated_assets: list = []  # Populated after stream by extract_generated_assets()
 
     def update_activity(self):
         self.last_active = datetime.now()

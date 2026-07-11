@@ -425,6 +425,110 @@ class ChatGPTService:
                 
             await asyncio.sleep(0.05)
 
+    async def extract_generated_assets(self) -> list:
+        """Scans the last assistant response bubble for GPT Image 2 generated images or downloadable
+        files and captures them via Playwright's native download event (clicking the Download button).
+
+        Must be called AFTER the response stream is complete (isGenerating=False).
+        Returns a list of dicts: { "path": str, "filename": str, "type": "image" | "file" }
+        All files are saved to scratch/attachments/ and must be cleaned up by the caller.
+        Returns [] if no assets are found or on any error (non-fatal).
+        """
+        assets = []
+        try:
+            # Step 1: JS scan — detect whether last bubble has any downloadable assets
+            js_detect = """
+            () => {
+                const results = [];
+                const bubbles = document.querySelectorAll('div[data-message-author-role="assistant"]');
+                if (!bubbles.length) return results;
+                const last = bubbles[bubbles.length - 1];
+
+                // Find all download-triggering buttons/links in the bubble
+                // We match by aria-label containing "download" or an <a download> attribute
+                const candidates = last.querySelectorAll(
+                    'button[aria-label], a[download], a[href*="download"], button[data-testid]'
+                );
+                candidates.forEach(el => {
+                    const label = (
+                        el.getAttribute('aria-label') ||
+                        el.getAttribute('data-testid') ||
+                        el.textContent ||
+                        ''
+                    ).toLowerCase();
+                    if (label.includes('download')) {
+                        // Try to derive a filename hint from a nearby img src or the element itself
+                        let filename = el.getAttribute('download') || '';
+                        if (!filename) {
+                            // Look for a sibling or child img for name hint
+                            const img = last.querySelector('img[src^="blob:"], img[src*="oaiusercontent"]');
+                            if (img) {
+                                const src = img.src || '';
+                                filename = src.split('/').pop().split('?')[0] || '';
+                                if (!filename.includes('.')) filename = 'image.png';
+                            }
+                        }
+                        if (!filename) filename = 'generated_file';
+                        results.push({ filename: filename });
+                    }
+                });
+                return results;
+            }
+            """
+            detected = await self.page.evaluate(js_detect)
+
+            if not detected:
+                return assets
+
+            logger.info(f"Asset detection: found {len(detected)} downloadable asset(s) in last response bubble.")
+            os.makedirs("scratch/attachments", exist_ok=True)
+
+            # Step 2: For each detected download target, trigger Download and intercept via Playwright
+            dl_selector = self.selectors.image_download_button
+            dl_buttons = self.page.locator(
+                'div[data-message-author-role="assistant"]:last-of-type ' + dl_selector
+            )
+
+            # Fall back to a broader search within the full page if the scoped one finds nothing
+            count = await dl_buttons.count()
+            if count == 0:
+                dl_buttons = self.page.locator(dl_selector)
+                count = await dl_buttons.count()
+
+            if count == 0:
+                logger.warning("Asset download: JS detected assets but no download buttons were locatable. Skipping.")
+                return assets
+
+            for i in range(count):
+                btn = dl_buttons.nth(i)
+                try:
+                    async with self.page.expect_download(timeout=20_000) as dl_info:
+                        await btn.click()
+                    download = await dl_info.value
+
+                    # Derive filename — use browser-suggested name, fallback to hint from JS
+                    hint = detected[i]["filename"] if i < len(detected) else "generated_file"
+                    filename = download.suggested_filename or hint or f"asset_{i}.bin"
+
+                    save_path = os.path.abspath(os.path.join("scratch/attachments", filename))
+                    await download.save_as(save_path)
+
+                    # Determine type by extension
+                    ext = os.path.splitext(filename)[1].lower()
+                    asset_type = "image" if ext in (".png", ".jpg", ".jpeg", ".webp", ".gif") else "file"
+
+                    assets.append({"path": save_path, "filename": filename, "type": asset_type})
+                    logger.info(f"Asset captured: '{filename}' ({asset_type}) -> {save_path}")
+
+                except Exception as dl_err:
+                    logger.warning(f"Failed to download asset [{i}]: {dl_err}")
+                    continue
+
+        except Exception as e:
+            logger.warning(f"extract_generated_assets() failed (non-fatal): {e}")
+
+        return assets
+
     async def get_sidebar_title_by_id(self, chat_id: str) -> Optional[str]:
         """Looks for the conversation in the sidebar by its ID and returns its title text."""
         try:

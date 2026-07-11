@@ -131,6 +131,15 @@ class ConversationManager:
                 # Submit prompt and stream outputs
                 async for chunk in self.service.send_prompt_stream(compiled_prompt, file_paths, skip_settle=skip_settle, is_edit=is_edit):
                     yield chunk
+
+                # After stream: scan for GPT Image 2 generated images or downloadable files
+                try:
+                    session.generated_assets = await self.service.extract_generated_assets()
+                    if session.generated_assets:
+                        logger.info(f"Thread {thread_id}: captured {len(session.generated_assets)} generated asset(s) for Discord delivery.")
+                except Exception as asset_err:
+                    logger.warning(f"Thread {thread_id}: asset extraction skipped (non-fatal): {asset_err}")
+                    session.generated_assets = []
                     
                 # Post-response processing
                 if session.chatgpt_chat_id == "NEW":
