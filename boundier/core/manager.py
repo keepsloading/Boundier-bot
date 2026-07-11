@@ -118,7 +118,9 @@ class ConversationManager:
                 # Navigate to appropriate chat page (or skip if already on it)
                 skip_settle = False
                 if session.chatgpt_chat_id == "NEW":
-                    await self.service.create_new_conversation()
+                    ok = await self.service.create_new_conversation()
+                    if not ok:
+                        raise RuntimeError("Failed to create new ChatGPT conversation.")
                     skip_settle = True
                 else:
                     target_fragment = f"/c/{session.chatgpt_chat_id}"
@@ -126,7 +128,9 @@ class ConversationManager:
                         logger.info(f"Speed optimization: Redundant page load skipped. Already on chat page: {session.chatgpt_chat_id}")
                         skip_settle = True
                     else:
-                        await self.service.open_conversation(session.chatgpt_chat_id)
+                        ok = await self.service.open_conversation(session.chatgpt_chat_id)
+                        if not ok:
+                            raise RuntimeError(f"Failed to open ChatGPT conversation: {session.chatgpt_chat_id}")
                     
                 # Submit prompt and stream outputs
                 async for chunk in self.service.send_prompt_stream(compiled_prompt, file_paths, skip_settle=skip_settle, is_edit=is_edit):

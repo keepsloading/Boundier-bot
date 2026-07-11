@@ -48,9 +48,17 @@ class ChatGPTService:
             logger.info(f"Successfully opened conversation: {chat_id}")
             return True
         except Exception as e:
-            logger.error(f"Failed to open conversation {chat_id}: {e}", exc_info=True)
-            await self.save_diagnostics_screenshot("open_conv_error")
-            return False
+            logger.warning(f"Failed to open conversation {chat_id} on first attempt: {e}. Retrying with hard reload...")
+            try:
+                await self.page.goto(url, wait_until="domcontentloaded", timeout=self.driver.config.playwright.timeout_ms)
+                await self.page.reload(wait_until="domcontentloaded", timeout=self.driver.config.playwright.timeout_ms)
+                await self.page.wait_for_selector(self.selectors.chat_input, timeout=self.driver.config.playwright.timeout_ms)
+                logger.info(f"Successfully opened conversation on retry: {chat_id}")
+                return True
+            except Exception as retry_err:
+                logger.error(f"Failed to open conversation {chat_id} on retry: {retry_err}", exc_info=True)
+                await self.save_diagnostics_screenshot("open_conv_error")
+                return False
 
     async def create_new_conversation(self) -> bool:
         """Navigates to ChatGPT portal to begin a new chat session."""
@@ -69,9 +77,17 @@ class ChatGPTService:
             logger.info("New ChatGPT conversation screen loaded.")
             return True
         except Exception as e:
-            logger.error(f"Failed to create new conversation: {e}", exc_info=True)
-            await self.save_diagnostics_screenshot("new_conv_error")
-            return False
+            logger.warning(f"Failed to create new conversation on first attempt: {e}. Retrying with hard reload...")
+            try:
+                await self.page.goto(url, wait_until="domcontentloaded", timeout=self.driver.config.playwright.timeout_ms)
+                await self.page.reload(wait_until="domcontentloaded", timeout=self.driver.config.playwright.timeout_ms)
+                await self.page.wait_for_selector(self.selectors.chat_input, timeout=self.driver.config.playwright.timeout_ms)
+                logger.info("New ChatGPT conversation screen loaded on retry.")
+                return True
+            except Exception as retry_err:
+                logger.error(f"Failed to create new conversation on retry: {retry_err}", exc_info=True)
+                await self.save_diagnostics_screenshot("new_conv_error")
+                return False
 
     def extract_chat_id(self) -> Optional[str]:
         """Parses the current browser URL to extract the unique ChatGPT chat ID."""

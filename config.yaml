@@ -5,9 +5,9 @@ discord:
   watched_categories: []
 
 playwright:
-  headless: false
+  headless: true
   user_data_dir: "browser_profile/"
-  timeout_ms: 30000
+  timeout_ms: 90000
   viewport:
     width: 1280
     height: 720
