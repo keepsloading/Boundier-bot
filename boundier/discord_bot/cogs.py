@@ -861,6 +861,7 @@ class BoundierCog(commands.Cog):
                             reply_message = await thread.send(embed=embed)
                     last_update = now
                     
+            session = self.bot.manager._active_sessions.get(thread.id)
             if buffer:
                 # Clean up citations and extract URLs to put under the Citations button
                 cleaned_buffer, citation_urls = parse_citations(buffer)
@@ -885,14 +886,17 @@ class BoundierCog(commands.Cog):
                     else:
                         await thread.send(embed=embed_next, view=view)
             else:
-                embed.description = "[Empty Response]"
-                await reply_message.edit(embed=embed)
+                if session and session.generated_assets:
+                    embed.description = "🎨 Generated asset(s) attached below."
+                    view = ResponseView(self, thread.id, channel_id, channel_name, user_message, citation_urls=[], author_name=author_name, has_image=True)
+                    await reply_message.edit(embed=embed, view=view)
+                else:
+                    embed.description = "[Empty Response]"
+                    await reply_message.edit(embed=embed)
                 
             elapsed = asyncio.get_event_loop().time() - start_time
             guild_name = thread.guild.name if thread.guild else "Direct Message"
             logger.info(f"Response complete. Server: '{guild_name}' | Channel/Thread: '{thread.name}' (#{channel_name}) | Time: {elapsed:.2f}s")
-            
-            session = self.bot.manager._active_sessions.get(thread.id)
             if session and (thread.name.endswith("...") or session.conversation_title.lower() in ("new chat", "newchat", "new conversation")):
                 logger.info(f"Thread '{thread.name}' needs renaming. Triggering background rename update...")
                 asyncio.create_task(self.bot.manager._auto_rename_thread(session))
