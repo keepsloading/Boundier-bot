@@ -8,7 +8,7 @@
 [![No API Cost](https://img.shields.io/badge/API%20Cost-%240-brightgreen?style=for-the-badge)](https://github.com/keepsloading/Boundier)
 [![ChatGPT](https://img.shields.io/badge/Powered%20by-ChatGPT%20Web-74aa9c?style=for-the-badge&logo=openai&logoColor=white)](https://chatgpt.com)
 
-> **Tired of paying per token? Boundier brings the full ChatGPT experience (including GPT, web search, memory, and file uploads) directly into your Discord server, completely free.**
+> **Tired of paying per token? Boundier brings the full ChatGPT experience (including ChatGPT, web search, memory, and file uploads) directly into your Discord server, completely free.**
 
 **Boundier** is an **autonomous browser-based** Discord AI companion that drives **ChatGPT's real web interface** via headless Playwright automation. Instead of routing through the expensive OpenAI API, it authenticates as *you* in a cloud Chromium session and pipes live ChatGPT conversations straight into Discord threads, at **$0 per message**.
 
@@ -35,7 +35,7 @@ The name signifies **"Breaking Boundaries"**: breaking free from API paywalls, r
 ## 🌟 Key Features
 
 * 🆓 **Zero API Cost:** Runs through your **personal ChatGPT account** in a headless Chromium browser: no OpenAI API key, no per-message billing, no rate-limit tiers. Every message costs the same: **nothing**.
-* 🧠 **Full ChatGPT Feature Set:** Because it drives the real web UI, you get **GPT, web search, file analysis, ChatGPT Image 2 generation, memory, and custom instructions**; the complete ChatGPT Plus experience, not a stripped-down API subset.
+* 🧠 **Full ChatGPT Feature Set:** Because it drives the real web UI, you get **ChatGPT, web search, file analysis, ChatGPT Image 2 generation, memory, and custom instructions**; the complete ChatGPT Plus experience, not a stripped-down API subset.
 * 💾 **Native Memory & Personalization:** Inherits ChatGPT's built-in persistent memory and user profiles from your real account. No vector database, no embeddings pipeline; ChatGPT already remembers your users' preferences across sessions for free.
 * 🔄 **Private Gist Session Syncing:** Encrypts and syncs browser cookies/storage states to a private GitHub Gist, so the cloud host boots up pre-authenticated and automatically refreshes the session on every request.
 * 🔒 **Dynamic User Restriction:** Limits bot access to a maximum of **5 registered users** per instance. The first 5 Discord users to send a command are whitelisted, protecting the shared browser session from abuse.
@@ -67,7 +67,7 @@ graph TD
 
 ## 🎬 Demo
 
-Here is a preview of Boundier in action, showcasing its DALL-E image generation, document generation, and vision/analysis capabilities inside Discord:
+Here is a preview of Boundier in action, showcasing its ChatGPT Image 2 generation, document generation, and vision/analysis capabilities inside Discord:
 
 ### 🖼️ Image Generation (ChatGPT Image 2)
 ![Sports Car](sports-car.png)
