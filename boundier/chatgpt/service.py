@@ -432,6 +432,7 @@ class ChatGPTService:
                     
             if unchanged_polls >= 140:
                 logger.warning("Generation stream stalled. Terminating reader.")
+                await self.save_diagnostics_screenshot("stream_stalled")
                 break
                 
             await asyncio.sleep(0.05)
