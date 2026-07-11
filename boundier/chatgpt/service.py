@@ -358,9 +358,32 @@ class ChatGPTService:
                 const lastAssistant = assistants[assistants.length - 1];
                 const responseEl = lastAssistant.querySelector('div.markdown');
                 if (responseEl) {
+                    // Temporarily hide any source-citation UI blocks that ChatGPT web-search
+                    // injects (e.g. div[class*="source"], div[data-testid*="citation"],
+                    // div[data-testid*="source"]) so they are not scraped into the text output.
+                    const hiddenEls = [];
+                    const sourceSelectors = [
+                        'div[class*="source"]',
+                        'div[data-testid*="citation"]',
+                        'div[data-testid*="source"]',
+                        'div[data-testid*="search-result"]',
+                        'div[class*="citation"]',
+                        'div[class*="search-result"]'
+                    ];
+                    sourceSelectors.forEach(sel => {
+                        responseEl.querySelectorAll(sel).forEach(el => {
+                            hiddenEls.push({ el, prev: el.style.display });
+                            el.style.display = 'none';
+                        });
+                    });
+                    
                     let txt = htmlToMarkdown(responseEl);
-                    txt = txt.replace(/^(Analyzing\\s*(image|file|data)?\\.{0,3}\\s*(\\r?\\n)+)|^(Analyzing\\s*(image|file|data)?\\.{0,3}\\s*$)/i, "");
-                    txt = txt.replace(/^(\\[Speaker:\\s*Boundier\\]\\s*(\\r?\\n)*)/i, "");
+                    
+                    // Restore hidden elements
+                    hiddenEls.forEach(({ el, prev }) => { el.style.display = prev; });
+                    
+                    txt = txt.replace(/^(Analyzing\s*(image|file|data)?\.{0,3}\s*(\r?\n)+)|^(Analyzing\s*(image|file|data)?\.{0,3}\s*$)/i, "");
+                    txt = txt.replace(/^(\[Speaker:\s*Boundier\]\s*(\r?\n)*)/i, "");
                     text = txt.trim();
                 }
             }

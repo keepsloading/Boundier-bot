@@ -12,7 +12,32 @@ from typing import Optional
 logger = logging.getLogger("boundier.discord.cogs")
 
 def parse_citations(text: str):
-    """Extracts external markdown URLs [text](url), replaces them with clean references, and returns mapped URLs list."""
+    """Extracts external markdown URLs [text](url), replaces them with clean references, and returns mapped URLs list.
+    Also strips the raw source-attribution blob that ChatGPT web-search sometimes dumps as concatenated text at the
+    very start of the response (e.g. 'SiteName Title TodayOtherSite Another Title https://...').
+    """
+    # --- Step 1: Strip the raw source-attribution preamble ---
+    # ChatGPT web-search responses can start with a block like:
+    #   "OlympicsFIFA World Cup 2026 – Spain vs Belgium...TodayOlympics+1spain-vs-belgium...utm_source=chatgpt.com)"
+    # This block has no newlines, contains raw URLs and mixed title text.
+    # We detect it by: starts before the first real newline AND contains a raw http URL pattern.
+    lines = text.split('\n')
+    preamble_end = 0
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+        # A "source blob" line: contains an http URL (not a markdown link) or ends with utm_source=chatgpt.com)
+        if re.search(r'https?://\S+', stripped) and not re.match(r'^\[.+\]\(https?://', stripped):
+            preamble_end = i + 1
+        elif stripped == '' and preamble_end > 0:
+            # First blank line after a source-blob line signals end of preamble
+            break
+        elif preamble_end > 0 and i > 0:
+            # If we already had a source-blob line and now see normal text, stop
+            break
+    if preamble_end > 0:
+        text = '\n'.join(lines[preamble_end:]).lstrip()
+
+    # --- Step 2: Replace markdown links [text](url) with citation indices ---
     pattern = r'\[([^\]]+)\]\((https?://[^\)]+)\)'
     urls = []
     url_to_index = {}
