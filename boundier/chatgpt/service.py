@@ -165,8 +165,10 @@ class ChatGPTService:
                         )
                         raise TimeoutError(f"Timeout waiting for enabled send button after file upload: {e}")
                     
-                existing_count = await self.page.locator('div[data-message-author-role="assistant"]').count()
-                logger.info(f"Existing assistant response bubble count: {existing_count}")
+                # Get a handle to the last assistant bubble before submitting to prevent history hydration race conditions
+                last_assistant_handle = await self.page.evaluate_handle(
+                    "() => document.querySelector('div[data-message-author-role=\"assistant\"]:last-of-type')"
+                )
                 
                 # Direct JavaScript Submission to bypass all Playwright click & fill actionability delays
                 js_submit = """
@@ -221,13 +223,25 @@ class ChatGPTService:
                         break
                     await asyncio.sleep(0.2)
             else:
-                while True:
-                    current_count = await self.page.evaluate("() => document.querySelectorAll('div[data-message-author-role=\"assistant\"]').length")
-                    if current_count > existing_count:
-                        break
-                    if asyncio.get_event_loop().time() - start_time > timeout:
-                        raise TimeoutError("Timeout waiting for ChatGPT response generation to start.")
-                    await asyncio.sleep(0.2)
+                try:
+                    while True:
+                        is_new_bubble = await self.page.evaluate(
+                            """(lastBefore) => {
+                                const currentLast = document.querySelector('div[data-message-author-role="assistant"]:last-of-type');
+                                return currentLast !== null && currentLast !== lastBefore;
+                            }""",
+                            last_assistant_handle
+                        )
+                        if is_new_bubble:
+                            break
+                        if asyncio.get_event_loop().time() - start_time > timeout:
+                            raise TimeoutError("Timeout waiting for ChatGPT response generation to start.")
+                        await asyncio.sleep(0.2)
+                finally:
+                    try:
+                        await last_assistant_handle.dispose()
+                    except Exception:
+                        pass
         except Exception as e:
             if isinstance(e, TimeoutError):
                 logger.critical(
