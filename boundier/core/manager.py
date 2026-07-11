@@ -38,6 +38,38 @@ class ConversationManager:
         self._lock = asyncio.Lock()  # Mutex queue to serialize browser context actions
         self._active_sessions: Dict[int, Session] = {}  # thread_id -> Session
         self._active_generators: Dict[int, tuple] = {}  # temp_id -> (generator, buffered_chunks, session, chat_id)
+        self._service_pool = [service]
+        self._service_in_use: Dict[int, ChatGPTService] = {}  # thread_id -> ChatGPTService
+        self._thread_locks: Dict[int, asyncio.Lock] = {}      # thread_id -> Lock
+
+    def _get_thread_lock(self, thread_id: int) -> asyncio.Lock:
+        if thread_id not in self._thread_locks:
+            self._thread_locks[thread_id] = asyncio.Lock()
+        return self._thread_locks[thread_id]
+
+    async def _lease_service(self, thread_id: int) -> ChatGPTService:
+        if thread_id in self._service_in_use:
+            return self._service_in_use[thread_id]
+            
+        leased_page = await self.service.driver.lease_page()
+        
+        # Check if we already have a service in our pool mapped to this page
+        for svc in self._service_pool:
+            if svc.page == leased_page:
+                self._service_in_use[thread_id] = svc
+                return svc
+                
+        # Create a new ChatGPTService for this page
+        new_svc = ChatGPTService(self.service.driver)
+        new_svc.page = leased_page
+        self._service_pool.append(new_svc)
+        self._service_in_use[thread_id] = new_svc
+        return new_svc
+
+    async def _release_service(self, thread_id: int):
+        svc = self._service_in_use.pop(thread_id, None)
+        if svc:
+            await self.service.driver.release_page(svc.page)
 
     async def get_or_create_session(self, thread_id: int, channel_id: int, channel_name: str, rename_parent: bool = False) -> Session:
         """Loads a session from memory cache or SQLite, creating a new mapping if none exists."""
@@ -103,42 +135,43 @@ class ConversationManager:
         session = await self.get_or_create_session(thread_id, channel_id, channel_name, rename_parent=rename_parent)
         compiled_prompt = self.compile_prompt(session, user_message, history_context=history_context, author_name=author_name)
         
-        logger.info(f"Acquiring browser lock for thread {thread_id}...")
-        async with self._lock:
-            logger.info(f"Browser lock acquired for thread {thread_id}.")
+        logger.info(f"Acquiring thread lock for thread {thread_id}...")
+        async with self._get_thread_lock(thread_id):
+            logger.info(f"Thread lock acquired for thread {thread_id}.")
             session.status = SessionStatus.PROCESSING
             session.update_activity()
             
+            leased_service = await self._lease_service(thread_id)
             try:
                 # Ensure authentication
-                authenticated = await self.service.driver.ensure_authenticated()
+                authenticated = await leased_service.driver.ensure_authenticated()
                 if not authenticated:
                     raise RuntimeError("ChatGPT session is unauthenticated. Actions paused.")
                 
                 # Navigate to appropriate chat page (or skip if already on it)
                 skip_settle = False
                 if session.chatgpt_chat_id == "NEW":
-                    ok = await self.service.create_new_conversation()
+                    ok = await leased_service.create_new_conversation()
                     if not ok:
                         raise RuntimeError("Failed to create new ChatGPT conversation.")
                     skip_settle = True
                 else:
                     target_fragment = f"/c/{session.chatgpt_chat_id}"
-                    if target_fragment in self.service.page.url:
+                    if target_fragment in leased_service.page.url:
                         logger.info(f"Speed optimization: Redundant page load skipped. Already on chat page: {session.chatgpt_chat_id}")
                         skip_settle = True
                     else:
-                        ok = await self.service.open_conversation(session.chatgpt_chat_id)
+                        ok = await leased_service.open_conversation(session.chatgpt_chat_id)
                         if not ok:
                             raise RuntimeError(f"Failed to open ChatGPT conversation: {session.chatgpt_chat_id}")
                     
                 # Submit prompt and stream outputs
-                async for chunk in self.service.send_prompt_stream(compiled_prompt, file_paths, skip_settle=skip_settle, is_edit=is_edit):
+                async for chunk in leased_service.send_prompt_stream(compiled_prompt, file_paths, skip_settle=skip_settle, is_edit=is_edit):
                     yield chunk
 
                 # After stream: scan for GPT Image 2 generated images or downloadable files
                 try:
-                    session.generated_assets = await self.service.extract_generated_assets()
+                    session.generated_assets = await leased_service.extract_generated_assets()
                     if session.generated_assets:
                         logger.info(f"Thread {thread_id}: captured {len(session.generated_assets)} generated asset(s) for Discord delivery.")
                 except Exception as asset_err:
@@ -147,7 +180,7 @@ class ConversationManager:
                     
                 # Post-response processing
                 if session.chatgpt_chat_id == "NEW":
-                    chat_id = self.service.extract_chat_id()
+                    chat_id = leased_service.extract_chat_id()
                     if chat_id:
                         session.chatgpt_chat_id = chat_id
                         session.chatgpt_url = f"https://chatgpt.com/c/{chat_id}"
@@ -187,7 +220,8 @@ class ConversationManager:
                 raise
             finally:
                 session.status = SessionStatus.IDLE
-                logger.info(f"Released browser lock for thread {thread_id}.")
+                await self._release_service(thread_id)
+                logger.info(f"Released thread lock for thread {thread_id}.")
                 await self.events.dispatch("QueueFinished")
 
     async def start_new_chat_and_get_title(self, temp_id: int, channel_id: int, channel_name: str, prompt: str, file_paths: Optional[list] = None) -> tuple:
@@ -195,19 +229,18 @@ class ConversationManager:
         session = Session(thread_id=0, chatgpt_chat_id="NEW", channel_id=channel_id)
         compiled_prompt = self.compile_prompt(session, prompt)
         
-        logger.info(f"Acquiring browser lock for temp_id {temp_id} (Zero-Classification Routing)...")
-        await self._lock.acquire()
-        logger.info(f"Browser lock acquired for temp_id {temp_id}.")
+        logger.info(f"Leasing page/service for routed temp_id {temp_id}...")
+        leased_service = await self._lease_service(temp_id)
         session.status = SessionStatus.PROCESSING
         
         try:
-            authenticated = await self.service.driver.ensure_authenticated()
+            authenticated = await leased_service.driver.ensure_authenticated()
             if not authenticated:
                 raise RuntimeError("ChatGPT session is unauthenticated.")
                 
-            await self.service.create_new_conversation()
+            await leased_service.create_new_conversation()
             
-            generator = self.service.send_prompt_stream(compiled_prompt, file_paths)
+            generator = leased_service.send_prompt_stream(compiled_prompt, file_paths)
             
             # Setup background producer task with a queue
             queue = asyncio.Queue()
@@ -228,7 +261,7 @@ class ConversationManager:
             start_url_wait = asyncio.get_event_loop().time()
             logger.info("Submitting prompt. Waiting for URL redirect to extract Chat ID...")
             while asyncio.get_event_loop().time() - start_url_wait < 5.0:
-                chat_id = self.service.extract_chat_id()
+                chat_id = leased_service.extract_chat_id()
                 if chat_id:
                     break
                 await asyncio.sleep(0.05)
@@ -241,13 +274,12 @@ class ConversationManager:
                 
             logger.info(f"Using temporary title: '{title}', chat_id: '{chat_id}'")
             
-            self._active_generators[temp_id] = (queue, producer_task, session, chat_id)
+            self._active_generators[temp_id] = (queue, producer_task, session, chat_id, leased_service)
             return chat_id, title
             
         except Exception as e:
             logger.error(f"Error starting routed chat for temp_id {temp_id}: {e}", exc_info=True)
-            if self._lock.locked():
-                self._lock.release()
+            await self._release_service(temp_id)
             raise
 
     async def consume_active_stream(self, temp_id: int, actual_thread_id: int, actual_channel_id: int, actual_channel_name: str) -> AsyncGenerator[str, None]:
@@ -257,55 +289,62 @@ class ConversationManager:
             logger.error(f"No active generator found for temp_id {temp_id}")
             return
             
-        queue, producer_task, session, chat_id = state
+        queue, producer_task, session, chat_id, leased_service = state
         
         session.discord_thread_id = actual_thread_id
         session.channel_id = actual_channel_id
         self._active_sessions[actual_thread_id] = session
         
-        try:
-            while True:
-                item = await queue.get()
-                if item is None:
-                    break
-                if isinstance(item, Exception):
-                    raise item
-                yield item
-                
-            await producer_task
+        logger.info(f"Acquiring thread lock for routed thread {actual_thread_id}...")
+        async with self._get_thread_lock(actual_thread_id):
+            logger.info(f"Thread lock acquired for routed thread {actual_thread_id}.")
             
-            if chat_id:
-                session.chatgpt_chat_id = chat_id
-                session.chatgpt_url = f"https://chatgpt.com/c/{chat_id}"
-                
-                final_title = await self.service.get_sidebar_title()
-                if final_title:
-                    session.conversation_title = final_title
-                else:
-                    session.conversation_title = f"Chat {chat_id[:8]}"
+            # Transfer mapping from temp_id to actual_thread_id
+            self._service_in_use[actual_thread_id] = leased_service
+            self._service_in_use.pop(temp_id, None)
+            
+            try:
+                while True:
+                    item = await queue.get()
+                    if item is None:
+                        break
+                    if isinstance(item, Exception):
+                        raise item
+                    yield item
                     
-                self.store.save_thread(
-                    thread_id=actual_thread_id,
-                    channel_id=actual_channel_id,
-                    chatgpt_chat_id=chat_id,
-                    title=session.conversation_title,
-                    summary=session.cached_summary,
-                    message_count=session.message_count
-                )
-                logger.info(f"Routed chat mapped in SQLite: Thread {actual_thread_id} -> Chat ID {chat_id}")
-                await self.events.dispatch("ConversationCreated", actual_thread_id, chat_id)
-            else:
-                logger.warning(f"Could not extract Chat ID for routed chat on thread {actual_thread_id}.")
+                await producer_task
                 
-        except Exception as e:
-            logger.error(f"Error consuming active stream for thread {actual_thread_id}: {e}", exc_info=True)
-            raise
-        finally:
-            session.status = SessionStatus.IDLE
-            if self._lock.locked():
-                self._lock.release()
-            logger.info(f"Released browser lock for thread {actual_thread_id}.")
-            await self.events.dispatch("QueueFinished")
+                if chat_id:
+                    session.chatgpt_chat_id = chat_id
+                    session.chatgpt_url = f"https://chatgpt.com/c/{chat_id}"
+                    
+                    final_title = await leased_service.get_sidebar_title()
+                    if final_title:
+                        session.conversation_title = final_title
+                    else:
+                        session.conversation_title = f"Chat {chat_id[:8]}"
+                        
+                    self.store.save_thread(
+                        thread_id=actual_thread_id,
+                        channel_id=actual_channel_id,
+                        chatgpt_chat_id=chat_id,
+                        title=session.conversation_title,
+                        summary=session.cached_summary,
+                        message_count=session.message_count
+                    )
+                    logger.info(f"Routed chat mapped in SQLite: Thread {actual_thread_id} -> Chat ID {chat_id}")
+                    await self.events.dispatch("ConversationCreated", actual_thread_id, chat_id)
+                else:
+                    logger.warning(f"Could not extract Chat ID for routed chat on thread {actual_thread_id}.")
+                    
+            except Exception as e:
+                logger.error(f"Error consuming active stream for thread {actual_thread_id}: {e}", exc_info=True)
+                raise
+            finally:
+                session.status = SessionStatus.IDLE
+                await self._release_service(actual_thread_id)
+                logger.info(f"Released thread lock for routed thread {actual_thread_id}.")
+                await self.events.dispatch("QueueFinished")
 
     async def _auto_rename_thread(self, session: Session):
         """Scrapes ChatGPT's auto-generated title from sidebar and dispatches ThreadRenamed event."""
@@ -315,11 +354,14 @@ class ConversationManager:
         title = None
         start_wait = asyncio.get_event_loop().time()
         while asyncio.get_event_loop().time() - start_wait < 10.0:
-            async with self._lock:
+            async with self._get_thread_lock(session.discord_thread_id):
+                leased_service = await self._lease_service(session.discord_thread_id)
                 try:
-                    title = await self.service.get_sidebar_title_by_id(session.chatgpt_chat_id)
+                    title = await leased_service.get_sidebar_title_by_id(session.chatgpt_chat_id)
                 except Exception as e:
                     logger.warning(f"Error during title scrape: {e}")
+                finally:
+                    await self._release_service(session.discord_thread_id)
             if title and title.lower() not in ("new chat", "newchat", "new conversation"):
                 break
             await asyncio.sleep(1.0)
@@ -328,7 +370,8 @@ class ConversationManager:
             logger.info(f"No custom title generated yet for thread {session.discord_thread_id}, keeping temporary name.")
             return
             
-        async with self._lock:
+        async with self._get_thread_lock(session.discord_thread_id):
+            leased_service = await self._lease_service(session.discord_thread_id)
             try:
                 session.conversation_title = title
                 self.store.save_thread(
@@ -343,6 +386,8 @@ class ConversationManager:
                 await self.events.dispatch("ThreadRenamed", session.discord_thread_id, session.channel_id if session.rename_parent else 0, title)
             except Exception as e:
                 logger.warning(f"Failed to auto-rename thread {session.discord_thread_id}: {e}")
+            finally:
+                await self._release_service(session.discord_thread_id)
 
     async def summarize_thread(self, session: Session):
         """Requests a thread summary from ChatGPT, caching it in SQLite."""
@@ -351,11 +396,12 @@ class ConversationManager:
         
         summary_prompt = "Summarize the key decisions, code snippets, and topics resolved in this chat context in under 150 words."
         
-        async with self._lock:
+        async with self._get_thread_lock(session.discord_thread_id):
+            leased_service = await self._lease_service(session.discord_thread_id)
             try:
-                await self.service.open_conversation(session.chatgpt_chat_id)
+                await leased_service.open_conversation(session.chatgpt_chat_id)
                 summary_text = ""
-                async for chunk in self.service.send_prompt_stream(summary_prompt):
+                async for chunk in leased_service.send_prompt_stream(summary_prompt):
                     summary_text += chunk
                     
                 summary_text = summary_text.strip()
@@ -375,6 +421,7 @@ class ConversationManager:
                 logger.error(f"Failed to summarize thread {session.discord_thread_id}: {e}", exc_info=True)
             finally:
                 session.status = SessionStatus.IDLE
+                await self._release_service(session.discord_thread_id)
 
     async def archive_thread(self, thread_id: int):
         """Combines thread summary into parent channel's summary block and removes session cache."""
@@ -440,16 +487,18 @@ class ConversationManager:
             
         logger.info(f"Classifying prompt for channel routing. Available channels: [{channels_str}]")
         
-        async with self._lock:
+        temp_id = id(asyncio.current_task())
+        async with self._get_thread_lock(temp_id):
+            leased_service = await self._lease_service(temp_id)
             try:
-                authenticated = await self.service.driver.ensure_authenticated()
+                authenticated = await leased_service.driver.ensure_authenticated()
                 if not authenticated:
                     raise RuntimeError("ChatGPT session is unauthenticated.")
                     
-                await self.service.create_new_conversation()
+                await leased_service.create_new_conversation()
                 
                 response_text = ""
-                async for chunk in self.service.send_prompt_stream(classification_prompt):
+                async for chunk in leased_service.send_prompt_stream(classification_prompt):
                     response_text += chunk
                     
                 clean_channel = response_text.strip().lower().replace("#", "").replace('"', '').replace("'", "")
@@ -463,6 +512,8 @@ class ConversationManager:
             except Exception as e:
                 logger.error(f"Failed to classify channel routing: {e}", exc_info=True)
                 return "general"
+            finally:
+                await self._release_service(temp_id)
 
     async def find_chat_id_by_title(self, title: str) -> Optional[str]:
         """Tries to find a conversation ID in the ChatGPT sidebar that matches the given title."""
@@ -474,19 +525,21 @@ class ConversationManager:
             # Filter out non-ASCII, emojis, and punctuation
             return "".join(c for c in t_clean if c.isalnum() or c.isspace())
 
-        async with self._lock:
+        temp_id = id(asyncio.current_task())
+        async with self._get_thread_lock(temp_id):
+            leased_service = await self._lease_service(temp_id)
             try:
                 # Ensure authentication
-                authenticated = await self.service.driver.ensure_authenticated()
+                authenticated = await leased_service.driver.ensure_authenticated()
                 if not authenticated:
                     return None
                     
                 # If not already on chatgpt.com portal, load home page to get access to sidebar links
-                if "chatgpt.com" not in self.service.page.url:
-                    await self.service.page.goto("https://chatgpt.com", wait_until="domcontentloaded")
-                    await self.service.page.wait_for_selector(self.service.selectors.chat_input, timeout=10000)
+                if "chatgpt.com" not in leased_service.page.url:
+                    await leased_service.page.goto("https://chatgpt.com", wait_until="domcontentloaded")
+                    await leased_service.page.wait_for_selector(leased_service.selectors.chat_input, timeout=10000)
                     
-                conversations = await self.service.get_sidebar_conversations()
+                conversations = await leased_service.get_sidebar_conversations()
                 logger.info(f"Found {len(conversations)} conversations in ChatGPT sidebar.")
                 
                 normalized_target = normalize(title)
@@ -510,5 +563,8 @@ class ConversationManager:
                         
             except Exception as e:
                 logger.error(f"Error searching sidebar for title '{title}': {e}", exc_info=True)
+                
+            finally:
+                await self._release_service(temp_id)
                 
             return None

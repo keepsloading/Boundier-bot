@@ -18,6 +18,7 @@ class PlaywrightConfig(BaseModel):
     user_data_dir: str = "./.chrome_profile"
     timeout_ms: int = 30000
     viewport: ViewportConfig = Field(default_factory=ViewportConfig)
+    max_pages: int = 3
 
 class MemoryConfig(BaseModel):
     max_thread_messages: int = 15

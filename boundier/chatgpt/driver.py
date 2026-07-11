@@ -15,6 +15,9 @@ class PlaywrightDriver:
         self.playwright: Optional[Playwright] = None
         self.context: Optional[BrowserContext] = None
         self.page: Optional[Page] = None
+        self._session_verified = False
+        self._last_gist_sync_time = 0.0
+        self._gist_sync_lock = asyncio.Lock()
 
     async def start(self):
         """Initializes Playwright, loads/launches Chromium context with persistent configuration."""
@@ -63,6 +66,24 @@ class PlaywrightDriver:
         )
         
         self.context.set_default_timeout(self.config.playwright.timeout_ms)
+        
+        # Block non-essential heavy resources to optimize CPU/Memory and speed up loads
+        async def route_intercept(route):
+            req = route.request
+            if req.resource_type in ("font", "media"):
+                await route.abort()
+            elif req.resource_type == "image":
+                # Only allow generated images and downloadable files to load, block external decorative UI images
+                url_lower = req.url.lower()
+                if "oaiusercontent" in url_lower or "/files/" in url_lower:
+                    await route.continue_()
+                else:
+                    await route.abort()
+            else:
+                await route.continue_()
+
+        await self.context.route("**/*", route_intercept)
+        
         # Add init script to remove webdriver trace and spoof Win32 platform matching user_agent
         init_script = """
         delete Object.getPrototypeOf(navigator).webdriver;
@@ -92,17 +113,65 @@ class PlaywrightDriver:
             except Exception as e:
                 logger.error(f"Error parsing/injecting session cookies: {e}")
         
+        self._leased_pages = set()
         pages = self.context.pages
         if pages:
             self.page = pages[0]
+            self.page.on("console", lambda msg: logger.info(f"BROWSER CONSOLE: [{msg.type}] {msg.text}"))
+            self.page.on("pageerror", lambda err: logger.error(f"BROWSER EXCEPTION: {err}"))
         else:
-            self.page = await self.context.new_page()
-            
-        # Register console and exception listeners for headless diagnostics
-        self.page.on("console", lambda msg: logger.info(f"BROWSER CONSOLE: [{msg.type}] {msg.text}"))
-        self.page.on("pageerror", lambda err: logger.error(f"BROWSER EXCEPTION: {err}"))
+            self.page = await self.create_new_page()
             
         logger.info("Playwright driver initialized successfully.")
+
+    async def create_new_page(self) -> Page:
+        """Helper to create and initialize a new page tab in the browser context."""
+        page = await self.context.new_page()
+        page.on("console", lambda msg: logger.info(f"BROWSER CONSOLE: [{msg.type}] {msg.text}"))
+        page.on("pageerror", lambda err: logger.error(f"BROWSER EXCEPTION: {err}"))
+        return page
+
+    async def lease_page(self) -> Page:
+        """Leases a page from the pool or opens a new tab if within max_pages limit."""
+        if not hasattr(self, "_leased_pages"):
+            self._leased_pages = set()
+            
+        # Clear closed pages from leased set
+        active_pages = self.context.pages
+        self._leased_pages = {p for p in self._leased_pages if p in active_pages}
+        
+        # Look for a currently idle page
+        for page in active_pages:
+            if page not in self._leased_pages:
+                self._leased_pages.add(page)
+                logger.info(f"Leased existing idle page/tab: {id(page)}")
+                return page
+                
+        # Create a new tab if below max limit
+        max_pages = getattr(self.config.playwright, "max_pages", 3)
+        if len(active_pages) < max_pages:
+            new_page = await self.create_new_page()
+            self._leased_pages.add(new_page)
+            logger.info(f"Created and leased new browser page/tab: {id(new_page)} (Total tabs: {len(self.context.pages)})")
+            return new_page
+            
+        # Queue/wait for an idle tab
+        logger.info("Max browser pages reached. Waiting for an idle page/tab to become free...")
+        while True:
+            await asyncio.sleep(0.5)
+            active_pages = self.context.pages
+            self._leased_pages = {p for p in self._leased_pages if p in active_pages}
+            for page in active_pages:
+                if page not in self._leased_pages:
+                    self._leased_pages.add(page)
+                    logger.info(f"Leased freed page/tab: {id(page)}")
+                    return page
+
+    async def release_page(self, page: Page):
+        """Releases a page back to the pool."""
+        if hasattr(self, "_leased_pages") and page in self._leased_pages:
+            self._leased_pages.remove(page)
+            logger.info(f"Released page/tab back to pool: {id(page)}")
 
     async def stop(self):
         """Closes browser context and shuts down Playwright instance."""
@@ -205,22 +274,35 @@ class PlaywrightDriver:
         logger.error("Manual login wait period timed out.")
         return False
 
-    async def ensure_authenticated(self) -> bool:
+    def trigger_background_gist_sync(self):
+        import time
+        if time.time() - self._last_gist_sync_time > 300:
+            logger.info("Triggering background Gist session sync...")
+            asyncio.create_task(self.save_gist_session_state())
+
+    async def ensure_authenticated(self, force: bool = False) -> bool:
         """Verifies session active status. If inactive, restarts in headed mode and polls for manual login."""
+        if not force and self._session_verified:
+            logger.info("Session verified status cached. Bypassing active check.")
+            self.trigger_background_gist_sync()
+            return True
+
         logger.info("Verifying ChatGPT session status...")
         
         # Check current status without re-navigating
         is_active = await self.check_session_active(navigate=False)
         if is_active:
             logger.info("Session is active (cached). Proceeding.")
-            await self.save_gist_session_state()
+            self._session_verified = True
+            self.trigger_background_gist_sync()
             return True
             
         # If not detected on active DOM, reload chatgpt.com once to be sure
         is_active = await self.check_session_active(navigate=True)
         if is_active:
             logger.info("Session is active after page reload. Proceeding.")
-            await self.save_gist_session_state()
+            self._session_verified = True
+            self.trigger_background_gist_sync()
             return True
             
         # Check if headless mode is forced/mandatory (e.g. running on Linux without DISPLAY)
@@ -347,10 +429,15 @@ class PlaywrightDriver:
 
     async def save_gist_session_state(self):
         """Encrypts and pushes the current browser storage state to a private GitHub Gist."""
-        github_pat = os.environ.get("GITHUB_PAT")
-        encryption_key = os.environ.get("ENCRYPTION_KEY")
-        if not github_pat or not encryption_key or not self.context:
-            return
+        async with self._gist_sync_lock:
+            import time
+            if time.time() - self._last_gist_sync_time < 290: # Keep a small margin
+                return
+                
+            github_pat = os.environ.get("GITHUB_PAT")
+            encryption_key = os.environ.get("ENCRYPTION_KEY")
+            if not github_pat or not encryption_key or not self.context:
+                return
 
         try:
             import json
@@ -433,6 +520,7 @@ class PlaywrightDriver:
                     logger.info(f"Sync: Successfully created new private session Gist: {new_gist['id']}")
 
             await loop.run_in_executor(None, find_and_save)
+            self._last_gist_sync_time = time.time()
 
         except Exception as e:
             logger.warning(f"Sync: Failed to save persistent session state to Gist: {e}")

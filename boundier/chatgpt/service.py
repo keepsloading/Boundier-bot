@@ -11,6 +11,7 @@ logger = logging.getLogger("boundier.chatgpt_service")
 class ChatGPTService:
     def __init__(self, driver: PlaywrightDriver):
         self.driver = driver
+        self._page_override = None
 
     @property
     def selectors(self) -> ChatGPTSelectors:
@@ -18,9 +19,15 @@ class ChatGPTService:
 
     @property
     def page(self):
+        if self._page_override:
+            return self._page_override
         if not self.driver.page:
             raise RuntimeError("Browser page not initialized. Start the driver first.")
         return self.driver.page
+
+    @page.setter
+    def page(self, value):
+        self._page_override = value
 
     async def save_diagnostics_screenshot(self, context_name: str = "error"):
         """Captures page viewport screenshot and saves it to logs/diagnostics/ folder for debugging."""
@@ -42,6 +49,18 @@ class ChatGPTService:
             
         logger.info(f"Opening existing ChatGPT conversation: {url}")
         
+        # Optimization: Attempt client-side React router navigation by clicking the sidebar link if present
+        try:
+            sidebar_link = self.page.locator(f'a[href*="/c/{chat_id}"]')
+            if await sidebar_link.count() > 0 and await sidebar_link.first.is_visible():
+                logger.info(f"Sidebar link found. Clicking to trigger SPA transition to chat: {chat_id}")
+                await sidebar_link.first.click(force=True)
+                await self.page.wait_for_selector(self.selectors.chat_input, timeout=10000)
+                logger.info(f"Successfully transitioned to conversation via sidebar: {chat_id}")
+                return True
+        except Exception as spa_err:
+            logger.warning(f"Sidebar transition to chat {chat_id} failed: {spa_err}. Falling back to standard navigation...")
+
         try:
             await self.page.goto(url, wait_until="domcontentloaded", timeout=self.driver.config.playwright.timeout_ms)
             await self.page.wait_for_selector(self.selectors.chat_input, timeout=self.driver.config.playwright.timeout_ms)
