@@ -167,7 +167,7 @@ class ChatGPTService:
                     
                 # Get a handle to the last assistant bubble before submitting to prevent history hydration race conditions
                 last_assistant_handle = await self.page.evaluate_handle(
-                    "() => document.querySelector('div[data-message-author-role=\"assistant\"]:last-of-type')"
+                    "() => { const els = document.querySelectorAll('div[data-message-author-role=\"assistant\"]'); return els.length ? els[els.length - 1] : null; }"
                 )
                 
                 # Direct JavaScript Submission to bypass all Playwright click & fill actionability delays
@@ -227,7 +227,8 @@ class ChatGPTService:
                     while True:
                         is_new_bubble = await self.page.evaluate(
                             """(lastBefore) => {
-                                const currentLast = document.querySelector('div[data-message-author-role="assistant"]:last-of-type');
+                                const els = document.querySelectorAll('div[data-message-author-role="assistant"]');
+                                const currentLast = els.length ? els[els.length - 1] : null;
                                 return currentLast !== null && currentLast !== lastBefore;
                             }""",
                             last_assistant_handle

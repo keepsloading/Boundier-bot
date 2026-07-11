@@ -35,7 +35,7 @@ The name signifies **"Breaking Boundaries"**: breaking free from API paywalls, r
 ## 🌟 Key Features
 
 * 🆓 **Zero API Cost:** Runs through your **personal ChatGPT account** in a headless Chromium browser: no OpenAI API key, no per-message billing, no rate-limit tiers. Every message costs the same: **nothing**.
-* 🧠 **Full ChatGPT Feature Set:** Because it drives the real web UI, you get **GPT-4o, web search, file analysis, DALL·E image generation, memory, and custom instructions**; the complete ChatGPT Plus experience, not a stripped-down API subset.
+* 🧠 **Full ChatGPT Feature Set:** Because it drives the real web UI, you get **GPT-4o, web search, file analysis, GPT Image 2 generation, memory, and custom instructions**; the complete ChatGPT Plus experience, not a stripped-down API subset.
 * 💾 **Native Memory & Personalization:** Inherits ChatGPT's built-in persistent memory and user profiles from your real account. No vector database, no embeddings pipeline; ChatGPT already remembers your users' preferences across sessions for free.
 * 🔄 **Private Gist Session Syncing:** Encrypts and syncs browser cookies/storage states to a private GitHub Gist, so the cloud host boots up pre-authenticated and automatically refreshes the session on every request.
 * 🔒 **Dynamic User Restriction:** Limits bot access to a maximum of **5 registered users** per instance. The first 5 Discord users to send a command are whitelisted, protecting the shared browser session from abuse.
