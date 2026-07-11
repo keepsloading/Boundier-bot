@@ -382,8 +382,8 @@ class ChatGPTService:
                     // Restore hidden elements
                     hiddenEls.forEach(({ el, prev }) => { el.style.display = prev; });
                     
-                    txt = txt.replace(/^(Analyzing\s*(image|file|data)?\.{0,3}\s*(\r?\n)+)|^(Analyzing\s*(image|file|data)?\.{0,3}\s*$)/i, "");
-                    txt = txt.replace(/^(\[Speaker:\s*Boundier\]\s*(\r?\n)*)/i, "");
+                    txt = txt.replace(/^(Analyzing\\s*(image|file|data)?\\.{0,3}\\s*(\\r?\\n)+)|^(Analyzing\\s*(image|file|data)?\\.{0,3}\\s*$)/i, "");
+                    txt = txt.replace(/^(\\[Speaker:\\s*Boundier\\]\\s*(\\r?\\n)*)/i, "");
                     text = txt.trim();
                 }
             }
