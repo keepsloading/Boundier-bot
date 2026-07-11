@@ -22,3 +22,7 @@ chatgpt:
   
   # File input selector for uploading files
   file_input: 'input#upload-files'
+
+  # Download button for GPT Image 2 generated images and downloadable files
+  # ChatGPT renders a download button on every generated image/file in the response bubble
+  image_download_button: 'button[aria-label*="Download" i], button[aria-label*="download" i], a[download], button[data-testid*="download" i]'

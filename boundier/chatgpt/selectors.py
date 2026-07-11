@@ -11,6 +11,7 @@ class ChatGPTSelectors(BaseModel):
     sidebar_history_items: str
     profile_menu_button: str
     file_input: str
+    image_download_button: str
 
 def load_selectors(selectors_path: str = "selectors.yaml") -> ChatGPTSelectors:
     """Loads and validates CSS/XPath selectors from selectors.yaml for ChatGPT."""

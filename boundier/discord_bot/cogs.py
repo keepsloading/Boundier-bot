@@ -896,6 +896,38 @@ class BoundierCog(commands.Cog):
             if session and (thread.name.endswith("...") or session.conversation_title.lower() in ("new chat", "newchat", "new conversation")):
                 logger.info(f"Thread '{thread.name}' needs renaming. Triggering background rename update...")
                 asyncio.create_task(self.bot.manager._auto_rename_thread(session))
+
+            # Deliver any GPT Image 2 generated images or downloadable files to Discord
+            if session and session.generated_assets:
+                asset_paths_to_cleanup = []
+                for asset in session.generated_assets:
+                    try:
+                        asset_path = asset.get("path", "")
+                        asset_filename = asset.get("filename", "file")
+                        asset_type = asset.get("type", "file")
+                        asset_paths_to_cleanup.append(asset_path)
+
+                        if not asset_path or not os.path.exists(asset_path):
+                            logger.warning(f"Asset file not found, skipping: {asset_path}")
+                            continue
+
+                        # Check Discord 25MB limit
+                        file_size_mb = os.path.getsize(asset_path) / (1024 * 1024)
+                        if file_size_mb > 25:
+                            await thread.send(content=f"⚠️ Generated asset **{asset_filename}** is too large to upload ({file_size_mb:.1f} MB > 25 MB Discord limit).")
+                            continue
+
+                        label = "🖼️ Generated Image" if asset_type == "image" else "📄 Generated File"
+                        discord_file = discord.File(asset_path, filename=asset_filename)
+                        await thread.send(content=label, file=discord_file)
+                        logger.info(f"Delivered generated asset to Discord: '{asset_filename}' in thread {thread.id}")
+
+                    except Exception as asset_send_err:
+                        logger.warning(f"Failed to send generated asset '{asset.get('filename', '?')}' to Discord: {asset_send_err}")
+
+                # Clean up temp files and reset
+                self._cleanup_files(asset_paths_to_cleanup)
+                session.generated_assets = []
                 
         except Exception as e:
             logger.error(f"Failed to stream response to thread {thread.id}: {e}", exc_info=True)
