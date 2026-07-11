@@ -445,28 +445,38 @@ class ChatGPTService:
                 const last = bubbles[bubbles.length - 1];
 
                 // Find all download-triggering buttons/links in the bubble
-                // We match by aria-label containing "download" or an <a download> attribute
                 const candidates = last.querySelectorAll(
-                    'button[aria-label], a[download], a[href*="download"], button[data-testid]'
+                    'button[aria-label], a[download], a[href*="download"], button[data-testid], button.behavior-btn, a[href^="sandbox:"], a[href*="/files/"], a[href*="oaiusercontent"]'
                 );
                 candidates.forEach(el => {
                     const label = (
                         el.getAttribute('aria-label') ||
                         el.getAttribute('data-testid') ||
+                        el.className ||
                         el.textContent ||
                         ''
                     ).toLowerCase();
-                    if (label.includes('download')) {
-                        // Try to derive a filename hint from a nearby img src or the element itself
+                    
+                    const isDownload = label.includes('download') || 
+                                       (el.tagName === 'A' && (el.getAttribute('download') !== null || /sandbox:|\\/files\\/|oaiusercontent/i.test(el.getAttribute('href') || ''))) ||
+                                       (el.tagName === 'BUTTON' && el.classList.contains('behavior-btn'));
+
+                    if (isDownload) {
                         let filename = el.getAttribute('download') || '';
+                        if (!filename && el.tagName === 'BUTTON' && el.classList.contains('behavior-btn')) {
+                            filename = el.textContent.trim();
+                        }
                         if (!filename) {
-                            // Look for a sibling or child img for name hint
                             const img = last.querySelector('img[src^="blob:"], img[src*="oaiusercontent"]');
                             if (img) {
                                 const src = img.src || '';
                                 filename = src.split('/').pop().split('?')[0] || '';
                                 if (!filename.includes('.')) filename = 'image.png';
                             }
+                        }
+                        if (!filename) {
+                            const href = el.getAttribute('href') || '';
+                            filename = href.split('/').pop().split('?')[0] || '';
                         }
                         if (!filename) filename = 'generated_file';
                         results.push({ filename: filename });

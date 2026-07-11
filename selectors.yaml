@@ -25,4 +25,4 @@ chatgpt:
 
   # Download button for GPT Image 2 generated images and downloadable files
   # ChatGPT renders a download button on every generated image/file in the response bubble
-  image_download_button: 'button[aria-label*="Download" i], button[aria-label*="download" i], a[download], button[data-testid*="download" i]'
+  image_download_button: 'button[aria-label*="Download" i], button[aria-label*="download" i], a[download], button[data-testid*="download" i], button.behavior-btn, a[href^="sandbox:" i], a[href*="/files/" i], a[href*="/download" i], a[href*="oaiusercontent" i]'
