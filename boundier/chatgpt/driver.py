@@ -18,6 +18,7 @@ class PlaywrightDriver:
         self._session_verified = False
         self._last_gist_sync_time = 0.0
         self._gist_sync_lock = asyncio.Lock()
+        self._lease_lock = asyncio.Lock()
 
     async def start(self):
         """Initializes Playwright, loads/launches Chromium context with persistent configuration."""
@@ -133,45 +134,53 @@ class PlaywrightDriver:
 
     async def lease_page(self) -> Page:
         """Leases a page from the pool or opens a new tab if within max_pages limit."""
-        if not hasattr(self, "_leased_pages"):
-            self._leased_pages = set()
-            
-        # Clear closed pages from leased set
-        active_pages = self.context.pages
-        self._leased_pages = {p for p in self._leased_pages if p in active_pages}
-        
-        # Look for a currently idle page
-        for page in active_pages:
-            if page not in self._leased_pages:
-                self._leased_pages.add(page)
-                logger.info(f"Leased existing idle page/tab: {id(page)}")
-                return page
-                
-        # Create a new tab if below max limit
-        max_pages = getattr(self.config.playwright, "max_pages", 3)
-        if len(active_pages) < max_pages:
-            new_page = await self.create_new_page()
-            self._leased_pages.add(new_page)
-            logger.info(f"Created and leased new browser page/tab: {id(new_page)} (Total tabs: {len(self.context.pages)})")
-            return new_page
-            
-        # Queue/wait for an idle tab
-        logger.info("Max browser pages reached. Waiting for an idle page/tab to become free...")
         while True:
+            async with self._lease_lock:
+                if not hasattr(self, "_leased_pages"):
+                    self._leased_pages = set()
+                    
+                # Clear closed pages from leased set
+                active_pages = self.context.pages
+                self._leased_pages = {p for p in self._leased_pages if p in active_pages}
+                
+                # 1. Look for a currently idle page
+                for page in active_pages:
+                    if page not in self._leased_pages:
+                        self._leased_pages.add(page)
+                        logger.info(f"Leased existing idle page/tab: {id(page)}")
+                        use_count = getattr(page, "_use_count", 0) + 1
+                        page._use_count = use_count
+                        return page
+                        
+                # 2. Create a new tab if below max limit
+                max_pages = getattr(self.config.playwright, "max_pages", 3)
+                if len(active_pages) < max_pages:
+                    new_page = await self.create_new_page()
+                    self._leased_pages.add(new_page)
+                    logger.info(f"Created and leased new browser page/tab: {id(new_page)} (Total tabs: {len(self.context.pages)})")
+                    new_page._use_count = 1
+                    return new_page
+                    
+            logger.info("Max browser pages reached. Waiting for an idle page/tab to become free...")
             await asyncio.sleep(0.5)
-            active_pages = self.context.pages
-            self._leased_pages = {p for p in self._leased_pages if p in active_pages}
-            for page in active_pages:
-                if page not in self._leased_pages:
-                    self._leased_pages.add(page)
-                    logger.info(f"Leased freed page/tab: {id(page)}")
-                    return page
 
     async def release_page(self, page: Page):
-        """Releases a page back to the pool."""
-        if hasattr(self, "_leased_pages") and page in self._leased_pages:
-            self._leased_pages.remove(page)
-            logger.info(f"Released page/tab back to pool: {id(page)}")
+        """Releases a page back to the pool, recycling it if the use limit is reached."""
+        async with self._lease_lock:
+            use_count = getattr(page, "_use_count", 0)
+            if use_count >= 50:
+                logger.info(f"Tab {id(page)} reached use threshold ({use_count}/50). Closing to recycle memory...")
+                if page in self._leased_pages:
+                    self._leased_pages.remove(page)
+                try:
+                    await page.close()
+                except Exception as e:
+                    logger.warning(f"Failed to close recycled page: {e}")
+                return
+
+            if hasattr(self, "_leased_pages") and page in self._leased_pages:
+                self._leased_pages.remove(page)
+                logger.info(f"Released page/tab back to pool: {id(page)}")
 
     async def stop(self):
         """Closes browser context and shuts down Playwright instance."""
@@ -184,6 +193,22 @@ class PlaywrightDriver:
             self.playwright = None
         logger.info("Playwright driver stopped successfully.")
 
+    async def solve_turnstile_if_present(self, page: Page) -> bool:
+        """Detects and clicks Cloudflare Turnstile checkbox if present on the page."""
+        try:
+            for frame in page.frames:
+                if "cloudflare" in frame.url or "challenges" in frame.url:
+                    logger.info("Cloudflare Turnstile challenge detected in iframe! Attempting auto-solve...")
+                    checkbox = frame.locator('#challenge-stage, .cb-i, input[type="checkbox"]').first
+                    if await checkbox.count() > 0 and await checkbox.is_visible():
+                        await checkbox.click(force=True)
+                        logger.info("[SUCCESS] Clicked Cloudflare Turnstile checkbox!")
+                        return True
+            return False
+        except Exception as e:
+            logger.warning(f"Error checking/solving Cloudflare Turnstile challenge: {e}")
+            return False
+
     async def check_session_active(self, navigate: bool = True) -> bool:
         """Checks if an active logged-in session exists on ChatGPT, optionally navigating first."""
         if not self.page:
@@ -192,7 +217,7 @@ class PlaywrightDriver:
         url = "https://chatgpt.com"
         
         try:
-            if navigate:
+            if navigate and "chatgpt.com" not in self.page.url:
                 logger.info(f"Checking session status by loading: {url}")
                 await self.page.goto(url, wait_until="domcontentloaded", timeout=self.config.playwright.timeout_ms)
             
@@ -214,6 +239,9 @@ class PlaywrightDriver:
                 import asyncio
                 start_wait = asyncio.get_event_loop().time()
                 while asyncio.get_event_loop().time() - start_wait < 120.0:
+                    # Solve Turnstile challenge if present during hydration
+                    await self.solve_turnstile_if_present(self.page)
+                    
                     chat_input = self.page.locator(self.selectors.chat_input).first
                     login_btn = self.page.locator('[data-testid="login-button"]').first
                     
