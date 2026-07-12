@@ -26,8 +26,9 @@ class BoundierBot(commands.Bot):
     async def setup_hook(self):
         """Loads bot cogs and syncs slash commands tree."""
         logger.info("Setting up Bot extensions...")
-        from boundier.discord_bot.cogs import BoundierCog
+        from boundier.discord_bot.cogs import BoundierCog, ResponseView
         await self.add_cog(BoundierCog(self))
+        self.add_view(ResponseView())
         
         logger.info("Syncing application commands tree...")
         await self.tree.sync()

@@ -1,6 +1,6 @@
 chatgpt:
   # Input text box where query is typed in ChatGPT Web
-  chat_input: 'div#prompt-textarea, textarea[placeholder*="ChatGPT"]'
+  chat_input: 'div#prompt-textarea, textarea[placeholder*="ChatGPT"], textarea[placeholder*="Ask"], textarea.wcDTda_fallbackTextarea'
   
   # Button to send the prompt (submit)
   submit_button: 'button[data-testid="send-button"], button[aria-label*="Send"]'

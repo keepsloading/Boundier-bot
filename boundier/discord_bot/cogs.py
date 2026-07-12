@@ -84,9 +84,8 @@ class CitationsButton(discord.ui.Button):
         msg = "### Citation Links:\n" + "\n".join(lines)
         await interaction.response.send_message(content=msg, ephemeral=True)
 
-
 class ResponseView(discord.ui.View):
-    def __init__(self, cog, thread_id: int, channel_id: int, channel_name: str, prompt: str, citation_urls: list = None, author_name: str = None, has_image: bool = False):
+    def __init__(self, cog=None, thread_id: Optional[int] = None, channel_id: Optional[int] = None, channel_name: Optional[str] = None, prompt: Optional[str] = None, citation_urls: list = None, author_name: Optional[str] = None, has_image: bool = False):
         super().__init__(timeout=None)  # Persistent view
         self.cog = cog
         self.thread_id = thread_id
@@ -99,6 +98,40 @@ class ResponseView(discord.ui.View):
         # Add dynamic Citations button if URLs were extracted
         if citation_urls:
             self.add_item(CitationsButton(citation_urls))
+
+    async def _resolve_context(self, interaction: discord.Interaction):
+        """Resolves missing context variables dynamically upon button interactions (essential after bot restarts)."""
+        bot = interaction.client
+        if not self.cog:
+            self.cog = bot.get_cog("BoundierCog")
+            
+        if not self.thread_id:
+            self.thread_id = interaction.channel.id
+            
+        if not self.channel_id:
+            if isinstance(interaction.channel, discord.Thread):
+                self.channel_id = interaction.channel.parent_id
+            else:
+                self.channel_id = interaction.channel.id
+                
+        if not self.channel_name:
+            if isinstance(interaction.channel, discord.Thread):
+                self.channel_name = interaction.channel.parent.name
+            else:
+                self.channel_name = interaction.channel.name
+                
+        if not self.author_name:
+            self.author_name = interaction.user.display_name
+            
+        if not self.prompt:
+            # Dynamically fetch the last human message in this channel's history
+            prompt_text = ""
+            async for msg in interaction.channel.history(limit=50):
+                if not msg.author.bot:
+                    prompt_text = msg.content
+                    self.has_image = bool(msg.attachments)
+                    break
+            self.prompt = prompt_text
 
     @discord.ui.button(label="Copy Response", style=discord.ButtonStyle.secondary, emoji="📋", custom_id="copy_response")
     async def copy_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -134,7 +167,9 @@ class ResponseView(discord.ui.View):
     @discord.ui.button(label="Show Query", style=discord.ButtonStyle.secondary, emoji="❓", custom_id="show_query")
     async def query_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
         """Displays the prompt/query used for this response in an ephemeral message."""
-        clean_prompt = self.prompt
+        await self._resolve_context(interaction)
+        
+        clean_prompt = self.prompt or ""
         # Strip replied context prefix if present so user sees only their actual query
         if clean_prompt.startswith("[Replied Message Context]"):
             parts = clean_prompt.split("\n\n", 1)
@@ -155,6 +190,7 @@ class ResponseView(discord.ui.View):
     async def retry_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
         """Triggers a retry of the prompt on this thread."""
         await interaction.response.defer(ephemeral=False)
+        await self._resolve_context(interaction)
         
         # Disable buttons temporarily during retry
         for item in self.children:
@@ -176,7 +212,6 @@ class ResponseView(discord.ui.View):
             user_message=self.prompt,
             file_paths=[],
             is_first_response=False,
-            rename_parent=False,
             author_name=self.author_name,
             has_image=self.has_image
         ))

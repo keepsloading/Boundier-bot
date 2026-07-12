@@ -158,8 +158,15 @@ class ChatGPTService:
                     for (let i = 0; i < 20; i++) {
                         const textarea = lastUser.querySelector('textarea');
                         if (textarea) {
-                            textarea.value = newText;
+                            textarea.focus();
+                            const setter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value")?.set;
+                            if (setter) {
+                                setter.call(textarea, newText);
+                            } else {
+                                textarea.value = newText;
+                            }
                             textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                            textarea.dispatchEvent(new Event('change', { bubbles: true }));
                             
                             const saveBtn = lastUser.querySelector('button.btn-primary, button[class*="primary"], button:not([class*="secondary"]):not([aria-label*="Cancel" i])');
                             if (saveBtn) {
@@ -208,13 +215,19 @@ class ChatGPTService:
                 # Direct JavaScript Submission to bypass all Playwright click & fill actionability delays
                 js_submit = """
                 async (text) => {
-                    const textarea = document.querySelector('div#prompt-textarea, textarea[placeholder*="ChatGPT"]');
+                    const textarea = document.querySelector('div#prompt-textarea, textarea[placeholder*="ChatGPT"], textarea[placeholder*="Ask"], textarea.wcDTda_fallbackTextarea');
                     if (!textarea) throw new Error("Chat input textarea not found.");
                     
+                    textarea.focus();
                     if (textarea.tagName === 'DIV') {
-                        textarea.textContent = text;
+                        document.execCommand('insertText', false, text);
                     } else {
-                        textarea.value = text;
+                        const setter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value")?.set;
+                        if (setter) {
+                            setter.call(textarea, text);
+                        } else {
+                            textarea.value = text;
+                        }
                     }
                     textarea.dispatchEvent(new Event('input', { bubbles: true }));
                     textarea.dispatchEvent(new Event('change', { bubbles: true }));
