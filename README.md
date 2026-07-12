@@ -89,38 +89,40 @@ Here is a preview of Boundier in action, showcasing its ChatGPT Image 2 generati
 
 ---
 
-## 🛠️ Installation & Setup
+## 🛠️ Installation & Setup (Boundier Terminal)
 
-### Prerequisite: Private Gist & Session Setup
-Because cloud servers run in headless environments, you must log in locally first to solve the initial authentication challenge:
+Boundier includes an interactive **Terminal Setup Wizard** (`terminal.py`) that automates configuration, manual browser login authorization, database bootstrapping, and self-diagnostics.
 
 1. Clone the repository and install dependencies:
    ```bash
    pip install -r requirements.txt
    playwright install chromium
    ```
-2. Create a **Private GitHub Gist** and generate a **GitHub Personal Access Token (PAT)** with `gist` scope.
-3. Configure `config.yaml` with `playwright.headless: false` for your local runs.
-4. Launch the local sync script:
+
+2. Run the **Boundier Terminal** wizard:
    ```bash
-   $env:PYTHONPATH="."
-   python scratch/sync_local_to_gist.py
+   python terminal.py
    ```
-   * Enter an **`ENCRYPTION_KEY`** (passphrase) of your choice when prompted.
-   * A Chromium window will open. Go to `https://chatgpt.com`, log in manually with your account (Google, email, etc.), and complete the process.
-   * Once successfully authenticated, the script will automatically encrypt the session cookies and push them to your private Gist.
+
+### Terminal Menu Options:
+* **`[1] Interactive Configuration`**: Interactively configure your Discord Bot Token, Admin Channel, and (optionally) GitHub PAT / Encryption Key for online Gist syncing.
+* **`[2] Authorize ChatGPT`**: Opens a headed Chromium browser tab locally. Simply log in manually to your ChatGPT account. Once logged in, the terminal automatically exports your authenticated session state locally and pushes the encrypted backup to your Gist.
+* **`[3] Bootstrap SQLite Database`**: Creates the SQLite database tables and syncs your markdown files.
+* **`[4] Run Self-Diagnostics`**: Validates the authentication status of your ChatGPT session, tests Discord connectivity, verifies the GitHub API, and outputs a checklist report.
+* **`[5] Launch Boundier Discord Bot`**: Starts the Discord bot directly.
 
 ---
 
-### Cloud Deployment (e.g., Render)
-
-1. Create a new **Web Service** on Render connected to your repository.
-2. Render will automatically detect the `Dockerfile` and build it.
-3. Configure the following **Environment Variables** in the Render Dashboard:
+### Cloud Deployment (Optional)
+To deploy Boundier to a cloud host (like Render) with automatic session syncing:
+1. Generate a **GitHub Personal Access Token (PAT)** with `gist` scope.
+2. Run Option **`[1]`** in the Boundier Terminal and enter your GitHub PAT and a custom Encryption Key (passphrase).
+3. Run Option **`[2]`** to authenticate. The session is now safely backed up on your Gist.
+4. Deploy the service to Render. Configure the following environment variables in your Render Dashboard:
    * `DISCORD_TOKEN`: Your Discord bot application token.
-   * `GITHUB_PAT`: The GitHub PAT with `gist` access.
-   * `ENCRYPTION_KEY`: The passphrase chosen during your local sync run (used to decrypt cookies on boot).
-   * `PORT`: Set to `10000` (Render health check).
+   * `GITHUB_PAT`: The GitHub PAT.
+   * `ENCRYPTION_KEY`: The passphrase chosen during setup.
+   * `PORT`: `10000` (Render health check).
 
 ---
 
