@@ -62,7 +62,11 @@ class PlaywrightDriver:
                 "--no-first-run",
                 "--no-zygote",
                 "--mute-audio",
-                "--js-flags=--max-old-space-size=256"
+                "--disable-3d-apis",
+                "--disable-accelerated-2d-canvas",
+                "--disable-webgl",
+                "--disable-audio-output",
+                "--js-flags=--expose-gc --max-old-space-size=256"
             ]
         )
         
@@ -168,8 +172,8 @@ class PlaywrightDriver:
         """Releases a page back to the pool, recycling it if the use limit is reached."""
         async with self._lease_lock:
             use_count = getattr(page, "_use_count", 0)
-            if use_count >= 50:
-                logger.info(f"Tab {id(page)} reached use threshold ({use_count}/50). Closing to recycle memory...")
+            if use_count >= 20:
+                logger.info(f"Tab {id(page)} reached use threshold ({use_count}/20). Closing to recycle memory...")
                 if page in self._leased_pages:
                     self._leased_pages.remove(page)
                 try:
@@ -181,6 +185,12 @@ class PlaywrightDriver:
             if hasattr(self, "_leased_pages") and page in self._leased_pages:
                 self._leased_pages.remove(page)
                 logger.info(f"Released page/tab back to pool: {id(page)}")
+                try:
+                    # Force V8 garbage collection to free unused JS memory heap back to the OS
+                    await page.evaluate("window.gc && window.gc()")
+                    logger.info(f"Triggered forced V8 garbage collection on tab: {id(page)}")
+                except Exception as e:
+                    logger.warning(f"Failed to trigger V8 garbage collection: {e}")
 
     async def stop(self):
         """Closes browser context and shuts down Playwright instance."""
@@ -271,8 +281,8 @@ class PlaywrightDriver:
             logger.warning(f"Session unverified: chat_input_exists={has_input}, login_button_exists={has_login}")
             try:
                 os.makedirs("logs/diagnostics", exist_ok=True)
-                await self.page.screenshot(path="logs/diagnostics/session_unverified.png")
-                logger.info("Saved diagnostics screenshot to logs/diagnostics/session_unverified.png")
+                await self.page.screenshot(path="logs/diagnostics/session_unverified.jpg", type="jpeg", quality=50)
+                logger.info("Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg")
             except Exception as ss_err:
                 logger.warning(f"Failed to save unverified session screenshot: {ss_err}")
             return False

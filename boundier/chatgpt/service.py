@@ -34,9 +34,9 @@ class ChatGPTService:
         try:
             os.makedirs("logs/diagnostics", exist_ok=True)
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = f"logs/diagnostics/{context_name}_{timestamp}.png"
-            await self.page.screenshot(path=filename, full_page=False)
-            logger.info(f"Diagnostics screenshot captured and saved to: {filename}")
+            filename = f"logs/diagnostics/{context_name}_{timestamp}.jpg"
+            await self.page.screenshot(path=filename, full_page=False, type="jpeg", quality=50)
+            logger.info(f"Diagnostics screenshot captured and saved as low-memory JPEG to: {filename}")
         except Exception as e:
             logger.warning(f"Failed to capture diagnostics screenshot: {e}")
 

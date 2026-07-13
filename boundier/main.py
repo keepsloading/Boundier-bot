@@ -71,6 +71,22 @@ async def async_main():
     # Start background health check server immediately for Render port binding requirements
     asyncio.create_task(health_check_server())
     
+    async def memory_monitor():
+        while True:
+            try:
+                if os.path.exists("/proc/self/status"):
+                    with open("/proc/self/status", "r", encoding="utf-8") as f:
+                        for line in f:
+                            if line.startswith("VmRSS:"):
+                                rss_val = line.split(":")[1].strip()
+                                logger.info(f"[MONITOR] Current Process Memory: {rss_val}")
+                                break
+            except Exception as e:
+                logger.warning(f"Memory monitor failed to read process stats: {e}")
+            await asyncio.sleep(600)
+            
+    asyncio.create_task(memory_monitor())
+    
     try:
         config = load_config("config.yaml")
         
