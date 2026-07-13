@@ -79,6 +79,9 @@ class PlaywrightDriver:
                 "--disable-databases",
                 "--disable-gpu-program-cache",
                 "--disable-gpu-shader-disk-cache",
+                "--renderer-process-limit=1",
+                "--disable-site-isolation-trials",
+                "--disable-features=Translate,OptimizationHints,BackForwardCache,MediaRouter",
                 "--js-flags=--expose-gc --max-old-space-size=128"
             ]
         )

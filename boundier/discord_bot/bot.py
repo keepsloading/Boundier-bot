@@ -17,7 +17,9 @@ class BoundierBot(commands.Bot):
         
         super().__init__(
             command_prefix=config.discord.command_prefix or "/",
-            intents=intents
+            intents=intents,
+            member_cache_flags=discord.MemberCacheFlags.none(),
+            max_messages=10
         )
         self.config = config
         self.manager = manager
