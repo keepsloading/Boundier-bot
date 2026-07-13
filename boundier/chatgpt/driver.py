@@ -25,7 +25,14 @@ class PlaywrightDriver:
         logger.info("Starting Playwright driver for ChatGPT...")
         self.playwright = await async_playwright().start()
         
+        import shutil
         user_data_dir = os.path.abspath(self.config.playwright.user_data_dir)
+        if os.path.exists(user_data_dir):
+            try:
+                shutil.rmtree(user_data_dir)
+                logger.info(f"Purged old Chromium profile directory to save memory: {user_data_dir}")
+            except Exception as e:
+                logger.warning(f"Failed to purge Chromium profile directory: {e}")
         os.makedirs(user_data_dir, exist_ok=True)
         
         viewport_dims = {
