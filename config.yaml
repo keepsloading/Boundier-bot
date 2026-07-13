@@ -8,7 +8,7 @@ playwright:
   headless: true
   user_data_dir: "browser_profile/"
   timeout_ms: 90000
-  max_pages: 2
+  max_pages: 1
   viewport:
     width: 800
     height: 600
