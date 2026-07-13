@@ -169,7 +169,7 @@ class ChatGPTService:
                             textarea.dispatchEvent(new Event('change', { bubbles: true }));
                             
                             const saveBtn = lastUser.querySelector('button.btn-primary, button[class*="primary"], button:not([class*="secondary"]):not([aria-label*="Cancel" i])');
-                            if (saveBtn) {
+                            if (saveBtn && !saveBtn.disabled && saveBtn.getAttribute('aria-disabled') !== 'true') {
                                 saveBtn.click();
                                 return true;
                             }
@@ -232,15 +232,25 @@ class ChatGPTService:
                     textarea.dispatchEvent(new Event('input', { bubbles: true }));
                     textarea.dispatchEvent(new Event('change', { bubbles: true }));
                     
-                    for (let i = 0; i < 30; i++) {
+                    for (let i = 0; i < 60; i++) {
                         const submitBtn = document.querySelector('button[data-testid="send-button"], button[aria-label*="Send"]');
-                        if (submitBtn) {
+                        if (submitBtn && !submitBtn.disabled && submitBtn.getAttribute('aria-disabled') !== 'true') {
                             submitBtn.click();
+                            
+                            const enterEvent = new KeyboardEvent('keydown', {
+                                key: 'Enter',
+                                code: 'Enter',
+                                keyCode: 13,
+                                which: 13,
+                                bubbles: true,
+                                cancelable: true
+                            });
+                            textarea.dispatchEvent(enterEvent);
                             return true;
                         }
-                        await new Promise(resolve => setTimeout(resolve, 50));
+                        await new Promise(resolve => setTimeout(resolve, 100));
                     }
-                    throw new Error("Submit button not found.");
+                    throw new Error("Submit button not found or remained disabled.");
                 }
                 """
                 await self.page.evaluate(js_submit, prompt)
