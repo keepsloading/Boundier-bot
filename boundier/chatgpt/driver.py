@@ -66,7 +66,13 @@ class PlaywrightDriver:
                 "--disable-accelerated-2d-canvas",
                 "--disable-webgl",
                 "--disable-audio-output",
-                "--js-flags=--expose-gc --max-old-space-size=256"
+                "--disk-cache-size=1",
+                "--media-cache-size=1",
+                "--disable-application-cache",
+                "--disable-databases",
+                "--disable-gpu-program-cache",
+                "--disable-gpu-shader-disk-cache",
+                "--js-flags=--expose-gc --max-old-space-size=128"
             ]
         )
         
@@ -314,7 +320,7 @@ class PlaywrightDriver:
 
     def trigger_background_gist_sync(self):
         import time
-        if time.time() - self._last_gist_sync_time > 300:
+        if time.time() - self._last_gist_sync_time > 86400:
             logger.info("Triggering background Gist session sync...")
             asyncio.create_task(self.save_gist_session_state())
 
@@ -469,7 +475,7 @@ class PlaywrightDriver:
         """Encrypts and pushes the current browser storage state to a private GitHub Gist."""
         async with self._gist_sync_lock:
             import time
-            if time.time() - self._last_gist_sync_time < 290: # Keep a small margin
+            if time.time() - self._last_gist_sync_time < 86000: # Keep a small margin
                 return
                 
             github_pat = os.environ.get("GITHUB_PAT")
