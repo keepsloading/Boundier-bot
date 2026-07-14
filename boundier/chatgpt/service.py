@@ -272,7 +272,15 @@ class ChatGPTService:
             start_time = asyncio.get_event_loop().time()
             if is_edit:
                 while True:
-                    is_generating = await self.page.evaluate(f"() => document.querySelector('{self.selectors.streaming_indicators}') !== null")
+                    try:
+                        is_generating = await asyncio.wait_for(
+                            self.page.evaluate(f"() => document.querySelector('{self.selectors.streaming_indicators}') !== null"),
+                            timeout=5.0
+                        )
+                    except Exception as eval_err:
+                        logger.warning(f"Playwright edit evaluate timed out or failed: {eval_err}")
+                        is_generating = False
+                        
                     if is_generating:
                         break
                     if asyncio.get_event_loop().time() - start_time > timeout:
@@ -282,14 +290,22 @@ class ChatGPTService:
             else:
                 try:
                     while True:
-                        is_new_bubble = await self.page.evaluate(
-                            """(lastBefore) => {
-                                const els = document.querySelectorAll('[data-message-author-role="assistant"], [data-turn="assistant"]');
-                                const currentLast = els.length ? els[els.length - 1] : null;
-                                return currentLast !== null && currentLast !== lastBefore;
-                            }""",
-                            last_assistant_handle
-                        )
+                        try:
+                            is_new_bubble = await asyncio.wait_for(
+                                self.page.evaluate(
+                                    """(lastBefore) => {
+                                        const els = document.querySelectorAll('[data-message-author-role="assistant"], [data-turn="assistant"]');
+                                        const currentLast = els.length ? els[els.length - 1] : null;
+                                        return currentLast !== null && currentLast !== lastBefore;
+                                    }""",
+                                    last_assistant_handle
+                                ),
+                                timeout=5.0
+                            )
+                        except Exception as eval_err:
+                            logger.warning(f"Playwright bubble evaluate timed out or failed: {eval_err}")
+                            is_new_bubble = False
+                            
                         if is_new_bubble:
                             break
                         if asyncio.get_event_loop().time() - start_time > timeout:
@@ -462,7 +478,10 @@ class ChatGPTService:
 
         while True:
             try:
-                result = await self.page.evaluate(js_scrape_stream, self.selectors.streaming_indicators)
+                result = await asyncio.wait_for(
+                    self.page.evaluate(js_scrape_stream, self.selectors.streaming_indicators),
+                    timeout=5.0
+                )
                 is_generating = result["isGenerating"]
                 current_text = result["text"]
             except Exception as e:
