@@ -347,17 +347,12 @@ class PlaywrightDriver:
 
     async def ensure_authenticated(self, force: bool = False) -> bool:
         """Verifies session active status. If inactive, restarts in headed mode and polls for manual login."""
-        if not force and self._session_verified:
-            logger.info("Session verified status cached. Bypassing active check.")
-            self.trigger_background_gist_sync()
-            return True
-
         logger.info("Verifying ChatGPT session status...")
         
         # Check current status without re-navigating
         is_active = await self.check_session_active(navigate=False)
         if is_active:
-            logger.info("Session is active (cached). Proceeding.")
+            logger.info("Session is active. Proceeding.")
             self._session_verified = True
             self.trigger_background_gist_sync()
             return True
