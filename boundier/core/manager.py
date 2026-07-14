@@ -130,7 +130,7 @@ class ConversationManager:
         
         return "\n\n".join(prompt_parts)
 
-    async def execute_prompt_stream(self, thread_id: int, channel_id: int, channel_name: str, user_message: str, file_paths: Optional[list] = None, rename_parent: bool = False, history_context: Optional[str] = None, author_name: Optional[str] = None, is_edit: bool = False) -> AsyncGenerator[str, None]:
+    async def execute_prompt_stream(self, thread_id: int, channel_id: int, channel_name: str, user_message: str, file_paths: Optional[list] = None, rename_parent: bool = False, history_context: Optional[str] = None, author_name: Optional[str] = None, is_edit: bool = False, require_auth: bool = False) -> AsyncGenerator[str, None]:
         """Locks browser execution, navigates to target ChatGPT chat, submits prompt, and yields response stream."""
         session = await self.get_or_create_session(thread_id, channel_id, channel_name, rename_parent=rename_parent)
         compiled_prompt = self.compile_prompt(session, user_message, history_context=history_context, author_name=author_name)
@@ -146,11 +146,17 @@ class ConversationManager:
                 # Ensure authentication
                 authenticated = await leased_service.driver.ensure_authenticated()
                 if not authenticated:
-                    raise RuntimeError("ChatGPT session is unauthenticated. Actions paused.")
+                    if require_auth:
+                        raise RuntimeError("ChatGPT session is unauthenticated. Actions paused.")
+                    else:
+                        logger.warning("ChatGPT session is unauthenticated. Falling back to guest mode for this request.")
+                        is_guest_mode = True
+                else:
+                    is_guest_mode = False
                 
                 # Navigate to appropriate chat page (or skip if already on it)
                 skip_settle = False
-                if session.chatgpt_chat_id == "NEW":
+                if is_guest_mode or session.chatgpt_chat_id == "NEW":
                     ok = await leased_service.create_new_conversation()
                     if not ok:
                         raise RuntimeError("Failed to create new ChatGPT conversation.")

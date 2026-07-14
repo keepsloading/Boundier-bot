@@ -756,7 +756,8 @@ class BoundierCog(commands.Cog):
                 is_first_response=True,
                 rename_parent=rename_parent,
                 author_name=author_name,
-                interaction=interaction
+                interaction=interaction,
+                require_auth=True
             ))
             return
             
@@ -777,7 +778,8 @@ class BoundierCog(commands.Cog):
                 file_paths,
                 is_first_response=True,
                 rename_parent=rename_parent,
-                author_name=author_name
+                author_name=author_name,
+                require_auth=True
             ))
         except discord.Forbidden:
             logger.warning(f"Forbidden to create thread in channel {target_channel.id}. Falling back to direct channel response.")
@@ -792,12 +794,36 @@ class BoundierCog(commands.Cog):
                 is_first_response=True,
                 rename_parent=rename_parent,
                 author_name=author_name,
-                interaction=interaction
+                interaction=interaction,
+                require_auth=True
             ))
         except Exception as e:
             logger.error(f"Failed to start thread: {e}", exc_info=True)
             self._cleanup_files(file_paths)
             await interaction.followup.send(f"⚠️ Error initiating chat: `{e}`")
+
+    @app_commands.command(name="login", description="Checks the current ChatGPT authentication status of the bot")
+    async def check_login_status(self, interaction: discord.Interaction):
+        """Checks if the bot is authenticated with ChatGPT."""
+        await interaction.response.defer(ephemeral=True)
+        try:
+            is_logged_in = await self.bot.manager.service.driver.check_session_active(navigate=True)
+            if is_logged_in:
+                embed = discord.Embed(
+                    title="🔒 ChatGPT Authentication Status",
+                    description="**Status:** Connected & Logged In\n\nThe bot is successfully authenticated with ChatGPT under your account.",
+                    color=0x00FF00
+                )
+            else:
+                embed = discord.Embed(
+                    title="🔓 ChatGPT Authentication Status",
+                    description="**Status:** Unauthenticated / Guest Mode\n\nThe bot is not currently logged into an account. `/ask` will function as guest chat, but `/new` will be paused until authenticated.",
+                    color=0xFF9900
+                )
+            await interaction.followup.send(embed=embed, ephemeral=True)
+        except Exception as e:
+            logger.error(f"Error checking login status: {e}", exc_info=True)
+            await interaction.followup.send(f"⚠️ Error checking authentication status: {e}", ephemeral=True)
 
     @app_commands.command(name="archive", description="Summarizes and archives the current thread")
     async def archive(self, interaction: discord.Interaction):
@@ -836,7 +862,8 @@ class BoundierCog(commands.Cog):
         author_name: Optional[str] = None,
         is_edit: bool = False,
         interaction: Optional[discord.Interaction] = None,
-        has_image: bool = False
+        has_image: bool = False,
+        require_auth: bool = False
     ):
         """Helper to stream ChatGPT outputs directly to a Discord thread message using white embeds with rate-limiting."""
         start_time = asyncio.get_event_loop().time()
@@ -876,7 +903,8 @@ class BoundierCog(commands.Cog):
                 rename_parent=rename_parent,
                 history_context=history_context,
                 author_name=author_name,
-                is_edit=is_edit
+                is_edit=is_edit,
+                require_auth=require_auth
             ):
                 buffer += chunk
                 now = asyncio.get_event_loop().time()
