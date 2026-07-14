@@ -137,6 +137,30 @@ class PlaywrightDriver:
         page = await self.context.new_page()
         page.on("console", lambda msg: logger.info(f"BROWSER CONSOLE: [{msg.type}] {msg.text}"))
         page.on("pageerror", lambda err: logger.error(f"BROWSER EXCEPTION: {err}"))
+        
+        # Block telemetry, ads, and tracking resources to save RAM and network overhead
+        blocked_domains = [
+            "sentry.io",
+            "datadoghq",
+            "google-analytics.com",
+            "statsig",
+            "mixpanel.com",
+            "segment.io",
+            "amplitude",
+            "hotjar",
+            "browser-intake",
+            "doubleclick.net",
+            "googleadservices.com"
+        ]
+        
+        async def route_filter(route):
+            url = route.request.url.lower()
+            if any(domain in url for domain in blocked_domains):
+                await route.abort()
+            else:
+                await route.continue_()
+                
+        await page.route("**/*", route_filter)
         return page
 
     async def lease_page(self) -> Page:

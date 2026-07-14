@@ -476,6 +476,11 @@ class ChatGPTService:
                     yield delta
                 last_text = current_text
                 unchanged_polls = 0
+                try:
+                    # Clear V8 heap memory actively during generation
+                    await self.page.evaluate("window.gc && window.gc()")
+                except Exception:
+                    pass
             else:
                 if is_generating and current_text == "":
                     unchanged_polls = 0
