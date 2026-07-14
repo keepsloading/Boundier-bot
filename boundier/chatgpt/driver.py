@@ -173,20 +173,22 @@ class PlaywrightDriver:
 
     async def release_page(self, page: Page):
         """Releases a page back to the pool, recycling it if the use limit is reached."""
+        should_restart = False
         async with self._lease_lock:
+            if not hasattr(self, "_leased_pages"):
+                self._leased_pages = set()
+                
+            if page in self._leased_pages:
+                self._leased_pages.remove(page)
+                
             use_count = getattr(page, "_use_count", 0)
-            if use_count >= 20:
-                logger.info(f"Tab {id(page)} reached use threshold ({use_count}/20). Closing to recycle memory...")
-                if page in self._leased_pages:
-                    self._leased_pages.remove(page)
+            if use_count >= 10:  # Recycle tabs every 10 uses to avoid DOM bloating
+                logger.info(f"Tab {id(page)} reached use threshold ({use_count}/10). Closing...")
                 try:
                     await page.close()
                 except Exception as e:
                     logger.warning(f"Failed to close recycled page: {e}")
-                return
-
-            if hasattr(self, "_leased_pages") and page in self._leased_pages:
-                self._leased_pages.remove(page)
+            else:
                 logger.info(f"Released page/tab back to pool: {id(page)}")
                 try:
                     # Force V8 garbage collection to free unused JS memory heap back to the OS
@@ -194,6 +196,24 @@ class PlaywrightDriver:
                     logger.info(f"Triggered forced V8 garbage collection on tab: {id(page)}")
                 except Exception as e:
                     logger.warning(f"Failed to trigger V8 garbage collection: {e}")
+
+            if not hasattr(self, "_processed_requests"):
+                self._processed_requests = 0
+            self._processed_requests += 1
+            
+            # Restart browser if requests count exceeds limit and no other pages are leased
+            if self._processed_requests >= 5 and len(self._leased_pages) == 0:
+                should_restart = True
+                self._processed_requests = 0
+
+        if should_restart:
+            logger.info("Processed threshold requests. Restarting browser context to purge memory...")
+            try:
+                await self.stop()
+                await self.start()
+                logger.info("Browser context restarted successfully. Memory purged.")
+            except Exception as restart_err:
+                logger.error(f"Failed to restart browser context: {restart_err}", exc_info=True)
 
     async def stop(self):
         """Closes browser context and shuts down Playwright instance."""
