@@ -69,7 +69,7 @@ class PlaywrightDriver:
                 "--renderer-process-limit=1",
                 "--disable-site-isolation-trials",
                 "--disable-features=Translate,OptimizationHints,BackForwardCache,MediaRouter",
-                "--js-flags=--expose-gc --max-old-space-size=128"
+                "--js-flags=--expose-gc --max-old-space-size=384"
             ]
         )
         
@@ -125,16 +125,14 @@ class PlaywrightDriver:
         pages = self.context.pages
         if pages:
             self.page = pages[0]
-            self.page.on("console", lambda msg: logger.info(f"BROWSER CONSOLE: [{msg.type}] {msg.text}"))
-            self.page.on("pageerror", lambda err: logger.error(f"BROWSER EXCEPTION: {err}"))
+            await self._setup_page(self.page)
         else:
             self.page = await self.create_new_page()
             
         logger.info("Playwright driver initialized successfully.")
 
-    async def create_new_page(self) -> Page:
-        """Helper to create and initialize a new page tab in the browser context."""
-        page = await self.context.new_page()
+    async def _setup_page(self, page: Page):
+        """Sets up console handlers, pageerror handlers, and blocks tracking/telemetry on the page."""
         page.on("console", lambda msg: logger.info(f"BROWSER CONSOLE: [{msg.type}] {msg.text}"))
         page.on("pageerror", lambda err: logger.error(f"BROWSER EXCEPTION: {err}"))
         
@@ -150,7 +148,9 @@ class PlaywrightDriver:
             "hotjar",
             "browser-intake",
             "doubleclick.net",
-            "googleadservices.com"
+            "googleadservices.com",
+            "statsig-api.net",
+            "browser-intake-datadoghq.com"
         ]
         
         async def route_filter(route):
@@ -161,6 +161,11 @@ class PlaywrightDriver:
                 await route.continue_()
                 
         await page.route("**/*", route_filter)
+
+    async def create_new_page(self) -> Page:
+        """Helper to create and initialize a new page tab in the browser context."""
+        page = await self.context.new_page()
+        await self._setup_page(page)
         return page
 
     async def lease_page(self) -> Page:
