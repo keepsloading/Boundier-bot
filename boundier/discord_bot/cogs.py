@@ -917,80 +917,97 @@ class BoundierCog(commands.Cog):
             logger.error(f"Error archiving thread {thread_id}: {e}", exc_info=True)
             await interaction.followup.send(f"Error archiving thread: {e}")
 
-    @app_commands.command(name="read", description="Reads the last 30 messages in the channel and executes a prompt on them")
+    @app_commands.command(name="read", description="Reads recent messages and runs a prompt on them (up to 30 when logged in, 7 otherwise)")
     @app_commands.allowed_installs(guilds=True, users=True)
     @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
-    async def read(self, interaction: discord.Interaction, prompt: str):
-        """Reads the last 30 messages in the channel, filters long messages interactively, and executes a prompt."""
-        # Defer immediately to allow operations up to 15 mins
+    async def read(self, interaction: discord.Interaction, prompt: str, count: Optional[int] = None):
+        """Reads recent channel messages and runs a prompt on them via a fresh ChatGPT conversation."""
         await interaction.response.defer(ephemeral=False)
-        
+
         guild = interaction.guild
         if not guild:
-            await interaction.followup.send("Commands can only be used in servers.")
+            await interaction.followup.send(
+                embed=discord.Embed(description="⚠️ Commands can only be used in servers.", color=0xFFFFFF)
+            )
             return
 
-        # Check user restriction (Max 5 users)
+        # Check user restriction
         author_id = interaction.user.id
         author_name = interaction.user.name
         max_u = getattr(self.bot.config, 'max_users', 5)
         if not self.bot.store.check_or_register_user(author_id, author_name, max_users=max_u):
-            await interaction.followup.send(f"⚠️ Access is limited to {max_u} user(s). The limit has been reached.")
+            await interaction.followup.send(
+                embed=discord.Embed(description=f"⚠️ Access is limited to {max_u} user(s). The limit has been reached.", color=0xFFFFFF)
+            )
             return
 
         current_channel = interaction.channel
         author_display_name = interaction.user.display_name
-
-        # 1. Determine message limit based on login state
         logged_in = self._is_chatgpt_logged_in()
-        msg_limit = 30 if logged_in else 7
-        login_note = (
-            f"📖 Reading last **{msg_limit} messages**"
-            + (" *(log in via terminal to read up to 30)*" if not logged_in else "")
-            + "..."
-        )
+
+        # --- 1. Resolve count (user-set, capped by login state) ---
+        hard_cap = 30 if logged_in else 7
+        if count is None:
+            msg_limit = hard_cap
+        else:
+            msg_limit = max(1, min(count, hard_cap))
+            if count > hard_cap:
+                cap_note = "30 (logged in)" if logged_in else "7 (log in via terminal for up to 30)"
+                await interaction.followup.send(
+                    embed=discord.Embed(
+                        description=f"⚠️ Count capped at **{hard_cap}** — your current limit is {cap_note}.",
+                        color=0xFFFFFF
+                    )
+                )
+
+        # --- 2. Fetch messages ---
         status_msg = await interaction.followup.send(
-            embed=discord.Embed(description=login_note, color=0xFFFFFF)
+            embed=discord.Embed(
+                description=f"📖 Reading last **{msg_limit}** message{'s' if msg_limit != 1 else ''}..."
+                + ("" if logged_in else f"  *(max {hard_cap} — log in via terminal for 30)*"),
+                color=0xFFFFFF
+            )
         )
 
-        # 2. Fetch messages in this channel
         history_messages = []
         try:
-            async for msg in current_channel.history(limit=msg_limit):
-                # Skip the bot's own deferred response to this /read command
+            async for msg in current_channel.history(limit=msg_limit + 5):
+                # Skip the bot's own deferred placeholder for this /read invocation
                 interaction_meta = getattr(msg, 'interaction_metadata', None)
                 if msg.author.id == self.bot.user.id and interaction_meta and getattr(interaction_meta, 'name', None) == "read":
                     continue
                 history_messages.append(msg)
+                if len(history_messages) >= msg_limit:
+                    break
         except Exception as e:
             logger.error(f"Error fetching channel history: {e}", exc_info=True)
-            await interaction.followup.send(f"⚠️ Failed to read channel history: {e}")
+            try:
+                await status_msg.delete()
+            except Exception:
+                pass
+            await interaction.followup.send(
+                embed=discord.Embed(description=f"⚠️ Failed to read channel history: `{e}`", color=0xFFFFFF)
+            )
             return
 
-        # We want the messages in chronological order for processing
-        history_messages.reverse()
+        history_messages.reverse()  # Chronological order
 
-        # 2. Filter long messages interactively
+        # --- 3. Filter long messages interactively ---
         messages_to_include = []
         for msg in history_messages:
-            # We check if clean_content exceeds 1000 characters
             content = msg.clean_content or ""
             if len(content) > 1000:
                 embed = discord.Embed(
-                    title="⚠️ Long Message Detected",
+                    title="Long message — include it?",
                     description=(
-                        f"A message from **{msg.author.display_name}** is very long ({len(content)} characters).\n"
-                        f"Do you want to include it in the context?\n\n"
-                        f"**Preview:**\n"
-                        f"```\n{content[:500]}...\n```"
+                        f"**{msg.author.display_name}** sent a long message ({len(content):,} chars).\n\n"
+                        f"**Preview:**\n```\n{content[:500]}…\n```"
                     ),
-                    color=0xFFFFFF # Consistent white embed style
+                    color=0xFFFFFF
                 )
                 view = YesSkipPrompt(interaction.user)
                 prompt_msg = await interaction.followup.send(embed=embed, view=view)
                 await view.wait()
-                
-                # Check choice
                 if view.value is True:
                     messages_to_include.append(msg)
                 try:
@@ -1000,102 +1017,115 @@ class BoundierCog(commands.Cog):
             else:
                 messages_to_include.append(msg)
 
-        # 3. Compile context
-        if not messages_to_include:
-            try:
-                await status_msg.delete()
-            except Exception:
-                pass
-            await interaction.followup.send("❌ No messages to read from history.")
-            return
-
-        # Delete the initial 'Reading...' status embed now that we're compiling
+        # Clean up status embed
         try:
             await status_msg.delete()
         except Exception:
             pass
 
+        if not messages_to_include:
+            await interaction.followup.send(
+                embed=discord.Embed(description="❌ No messages to read from this channel.", color=0xFFFFFF)
+            )
+            return
+
+        # --- 4. Compile prompt ---
         history_str = ""
         for msg in messages_to_include:
             sender = msg.author.display_name
-            content = msg.clean_content or ""
-            if not content and msg.attachments:
-                content = "[Attachment]"
+            content = msg.clean_content or ("[Attachment]" if msg.attachments else "")
             history_str += f"[Speaker: {sender}]: {content}\n"
 
         compiled_prompt = (
-            f"Here are the last {msg_limit} messages from the channel context:\n\n"
+            f"Here are the last {len(messages_to_include)} messages from the channel:\n\n"
             f"{history_str}\n"
-            f"Instruction/Prompt: {prompt}"
+            f"Instruction: {prompt}"
         )
 
-        # 4. Route — open a fresh ChatGPT conversation, just like /new
-        # Register the parent channel so the manager can track it
-        if not self.bot.store.get_channel(current_channel.id):
-            ch_name = "".join(
-                c for c in current_channel.name if c.isalnum() or c in ("-", "_", " ")
-            ).strip() or f"channel-{current_channel.id}"
-            self.bot.store.save_channel(current_channel.id, ch_name, "")
+        # --- 5. Route response ---
+        is_in_thread = isinstance(current_channel, discord.Thread)
 
-        if current_channel.id in self._thread_forbidden_channels:
-            # Can't create threads here — stream directly into the channel via interaction
+        if is_in_thread:
+            # Already inside a thread — summarise right here, no new thread needed
+            thread_record = self.bot.store.get_thread(current_channel.id)
+            parent_id = thread_record[1] if thread_record else current_channel.parent_id or current_channel.id
+            parent_name = (self.bot.store.get_channel(parent_id) or [None, current_channel.name])[1]
             asyncio.create_task(self._process_message_stream(
                 thread=current_channel,
-                channel_id=current_channel.id,
-                channel_name=current_channel.name,
+                channel_id=parent_id,
+                channel_name=parent_name,
                 user_message=compiled_prompt,
                 file_paths=[],
-                is_first_response=True,
+                is_first_response=False,
                 author_name=author_display_name,
                 interaction=interaction,
-                require_auth=self._is_chatgpt_logged_in()
+                require_auth=logged_in
             ))
-            return
+        else:
+            # Main text channel — open a fresh thread for the response
+            if not self.bot.store.get_channel(current_channel.id):
+                ch_name = "".join(
+                    c for c in current_channel.name if c.isalnum() or c in ("-", "_", " ")
+                ).strip() or f"channel-{current_channel.id}"
+                self.bot.store.save_channel(current_channel.id, ch_name, "")
 
-        try:
-            thread_name = f"📖 {prompt[:60]}" if prompt else "Read History"
-            thread = await current_channel.create_thread(
-                name=thread_name[:100],
-                auto_archive_duration=60,
-                type=discord.ChannelType.public_thread
-            )
-            # Show user where we are responding
-            await interaction.followup.send(
-                embed=discord.Embed(
-                    description=f"Reading last **{msg_limit}** messages → {thread.mention}",
-                    color=0xFFFFFF
+            if current_channel.id in self._thread_forbidden_channels:
+                asyncio.create_task(self._process_message_stream(
+                    thread=current_channel,
+                    channel_id=current_channel.id,
+                    channel_name=current_channel.name,
+                    user_message=compiled_prompt,
+                    file_paths=[],
+                    is_first_response=True,
+                    author_name=author_display_name,
+                    interaction=interaction,
+                    require_auth=logged_in
+                ))
+                return
+
+            try:
+                thread_name = (f"📖 {prompt[:60]}" if prompt else "Read Summary")[:100]
+                thread = await current_channel.create_thread(
+                    name=thread_name,
+                    auto_archive_duration=60,
+                    type=discord.ChannelType.public_thread
                 )
-            )
-            # Echo the user's prompt inside the thread so context is clear
-            await thread.send(content=f"**{author_display_name}**: {prompt}")
-
-            asyncio.create_task(self._process_message_stream(
-                thread=thread,
-                channel_id=current_channel.id,
-                channel_name=current_channel.name,
-                user_message=compiled_prompt,
-                file_paths=[],
-                is_first_response=True,
-                author_name=author_display_name,
-                require_auth=self._is_chatgpt_logged_in()
-            ))
-        except discord.Forbidden:
-            logger.warning(f"/read: Forbidden to create thread in channel {current_channel.id}. Responding directly.")
-            self._thread_forbidden_channels.add(current_channel.id)
-            asyncio.create_task(self._process_message_stream(
-                thread=current_channel,
-                channel_id=current_channel.id,
-                channel_name=current_channel.name,
-                user_message=compiled_prompt,
-                file_paths=[],
-                is_first_response=True,
-                author_name=author_display_name,
-                interaction=interaction,
-                require_auth=self._is_chatgpt_logged_in()
-            ))
-        except Exception as thread_err:
-            logger.error(f"/read: Failed to create thread: {thread_err}", exc_info=True)
-            await interaction.followup.send(f"⚠️ Failed to create read thread: `{thread_err}`")
+                await interaction.followup.send(
+                    embed=discord.Embed(
+                        description=f"Read context compiled — responding in {thread.mention}",
+                        color=0xFFFFFF
+                    )
+                )
+                await thread.send(content=f"**{author_display_name}**: {prompt}")
+                asyncio.create_task(self._process_message_stream(
+                    thread=thread,
+                    channel_id=current_channel.id,
+                    channel_name=current_channel.name,
+                    user_message=compiled_prompt,
+                    file_paths=[],
+                    is_first_response=True,
+                    author_name=author_display_name,
+                    require_auth=logged_in
+                ))
+            except discord.Forbidden:
+                logger.warning(f"/read: thread creation forbidden in {current_channel.id}, responding directly.")
+                self._thread_forbidden_channels.add(current_channel.id)
+                asyncio.create_task(self._process_message_stream(
+                    thread=current_channel,
+                    channel_id=current_channel.id,
+                    channel_name=current_channel.name,
+                    user_message=compiled_prompt,
+                    file_paths=[],
+                    is_first_response=True,
+                    author_name=author_display_name,
+                    interaction=interaction,
+                    require_auth=logged_in
+                ))
+            except Exception as err:
+                logger.error(f"/read: thread creation failed: {err}", exc_info=True)
+                await interaction.followup.send(
+                    embed=discord.Embed(description=f"⚠️ Could not create thread: `{err}`", color=0xFFFFFF)
+                )
 
     async def _process_message_stream(
         self,
