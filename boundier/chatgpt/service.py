@@ -272,6 +272,22 @@ class ChatGPTService:
             start_time = asyncio.get_event_loop().time()
             if is_edit:
                 while True:
+                    # Check for auth redirect
+                    curr_url = self.page.url
+                    if "/auth/" in curr_url or "/login" in curr_url:
+                        raise PermissionError("Session expired (redirected to auth/login). Please run Option [2] in terminal.py to re-authorize.")
+                    
+                    # Check for Turnstile
+                    cf_frame = self.page.locator('iframe[src*="challenges.cloudflare.com"]').first
+                    if await cf_frame.count() > 0 and await cf_frame.is_visible():
+                        raise ConnectionError("Cloudflare Turnstile challenge detected. The request was blocked.")
+                        
+                    # Check for error banner
+                    err_banner = self.page.locator('div.text-token-text-error, div[class*="error-message"]').first
+                    if await err_banner.count() > 0 and await err_banner.is_visible():
+                        err_text = await err_banner.inner_text()
+                        raise RuntimeError(f"ChatGPT error banner detected: {err_text}")
+
                     try:
                         is_generating = await asyncio.wait_for(
                             self.page.evaluate(f"() => document.querySelector('{self.selectors.streaming_indicators}') !== null"),
@@ -290,6 +306,22 @@ class ChatGPTService:
             else:
                 try:
                     while True:
+                        # Check for auth redirect
+                        curr_url = self.page.url
+                        if "/auth/" in curr_url or "/login" in curr_url:
+                            raise PermissionError("Session expired (redirected to auth/login). Please run Option [2] in terminal.py to re-authorize.")
+                        
+                        # Check for Turnstile
+                        cf_frame = self.page.locator('iframe[src*="challenges.cloudflare.com"]').first
+                        if await cf_frame.count() > 0 and await cf_frame.is_visible():
+                            raise ConnectionError("Cloudflare Turnstile challenge detected. The request was blocked.")
+                            
+                        # Check for error banner
+                        err_banner = self.page.locator('div.text-token-text-error, div[class*="error-message"]').first
+                        if await err_banner.count() > 0 and await err_banner.is_visible():
+                            err_text = await err_banner.inner_text()
+                            raise RuntimeError(f"ChatGPT error banner detected: {err_text}")
+
                         try:
                             is_new_bubble = await asyncio.wait_for(
                                 self.page.evaluate(
