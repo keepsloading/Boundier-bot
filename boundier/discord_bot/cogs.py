@@ -996,6 +996,22 @@ class BoundierCog(commands.Cog):
         messages_to_include = []
         for msg in history_messages:
             content = msg.clean_content or ""
+            # Also pull embed content (covers bot replies like Boundier's own responses)
+            if msg.embeds:
+                embed_parts = []
+                for e in msg.embeds:
+                    if e.title:
+                        embed_parts.append(e.title)
+                    if e.description:
+                        embed_parts.append(e.description)
+                embed_text = " ".join(embed_parts).strip()
+                if embed_text:
+                    content = (content + "\n" + embed_text).strip() if content else embed_text
+            if not content and msg.attachments:
+                content = "[Attachment]"
+            if not content:
+                # Nothing readable — skip silently
+                continue
             if len(content) > 1000:
                 embed = discord.Embed(
                     title="Long message — include it?",
@@ -1033,8 +1049,23 @@ class BoundierCog(commands.Cog):
         history_str = ""
         for msg in messages_to_include:
             sender = msg.author.display_name
-            content = msg.clean_content or ("[Attachment]" if msg.attachments else "")
-            history_str += f"[Speaker: {sender}]: {content}\n"
+            content = msg.clean_content or ""
+            # Pull embed text (bot replies, link previews, etc.)
+            if msg.embeds:
+                embed_parts = []
+                for e in msg.embeds:
+                    if e.title:
+                        embed_parts.append(e.title)
+                    if e.description:
+                        embed_parts.append(e.description)
+                embed_text = " ".join(embed_parts).strip()
+                if embed_text:
+                    content = (content + "\n" + embed_text).strip() if content else embed_text
+            if not content and msg.attachments:
+                content = "[Attachment]"
+            if not content:
+                continue
+            history_str += f"[{sender}]: {content}\n"
 
         compiled_prompt = (
             f"Here are the last {len(messages_to_include)} messages from the channel:\n\n"
