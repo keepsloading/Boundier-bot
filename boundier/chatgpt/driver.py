@@ -141,7 +141,6 @@ class PlaywrightDriver:
             "sentry.io",
             "datadoghq",
             "google-analytics.com",
-            "statsig",
             "mixpanel.com",
             "segment.io",
             "amplitude",
@@ -149,7 +148,6 @@ class PlaywrightDriver:
             "browser-intake",
             "doubleclick.net",
             "googleadservices.com",
-            "statsig-api.net",
             "browser-intake-datadoghq.com"
         ]
         
