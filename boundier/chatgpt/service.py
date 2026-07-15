@@ -217,9 +217,10 @@ class ChatGPTService:
                 except Exception as e:
                     logger.warning(f"Timeout waiting for input elements to settle: {e}")
 
-                # Get a handle to the last assistant bubble before submitting to prevent history hydration race conditions
-                last_assistant_handle = await self.page.evaluate_handle(
-                    "() => { const els = document.querySelectorAll('[data-message-author-role=\"assistant\"], [data-turn=\"assistant\"]'); return els.length ? els[els.length - 1] : null; }"
+                # Get the state of the last assistant bubble before submitting to prevent history hydration race conditions
+                # We avoid JSHandles to prevent Protocol errors if the DOM is refreshed/hydrated.
+                last_assistant_state = await self.page.evaluate(
+                    "() => { const els = document.querySelectorAll('[data-message-author-role=\"assistant\"], [data-turn=\"assistant\"]'); return els.length ? (els[els.length - 1].getAttribute('data-message-id') || els.length.toString()) : 'none'; }"
                 )
                 
                 # Direct JavaScript Submission to bypass all Playwright click & fill actionability delays
@@ -325,12 +326,14 @@ class ChatGPTService:
                         try:
                             is_new_bubble = await asyncio.wait_for(
                                 self.page.evaluate(
-                                    """(lastBefore) => {
+                                    """(lastState) => {
                                         const els = document.querySelectorAll('[data-message-author-role="assistant"], [data-turn="assistant"]');
-                                        const currentLast = els.length ? els[els.length - 1] : null;
-                                        return currentLast !== null && currentLast !== lastBefore;
+                                        if (els.length === 0) return false;
+                                        const currentLast = els[els.length - 1];
+                                        const currentState = currentLast.getAttribute('data-message-id') || els.length.toString();
+                                        return currentState !== lastState;
                                     }""",
-                                    last_assistant_handle
+                                    last_assistant_state
                                 ),
                                 timeout=5.0
                             )
@@ -344,10 +347,7 @@ class ChatGPTService:
                             raise TimeoutError("Timeout waiting for ChatGPT response generation to start.")
                         await asyncio.sleep(0.5)
                 finally:
-                    try:
-                        await last_assistant_handle.dispose()
-                    except Exception:
-                        pass
+                    pass
         except Exception as e:
             if isinstance(e, TimeoutError):
                 logger.critical(
@@ -367,6 +367,7 @@ class ChatGPTService:
         logger.info("Scraping ChatGPT response stream...")
         last_text = ""
         unchanged_polls = 0
+        empty_polls = 0
         max_unchanged_polls = 60
         
         js_scrape_stream = """
@@ -469,7 +470,9 @@ class ChatGPTService:
             let text = "";
             if (assistants.length > 0) {
                 const lastAssistant = assistants[assistants.length - 1];
-                const responseEl = lastAssistant.querySelector('div.markdown');
+                let responseEl = lastAssistant.querySelector('div.markdown, div.prose');
+                if (!responseEl) responseEl = lastAssistant;
+
                 if (responseEl) {
                     // Temporarily hide any source-citation UI blocks that ChatGPT web-search
                     // injects (e.g. div[class*="source"], div[data-testid*="citation"],
@@ -527,6 +530,7 @@ class ChatGPTService:
                     yield delta
                 last_text = current_text
                 unchanged_polls = 0
+                empty_polls = 0
                 try:
                     # Clear V8 heap memory actively during generation
                     await self.page.evaluate("window.gc && window.gc()")
@@ -534,9 +538,14 @@ class ChatGPTService:
                     pass
             else:
                 if is_generating and current_text == "":
+                    empty_polls += 1
+                    if empty_polls >= 60:
+                        logger.warning("Generation stream stalled (empty text). Terminating reader.")
+                        break
                     unchanged_polls = 0
                 else:
                     unchanged_polls += 1
+                    empty_polls = 0
                 
             # If ChatGPT has finished generating (send button is active), settle within 2 ticks (1.0s)
             if not is_generating and unchanged_polls >= 2:
