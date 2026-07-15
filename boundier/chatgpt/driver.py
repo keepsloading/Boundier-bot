@@ -40,38 +40,69 @@ class PlaywrightDriver:
         }
         
         logger.info(f"Launching Chromium context. Profile dir: '{user_data_dir}', Headless: {self.config.playwright.headless}")
-        self.context = await self.playwright.chromium.launch_persistent_context(
-            user_data_dir=user_data_dir,
-            headless=self.config.playwright.headless,
-            viewport=viewport_dims,
-            user_agent=user_agent,
-            locale=locale,
-            extra_http_headers=extra_headers,
-            args=[
-                "--disable-blink-features=AutomationControlled",
-                "--no-sandbox",
-                "--start-minimized",
-                "--window-position=100,100",
-                "--disable-gpu",
-                "--disable-dev-shm-usage",
-                "--disable-extensions",
-                "--disable-background-networking",
-                "--disable-background-timer-throttling",
-                "--disable-renderer-backgrounding",
-                "--disable-software-rasterizer",
-                "--no-first-run",
-                "--no-zygote",
-                "--mute-audio",
-                "--disable-3d-apis",
-                "--disable-accelerated-2d-canvas",
-                "--disable-webgl",
-                "--disable-audio-output",
-                "--renderer-process-limit=1",
-                "--disable-site-isolation-trials",
-                "--disable-features=Translate,OptimizationHints,BackForwardCache,MediaRouter",
-                "--js-flags=--expose-gc --max-old-space-size=384"
-            ]
-        )
+        
+        args=[
+            "--disable-blink-features=AutomationControlled",
+            "--no-sandbox",
+            "--start-minimized",
+            "--window-position=100,100",
+            "--disable-gpu",
+            "--disable-dev-shm-usage",
+            "--disable-extensions",
+            "--disable-background-networking",
+            "--disable-background-timer-throttling",
+            "--disable-renderer-backgrounding",
+            "--disable-software-rasterizer",
+            "--no-first-run",
+            "--no-zygote",
+            "--mute-audio",
+            "--disable-3d-apis",
+            "--disable-accelerated-2d-canvas",
+            "--disable-webgl",
+            "--disable-audio-output",
+            "--renderer-process-limit=1",
+            "--disable-site-isolation-trials",
+            "--disable-features=Translate,OptimizationHints,BackForwardCache,MediaRouter",
+            "--js-flags=--expose-gc --max-old-space-size=384"
+        ]
+
+        if not self.config.playwright.headless:
+            try:
+                # When running locally in headed mode for authorization, attempt to use the system Chrome
+                # and ignore automation flags to bypass Google OAuth anti-bot detection.
+                logger.info("Attempting to launch system Google Chrome to bypass Google OAuth security checks...")
+                self.context = await self.playwright.chromium.launch_persistent_context(
+                    user_data_dir=user_data_dir,
+                    headless=False,
+                    viewport=viewport_dims,
+                    user_agent=user_agent,
+                    locale=locale,
+                    extra_http_headers=extra_headers,
+                    args=args,
+                    channel="chrome",
+                    ignore_default_args=["--enable-automation"]
+                )
+            except Exception as chrome_err:
+                logger.warning(f"Could not launch system Chrome ({chrome_err}). Falling back to default Playwright Chromium...")
+                self.context = await self.playwright.chromium.launch_persistent_context(
+                    user_data_dir=user_data_dir,
+                    headless=False,
+                    viewport=viewport_dims,
+                    user_agent=user_agent,
+                    locale=locale,
+                    extra_http_headers=extra_headers,
+                    args=args
+                )
+        else:
+            self.context = await self.playwright.chromium.launch_persistent_context(
+                user_data_dir=user_data_dir,
+                headless=True,
+                viewport=viewport_dims,
+                user_agent=user_agent,
+                locale=locale,
+                extra_http_headers=extra_headers,
+                args=args
+            )
         
         self.context.set_default_timeout(self.config.playwright.timeout_ms)
         
