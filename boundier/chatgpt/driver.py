@@ -46,21 +46,6 @@ class PlaywrightDriver:
             
         if not storage_state_str:
             storage_state_str = os.environ.get("CHATGPT_STORAGE_STATE")
-            
-        storage_state = None
-        if storage_state_str:
-            try:
-                import json
-                state_dict = json.loads(storage_state_str)
-                if isinstance(state_dict, dict) and ("cookies" in state_dict or "origins" in state_dict):
-                    storage_state = state_dict
-                    logger.info("Sync: Valid JSON storage state (cookies + localStorage) loaded for launch.")
-                elif isinstance(state_dict, list):
-                    # Backward compatibility if only cookies list was stored
-                    storage_state = {"cookies": state_dict, "origins": []}
-                    logger.info("Sync: Cookie list parsed for launch.")
-            except Exception as e:
-                logger.error(f"Error parsing storage state: {e}")
 
         logger.info(f"Launching Chromium context. Profile dir: '{user_data_dir}', Headless: {self.config.playwright.headless}")
         
@@ -103,8 +88,7 @@ class PlaywrightDriver:
                     extra_http_headers=extra_headers,
                     args=args,
                     channel="chrome",
-                    ignore_default_args=["--enable-automation"],
-                    storage_state=storage_state
+                    ignore_default_args=["--enable-automation"]
                 )
             except Exception as chrome_err:
                 logger.warning(f"Could not launch system Chrome ({chrome_err}). Falling back to default Playwright Chromium...")
@@ -115,8 +99,7 @@ class PlaywrightDriver:
                     user_agent=user_agent,
                     locale=locale,
                     extra_http_headers=extra_headers,
-                    args=args,
-                    storage_state=storage_state
+                    args=args
                 )
         else:
             self.context = await self.playwright.chromium.launch_persistent_context(
@@ -126,8 +109,7 @@ class PlaywrightDriver:
                 user_agent=user_agent,
                 locale=locale,
                 extra_http_headers=extra_headers,
-                args=args,
-                storage_state=storage_state
+                args=args
             )
         
         self.context.set_default_timeout(self.config.playwright.timeout_ms)
@@ -191,8 +173,44 @@ class PlaywrightDriver:
         """
         await self.context.add_init_script(init_script)
         
+        # Inject cookies and prepare localStorage injection via init script
+        if storage_state_str:
+            try:
+                import json
+                state_dict = json.loads(storage_state_str)
+                cookies = []
+                origins = []
+                if isinstance(state_dict, dict):
+                    cookies = state_dict.get("cookies", [])
+                    origins = state_dict.get("origins", [])
+                elif isinstance(state_dict, list):
+                    cookies = state_dict
+                
+                # 1. Inject cookies
+                if isinstance(cookies, list) and cookies:
+                    await self.context.add_cookies(cookies)
+                    logger.info("Successfully injected session cookies into browser context.")
+                
+                # 2. Inject localStorage via init script on page loads
+                if isinstance(origins, list) and origins:
+                    for origin_data in origins:
+                        if "chatgpt.com" in origin_data["origin"]:
+                            storage_items = origin_data["storage"]
+                            storage_map = {item["name"]: item["value"] for item in storage_items}
+                            
+                            ls_script = f"""
+                            try {{
+                                const map = {json.dumps(storage_map)};
+                                for (const [k, v] of Object.entries(map)) {{
+                                    window.localStorage.setItem(k, v);
+                                }}
+                            }} catch(e) {{}}
+                            """
+                            await self.context.add_init_script(ls_script)
+                            logger.info("Successfully registered localStorage injection script for chatgpt.com.")
+            except Exception as e:
+                logger.error(f"Error restoring storage state: {e}")
 
-        
         self._leased_pages = set()
         pages = self.context.pages
         if pages:
