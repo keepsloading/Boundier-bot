@@ -18,3 +18,8 @@ logs/
 
 # Configuration overrides
 .env
+
+# Deployment configuration (ignored in repository, kept locally)
+render.yaml
+Dockerfile
+

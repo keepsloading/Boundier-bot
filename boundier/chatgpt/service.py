@@ -55,7 +55,7 @@ class ChatGPTService:
             if await sidebar_link.count() > 0 and await sidebar_link.first.is_visible():
                 logger.info(f"Sidebar link found. Clicking to trigger SPA transition to chat: {chat_id}")
                 await sidebar_link.first.click(force=True)
-                await self.page.wait_for_selector(self.selectors.chat_input, timeout=10000)
+                await self.page.locator(self.selectors.chat_input).first.wait_for(state="attached", timeout=10000)
                 logger.info(f"Successfully transitioned to conversation via sidebar: {chat_id}")
                 return True
         except Exception as spa_err:
@@ -63,7 +63,7 @@ class ChatGPTService:
 
         try:
             await self.page.goto(url, wait_until="domcontentloaded", timeout=self.driver.config.playwright.timeout_ms)
-            await self.page.wait_for_selector(self.selectors.chat_input, timeout=self.driver.config.playwright.timeout_ms)
+            await self.page.locator(self.selectors.chat_input).first.wait_for(state="attached", timeout=self.driver.config.playwright.timeout_ms)
             logger.info(f"Successfully opened conversation: {chat_id}")
             return True
         except Exception as e:
@@ -71,7 +71,7 @@ class ChatGPTService:
             try:
                 await self.page.goto(url, wait_until="domcontentloaded", timeout=self.driver.config.playwright.timeout_ms)
                 await self.page.reload(wait_until="domcontentloaded", timeout=self.driver.config.playwright.timeout_ms)
-                await self.page.wait_for_selector(self.selectors.chat_input, timeout=self.driver.config.playwright.timeout_ms)
+                await self.page.locator(self.selectors.chat_input).first.wait_for(state="attached", timeout=self.driver.config.playwright.timeout_ms)
                 logger.info(f"Successfully opened conversation on retry: {chat_id}")
                 return True
             except Exception as retry_err:
@@ -87,12 +87,12 @@ class ChatGPTService:
         try:
             if self.page.url == url or self.page.url == f"{url}/":
                 input_locator = self.page.locator(self.selectors.chat_input)
-                if await input_locator.count() > 0 and await input_locator.first.is_visible():
-                    logger.info("Already on a new ChatGPT conversation screen and input is visible.")
+                if await input_locator.count() > 0 and await input_locator.first.is_attached():
+                    logger.info("Already on a new ChatGPT conversation screen and input is attached.")
                     return True
             
             await self.page.goto(url, wait_until="domcontentloaded", timeout=self.driver.config.playwright.timeout_ms)
-            await self.page.wait_for_selector(self.selectors.chat_input, timeout=self.driver.config.playwright.timeout_ms)
+            await self.page.locator(self.selectors.chat_input).first.wait_for(state="attached", timeout=self.driver.config.playwright.timeout_ms)
             logger.info("New ChatGPT conversation screen loaded.")
             return True
         except Exception as e:
@@ -100,7 +100,7 @@ class ChatGPTService:
             try:
                 await self.page.goto(url, wait_until="domcontentloaded", timeout=self.driver.config.playwright.timeout_ms)
                 await self.page.reload(wait_until="domcontentloaded", timeout=self.driver.config.playwright.timeout_ms)
-                await self.page.wait_for_selector(self.selectors.chat_input, timeout=self.driver.config.playwright.timeout_ms)
+                await self.page.locator(self.selectors.chat_input).first.wait_for(state="attached", timeout=self.driver.config.playwright.timeout_ms)
                 logger.info("New ChatGPT conversation screen loaded on retry.")
                 return True
             except Exception as retry_err:
@@ -181,15 +181,43 @@ class ChatGPTService:
                 """
                 await self.page.evaluate(js_edit, prompt)
             else:
+                # Check if the page is currently stuck in generating state (stop button visible)
+                try:
+                    stop_btn = self.page.locator('button[data-testid="stop-button"]').first
+                    if await stop_btn.count() > 0 and await stop_btn.is_visible():
+                        logger.info("ChatGPT UI is stuck in generating state (stop button visible). Forcing page reload to reset.")
+                        await self.page.reload(wait_until="domcontentloaded")
+                except Exception as e:
+                    logger.warning(f"Error checking for stuck stop button: {e}")
+
+                # Wait for the chat input to be ready in Python to allow Next.js hydration to complete
+                try:
+                    logger.info("Waiting for page input to settle in Python...")
+                    await self.page.locator(self.selectors.chat_input).first.wait_for(state="attached", timeout=15000)
+                    # Let the event loop rest briefly to ensure Next.js handlers are fully bound
+                    await asyncio.sleep(2.0)
+                except Exception as e:
+                    logger.warning(f"Timeout waiting for input elements to settle: {e}")
+
                 # Handle attachments upload
                 if file_paths:
                     logger.info(f"Uploading file attachments to ChatGPT: {file_paths}")
                     try:
-                        file_input = self.page.locator(self.selectors.file_input)
+                        # Determine if we are uploading an image or a document/file
+                        is_image = any(f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.webp')) for f in file_paths)
+                        if is_image:
+                            file_input = self.page.locator('input#upload-photos, input[data-testid="upload-photos-input"]').first
+                            if await file_input.count() == 0:
+                                file_input = self.page.locator(self.selectors.file_input).first
+                        else:
+                            file_input = self.page.locator('input#upload-files').first
+                            if await file_input.count() == 0:
+                                file_input = self.page.locator(self.selectors.file_input).first
+
                         await file_input.wait_for(state="attached", timeout=5000)
                     except Exception as upload_err:
                         logger.critical(
-                            f"[CRITICAL] ChatGPT UI change detected! File input element ('{self.selectors.file_input}') was not found. "
+                            f"[CRITICAL] ChatGPT UI change detected! File uploader element was not found. "
                             f"Please check selectors.yaml."
                         )
                         raise RuntimeError(f"File upload element not found: {upload_err}")
@@ -206,16 +234,6 @@ class ChatGPTService:
                             f"Please check selectors.yaml."
                         )
                         raise TimeoutError(f"Timeout waiting for enabled send button after file upload: {e}")
-                    
-                # Wait for the chat input and send button to be ready in Python to allow Next.js hydration to complete
-                try:
-                    logger.info("Waiting for page input and send button to settle in Python...")
-                    await self.page.wait_for_selector(self.selectors.chat_input, timeout=15000)
-                    await self.page.wait_for_selector('button[data-testid="send-button"], button[aria-label*="Send"]', timeout=10000)
-                    # Let the event loop rest briefly to ensure Next.js handlers are fully bound
-                    await asyncio.sleep(2.0)
-                except Exception as e:
-                    logger.warning(f"Timeout waiting for input elements to settle: {e}")
 
                 # Get the state of the last assistant bubble before submitting to prevent history hydration race conditions
                 # We avoid JSHandles to prevent Protocol errors if the DOM is refreshed/hydrated.
@@ -226,25 +244,56 @@ class ChatGPTService:
                 # Direct JavaScript Submission to bypass all Playwright click & fill actionability delays
                 js_submit = """
                 async (text) => {
-                    const textarea = document.querySelector('div#prompt-textarea, textarea[placeholder*="ChatGPT"], textarea[placeholder*="Ask"], textarea.wcDTda_fallbackTextarea');
+                    const queryTextarea = () => {
+                        const els = document.querySelectorAll('div#prompt-textarea, textarea[placeholder*="ChatGPT"], textarea[placeholder*="Ask"], textarea.wcDTda_fallbackTextarea');
+                        for (const el of els) {
+                            const rect = el.getBoundingClientRect();
+                            if (rect.width > 0 && rect.height > 0 && window.getComputedStyle(el).display !== 'none') {
+                                return el;
+                            }
+                        }
+                        return els[0];
+                    };
+                    const textarea = queryTextarea();
                     if (!textarea) throw new Error("Chat input textarea not found.");
                     
                     textarea.focus();
+                    
+                    // Clear existing text first
                     if (textarea.tagName === 'DIV') {
+                        textarea.innerHTML = '';
                         document.execCommand('insertText', false, text);
                     } else {
-                        const setter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value")?.set;
-                        if (setter) {
-                            setter.call(textarea, text);
+                        textarea.select();
+                        const success = document.execCommand('insertText', false, text);
+                        if (!success) {
+                            const setter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value")?.set;
+                            if (setter) {
+                                setter.call(textarea, text);
+                            } else {
+                                textarea.value = text;
+                            }
+                            textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                            textarea.dispatchEvent(new Event('change', { bubbles: true }));
                         } else {
-                            textarea.value = text;
+                            textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                            textarea.dispatchEvent(new Event('change', { bubbles: true }));
                         }
                     }
-                    textarea.dispatchEvent(new Event('input', { bubbles: true }));
-                    textarea.dispatchEvent(new Event('change', { bubbles: true }));
+                    
+                    const querySubmitBtn = () => {
+                        const els = document.querySelectorAll('button[data-testid="send-button"], button[aria-label*="Send"], button[aria-label="Send prompt"]');
+                        for (const el of els) {
+                            const rect = el.getBoundingClientRect();
+                            if (rect.width > 0 && rect.height > 0 && window.getComputedStyle(el).display !== 'none') {
+                                return el;
+                            }
+                        }
+                        return els[0];
+                    };
                     
                     for (let i = 0; i < 60; i++) {
-                        const submitBtn = document.querySelector('button[data-testid="send-button"], button[aria-label*="Send"]');
+                        const submitBtn = querySubmitBtn();
                         if (submitBtn && !submitBtn.disabled && submitBtn.getAttribute('aria-disabled') !== 'true') {
                             submitBtn.click();
                             return true;
@@ -470,9 +519,7 @@ class ChatGPTService:
             let text = "";
             if (assistants.length > 0) {
                 const lastAssistant = assistants[assistants.length - 1];
-                let responseEl = lastAssistant.querySelector('div.markdown, div.prose');
-                if (!responseEl) responseEl = lastAssistant;
-
+                let responseEl = lastAssistant.querySelector('div.markdown, div.prose, .markdown, .prose');
                 if (responseEl) {
                     // Temporarily hide any source-citation UI blocks that ChatGPT web-search
                     // injects (e.g. div[class*="source"], div[data-testid*="citation"],
@@ -539,7 +586,7 @@ class ChatGPTService:
             else:
                 if is_generating and current_text == "":
                     empty_polls += 1
-                    if empty_polls >= 60:
+                    if empty_polls >= 180:  # Allow up to 90 seconds of empty text for DALL-E generation
                         logger.warning("Generation stream stalled (empty text). Terminating reader.")
                         break
                     unchanged_polls = 0
@@ -552,8 +599,10 @@ class ChatGPTService:
                 if current_text != "":
                     break
                     
-            if unchanged_polls >= 40:
-                logger.warning("Generation stream stalled. Terminating reader.")
+            # If is_generating is True, allow more time for slow tasks like DALL-E generation
+            stall_limit = 180 if is_generating else 40
+            if unchanged_polls >= stall_limit:
+                logger.warning(f"Generation stream stalled (is_generating={is_generating}). Terminating reader.")
                 await self.save_diagnostics_screenshot("stream_stalled")
                 break
                 

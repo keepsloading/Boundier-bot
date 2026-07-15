@@ -46,13 +46,14 @@ def load_env_defaults():
     return defaults
 
 def load_config_defaults():
-    defaults = {"admin_channel_id": ""}
+    defaults = {"admin_channel_id": "", "max_users": "5"}
     if os.path.exists("config.yaml"):
         try:
             import yaml
             with open("config.yaml", "r", encoding="utf-8") as f:
                 cfg = yaml.safe_load(f) or {}
                 defaults["admin_channel_id"] = str(cfg.get("discord", {}).get("admin_channel_id", ""))
+                defaults["max_users"] = str(cfg.get("max_users", 5))
         except Exception:
             pass
     return defaults
@@ -78,16 +79,26 @@ def configure_interactive():
     except ValueError:
         print("Error: Admin Channel ID must be an integer.")
         return
-        
-    # 3. GitHub PAT
-    pat = input(f"GitHub Personal Access Token (PAT) (Optional for Gist Backup) [{env_defs['GITHUB_PAT'][:15]}...]: ").strip()
-    if not pat:
-        pat = env_defs["GITHUB_PAT"]
-        
-    # 4. Encryption Key
-    enc_key = input(f"Session Encryption Key (Optional for Gist Backup) [{env_defs['ENCRYPTION_KEY'][:15]}...]: ").strip()
-    if not enc_key:
-        enc_key = env_defs["ENCRYPTION_KEY"]
+
+    # 3. Max Users (1-5)
+    print()
+    print("How many people can use this bot?")
+    print("  1 = Only you")
+    print("  2 = You + 1 other")
+    print("  3 = You + 2 others")
+    print("  4 = You + 3 others")
+    print("  5 = You + 4 others (default)")
+    max_users_str = input(f"Enter a number (1-5) [{cfg_defs['max_users']}]: ").strip()
+    if not max_users_str:
+        max_users_str = cfg_defs["max_users"]
+    try:
+        max_users = int(max_users_str)
+        if max_users < 1 or max_users > 5:
+            print("Error: Please enter a number between 1 and 5.")
+            return
+    except ValueError:
+        print("Error: Please enter a number between 1 and 5.")
+        return
         
     # Write to .env
     env_content = {}
@@ -100,8 +111,6 @@ def configure_interactive():
                     env_content[k.strip()] = v.strip().strip('"').strip("'")
     
     env_content["DISCORD_TOKEN"] = token
-    env_content["GITHUB_PAT"] = pat
-    env_content["ENCRYPTION_KEY"] = enc_key
     
     with open(".env", "w", encoding="utf-8") as f:
         for k, v in env_content.items():
@@ -123,6 +132,9 @@ def configure_interactive():
     
     # Save token for compatibility if present
     config_content["discord"]["token"] = token
+    
+    # Write max_users at top level
+    config_content["max_users"] = max_users
     
     # Make sure other keys exist
     if "playwright" not in config_content:
@@ -180,9 +192,12 @@ async def run_headed_login():
         
         if authenticated:
             print("\n[SUCCESS] Login verified successfully!")
-            # Trigger immediate manual sync to Gist
-            await driver.save_gist_session_state()
-            print("[SUCCESS] Session cookies synced to Gist and exported locally.")
+            # Trigger manual sync to Gist only if credentials are set
+            if os.environ.get("GITHUB_PAT") or load_env_defaults().get("GITHUB_PAT"):
+                await driver.save_gist_session_state()
+                print("[SUCCESS] Session cookies exported locally and synced to Gist backup.")
+            else:
+                print("[SUCCESS] Session cookies exported locally.")
         else:
             print("\n[ERROR] Login wait period timed out or failed.")
             
@@ -214,31 +229,8 @@ async def run_diagnostics():
     
     config = load_config("config.yaml")
     
-    # 1. Test Gist Sync & PAT
-    print("\n1. Testing GitHub PAT and Gist connection...")
-    github_pat = os.environ.get("GITHUB_PAT") or load_env_defaults().get("GITHUB_PAT")
-    if github_pat:
-        # Check connection
-        import urllib.request
-        import json
-        url_list = "https://api.github.com/gists"
-        headers = {
-            "Authorization": f"token {github_pat}",
-            "Accept": "application/vnd.github.v3+json",
-            "User-Agent": "Boundier-Bot"
-        }
-        req = urllib.request.Request(url_list, headers=headers)
-        try:
-            with urllib.request.urlopen(req, timeout=8) as res:
-                res.read()
-            print("   [PASS] GitHub PAT validated. Successfully connected to GitHub Gist API.")
-        except Exception as e:
-            print(f"   [FAIL] GitHub API connection failed: {e}")
-    else:
-        print("   [SKIP] GITHUB_PAT not set in environment or .env. Session syncing disabled.")
-        
-    # 2. Test Discord Token
-    print("\n2. Testing Discord Bot Token connection...")
+    # 1. Test Discord Token
+    print("\n1. Testing Discord Bot Token connection...")
     discord_token = os.environ.get("DISCORD_TOKEN") or load_env_defaults().get("DISCORD_TOKEN")
     if discord_token:
         import urllib.request
@@ -258,8 +250,8 @@ async def run_diagnostics():
     else:
         print("   [FAIL] DISCORD_TOKEN is not set. Discord Bot will not launch.")
         
-    # 3. Test ChatGPT Session Cookie status
-    print("\n3. Testing ChatGPT session status (Headless browser check)...")
+    # 2. Test ChatGPT Session Cookie status
+    print("\n2. Testing ChatGPT session status (Headless browser check)...")
     driver = PlaywrightDriver(config)
     await driver.start()
     try:
@@ -288,7 +280,7 @@ def run_discord_bot():
 def main():
     while True:
         print_banner()
-        print("[1] Interactive Configuration (Set Token, PAT, Keys)")
+        print("[1] Interactive Configuration (Set Token, Admin Channel)")
         print("[2] Authorize ChatGPT (Headed Browser Login)")
         print("[3] Bootstrap SQLite Database & Memories")
         print("[4] Run Self-Diagnostics (Session / Discord Checks)")

@@ -1,0 +1,17 @@
+PROMPT: Create a Word document containing the word hello and nothing else.
+
+RESPONSE STREAMED TEXT:
+Done.
+
+
+You can download the Word document here: **hello.docx**
+
+DOM TEXT:
+Done.
+You can download the Word document here: hello.docx 
+
+DOM HTML:
+<p data-start="0" data-end="5">Done.</p>
+<p data-start="7" data-end="134" data-is-last-node="" data-is-only-node="">You can download the Word document here: <span class="" data-state="closed"><button class="behavior-btn hover:entity-accent focus-visible:focus-ring entity-underline inline cursor-pointer appearance-none border-0 bg-transparent p-0 text-start align-baseline text-inherit" type="button"><strong data-start="49" data-end="63">hello.docx</strong></button></span> <span class="align-middle" data-state="closed"><button aria-label="Coding Citation" class="rounded-xl px-1 text-token-text-secondary bg-token-bg-tertiary hover:text-token-text-primary hover:bg-token-interactive-bg-secondary-selected"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" aria-hidden="true" class="icon-sm"><use href="/cdn/assets/sprites-core-fec7759e.svg#e45ab3" fill="currentColor"></use></svg></button></span></p>
+
+EXTRACTED ASSETS: []

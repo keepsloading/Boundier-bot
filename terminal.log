@@ -1,0 +1,1223 @@
+2026-07-15 11:08:40,766 [INFO] Starting Playwright driver for ChatGPT...
+2026-07-15 11:08:42,970 [INFO] Launching Chromium context. Profile dir: 'c:\Users\sujay\Downloads\boundier_bot\browser_profile', Headless: False
+2026-07-15 11:08:51,247 [INFO] Sync: GITHUB_PAT and ENCRYPTION_KEY detected. Looking for persistent session Gist...
+2026-07-15 11:08:53,179 [WARNING] Sync: Failed to load persistent session from Gist: 
+2026-07-15 11:08:53,196 [INFO] Playwright driver initialized successfully.
+2026-07-15 11:08:58,230 [WARNING] Awaiting manual login. You have 300 seconds to log in using the browser window...
+2026-07-15 11:08:58,972 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:08:58,972 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:08:59,425 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=True
+2026-07-15 11:08:59,436 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:08:59,507 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:08:59,507 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=True
+2026-07-15 11:08:59,831 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:08:59,907 [INFO] BROWSER CONSOLE: [warning] [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment
+2026-07-15 11:08:59,907 [INFO] BROWSER CONSOLE: [warning] [GSI_LOGGER]: Currently, you disable FedCM on Google One Tap. FedCM for One Tap will become mandatory soon, and you won’t be able to disable it. Refer to the migration guide to update your code accordingly to ensure users will not be blocked from logging in. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration
+2026-07-15 11:09:03,601 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:09:03,601 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:09:04,607 [INFO] BROWSER CONSOLE: [error] `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://radix-ui.com/primitives/docs/components/dialog
+2026-07-15 11:09:04,785 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=True
+2026-07-15 11:09:04,802 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:09:04,918 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:09:04,918 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=True
+2026-07-15 11:09:05,386 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:09:07,402 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:09:07,402 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:09:07,535 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=True
+2026-07-15 11:09:07,536 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:09:07,587 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:09:07,587 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=True
+2026-07-15 11:09:08,110 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:09:10,125 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:09:10,125 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:09:10,151 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=True
+2026-07-15 11:09:10,156 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:09:10,216 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:09:10,216 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=True
+2026-07-15 11:09:10,485 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:09:12,503 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:09:12,503 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:09:12,541 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=True
+2026-07-15 11:09:12,549 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:09:12,620 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:09:12,620 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=True
+2026-07-15 11:09:12,889 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:09:14,901 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:09:14,901 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:09:14,933 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=True
+2026-07-15 11:09:14,939 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:09:14,999 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:09:14,999 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=True
+2026-07-15 11:09:15,321 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:09:17,349 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:09:17,349 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:09:17,404 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=True
+2026-07-15 11:09:17,623 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:09:17,764 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:09:17,765 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=True
+2026-07-15 11:09:18,450 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:09:18,559 [INFO] BROWSER CONSOLE: [error] Failed to load resource: the server responded with a status of 500 ()
+2026-07-15 11:09:18,588 [INFO] BROWSER CONSOLE: [error] [next-auth][error][CLIENT_FETCH_ERROR] 
+https://next-auth.js.org/errors#client_fetch_error Failed to execute 'json' on 'Response': Unexpected end of JSON input {error: Object, url: /api/auth/providers, message: Failed to execute 'json' on 'Response': Unexpected end of JSON input}
+2026-07-15 11:09:19,391 [INFO] BROWSER CONSOLE: [error] TypeError: Failed to fetch
+    at o (https://chatgpt.com/cdn/assets/2340486e-i94pm3kv3z1ngaiv.js:26:3287)
+    at Jre.postMetrics (https://chatgpt.com/cdn/assets/4813494d-n80qxxy3ebindl2e.js:2:64103)
+    at Jre.flush (https://chatgpt.com/cdn/assets/4813494d-n80qxxy3ebindl2e.js:2:63167)
+    at https://chatgpt.com/cdn/assets/4813494d-n80qxxy3ebindl2e.js:2:62683 {json: {"counters":[{"namespace":"segment","metric":"Clie…fied-126"},"values":[1384]}],"client_type":"web"}}
+2026-07-15 11:09:20,724 [INFO] Session check diagnostics - URL: https://chatgpt.com/auth/error?error=undefined | Title: ChatGPT
+2026-07-15 11:09:20,726 [WARNING] Session unverified: Redirected to landing page/login URL: https://chatgpt.com/auth/error?error=undefined
+2026-07-15 11:09:21,369 [INFO] BROWSER CONSOLE: [warning] [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment
+2026-07-15 11:09:21,377 [INFO] BROWSER CONSOLE: [warning] [GSI_LOGGER]: Currently, you disable FedCM on Google One Tap. FedCM for One Tap will become mandatory soon, and you won’t be able to disable it. Refer to the migration guide to update your code accordingly to ensure users will not be blocked from logging in. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration
+2026-07-15 11:09:22,896 [INFO] Session check diagnostics - URL: https://chatgpt.com/auth/error?error=undefined | Title: ChatGPT
+2026-07-15 11:09:22,898 [WARNING] Session unverified: Redirected to landing page/login URL: https://chatgpt.com/auth/error?error=undefined
+2026-07-15 11:09:24,918 [INFO] Session check diagnostics - URL: https://chatgpt.com/auth/login | Title: Get started | ChatGPT
+2026-07-15 11:09:24,918 [WARNING] Session unverified: Redirected to landing page/login URL: https://chatgpt.com/auth/login
+2026-07-15 11:19:56,619 [ERROR] Error checking session status: Page.title: Target page, context or browser has been closed
+Traceback (most recent call last):
+  File "c:\Users\sujay\Downloads\boundier_bot\boundier\chatgpt\driver.py", line 290, in check_session_active
+    return False
+                 
+  File "C:\Users\sujay\AppData\Roaming\Python\Python312\site-packages\playwright\async_api\_generated.py", line 9749, in title
+    return mapping.from_maybe_impl(await self._impl_obj.title())
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sujay\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_page.py", line 829, in title
+    return await self._main_frame.title()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sujay\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_frame.py", line 824, in title
+    return await self._channel.send("title", None)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sujay\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_connection.py", line 69, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sujay\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_connection.py", line 558, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.TargetClosedError: Page.title: Target page, context or browser has been closed
+2026-07-15 11:19:59,129 [ERROR] Error checking session status: Page.title: Target page, context or browser has been closed
+Traceback (most recent call last):
+  File "c:\Users\sujay\Downloads\boundier_bot\boundier\chatgpt\driver.py", line 290, in check_session_active
+    return False
+                 
+  File "C:\Users\sujay\AppData\Roaming\Python\Python312\site-packages\playwright\async_api\_generated.py", line 9749, in title
+    return mapping.from_maybe_impl(await self._impl_obj.title())
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sujay\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_page.py", line 829, in title
+    return await self._main_frame.title()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sujay\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_frame.py", line 824, in title
+    return await self._channel.send("title", None)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sujay\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_connection.py", line 69, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sujay\AppData\Roaming\Python\Python312\site-packages\playwright\_impl\_connection.py", line 558, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.TargetClosedError: Page.title: Target page, context or browser has been closed
+2026-07-15 11:20:20,945 [INFO] Starting Playwright driver for ChatGPT...
+2026-07-15 11:20:22,785 [INFO] Launching Chromium context. Profile dir: 'C:\Users\sujay\Downloads\boundier_bot\browser_profile', Headless: False
+2026-07-15 11:20:22,785 [INFO] Attempting to launch system Google Chrome to bypass Google OAuth security checks...
+2026-07-15 11:20:24,980 [INFO] Sync: GITHUB_PAT and ENCRYPTION_KEY detected. Looking for persistent session Gist...
+2026-07-15 11:20:26,219 [INFO] Sync: Successfully loaded and decrypted persistent session from Gist.
+2026-07-15 11:20:26,254 [INFO] Successfully injected session cookies into browser context.
+2026-07-15 11:20:26,268 [INFO] Playwright driver initialized successfully.
+2026-07-15 11:20:27,846 [WARNING] Awaiting manual login. You have 300 seconds to log in using the browser window...
+2026-07-15 11:20:27,915 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:20:27,915 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:20:35,566 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:20:35,586 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:20:35,807 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:20:35,807 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:20:36,058 [INFO] BROWSER CONSOLE: [warning] The resource https://chatgpt.com/cdn/assets/conversation-small-dyf078sa.css (as=style) was preloaded using link preload in Early Hints but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value, a correct `crossorigin` value and it is preloaded intentionally.
+2026-07-15 11:20:36,161 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:20:38,174 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:20:38,175 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:20:43,587 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:20:43,603 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:20:43,729 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:20:43,729 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:20:43,918 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:20:45,936 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:20:45,936 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:20:51,275 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:20:51,280 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:20:51,359 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:20:51,359 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:20:51,478 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:20:53,509 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:20:53,509 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:20:59,216 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:20:59,261 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:20:59,540 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:20:59,612 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:21:00,046 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:21:02,094 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:21:02,094 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:21:08,055 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:21:08,065 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:21:08,192 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:21:08,192 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:21:08,368 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:21:10,380 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:21:10,380 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:21:16,172 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:21:16,181 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:21:16,296 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:21:16,296 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:21:16,564 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:21:18,587 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:21:18,587 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:21:24,252 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:21:24,267 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:21:24,430 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:21:24,430 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:21:24,663 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:21:26,682 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:21:26,682 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:21:32,277 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:21:32,320 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:21:32,454 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:21:32,454 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:21:33,495 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:21:35,506 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:21:35,507 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:21:40,748 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:21:40,771 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:21:40,872 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:21:40,872 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:21:40,975 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:21:42,981 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:21:42,981 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:21:48,432 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:21:48,443 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:21:48,582 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:21:48,583 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:21:48,757 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:21:50,777 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:21:50,777 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:21:56,032 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:21:56,212 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:21:56,847 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:21:56,847 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:21:58,337 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:22:00,337 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:22:00,337 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:22:05,582 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:22:05,596 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:22:05,712 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:22:05,712 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:22:05,852 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:22:07,855 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:22:07,855 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:22:13,271 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:22:13,278 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:22:13,427 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:22:13,427 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:22:13,791 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:22:15,885 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:22:15,885 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:22:21,390 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:22:21,417 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:22:21,579 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:22:21,580 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:22:21,809 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:22:23,827 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:22:23,827 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:22:29,267 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:22:29,275 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:22:29,366 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:22:29,366 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:22:29,495 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:22:31,519 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:22:31,519 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:22:37,251 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:22:37,262 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:22:37,403 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:22:37,405 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:22:37,553 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:22:39,571 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:22:39,571 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:22:44,797 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:22:44,805 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:22:44,910 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:22:44,910 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:22:45,025 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:22:47,039 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:22:47,039 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:22:52,400 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:22:52,408 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:22:52,517 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:22:52,517 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:22:52,677 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:22:54,712 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:22:54,712 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:23:00,342 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:23:00,354 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:23:00,480 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:23:00,480 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:23:00,903 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:23:02,917 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:23:02,917 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:23:08,664 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:23:08,670 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:23:08,781 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:23:08,781 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:23:08,935 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:23:11,010 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:23:11,010 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:23:16,401 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:23:16,421 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:23:16,781 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:23:16,783 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:23:17,699 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:23:19,963 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:23:19,963 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:23:25,993 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:23:26,004 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:23:26,145 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:23:26,145 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:23:26,390 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:23:28,439 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:23:28,439 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:23:33,615 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:23:33,629 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:23:33,839 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:23:33,839 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:23:34,359 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:23:36,365 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:23:36,365 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:23:41,609 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:23:41,631 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:23:41,752 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:23:41,752 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:23:41,937 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:23:43,952 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:23:43,952 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:23:49,265 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:23:49,274 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:23:49,402 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:23:49,402 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:23:49,585 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:23:51,587 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:23:51,587 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:23:57,502 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:23:57,555 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:23:57,743 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:23:57,744 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:23:58,692 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:24:00,716 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:24:00,716 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:24:05,780 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:24:05,786 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:24:05,947 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:24:05,947 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:24:06,288 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:24:08,315 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:24:08,316 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:24:14,071 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:24:14,099 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:24:14,607 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:24:14,607 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:24:15,744 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:24:17,774 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:24:17,775 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:24:23,256 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:24:23,285 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:24:23,907 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:24:23,907 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:24:24,410 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:24:26,447 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:24:26,447 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:24:31,962 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:24:32,108 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:24:32,672 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:24:32,672 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:24:33,038 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:24:35,075 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:24:35,075 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:24:40,431 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:24:40,436 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:24:41,266 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:24:41,270 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:24:41,629 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:24:43,640 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:24:43,640 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:24:48,970 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:24:48,970 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:24:49,075 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:24:49,075 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:24:49,192 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:24:51,206 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:24:51,206 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:24:56,708 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:24:56,754 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:24:57,336 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:24:57,340 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:24:59,075 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:25:01,118 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:25:01,120 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:25:06,893 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:25:06,903 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:25:07,469 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:25:07,469 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:25:08,281 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:25:10,307 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:25:10,308 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:25:15,607 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:25:15,614 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:25:15,703 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:25:15,704 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:25:15,835 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:25:17,855 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:25:17,855 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:25:23,242 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:25:23,252 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:25:23,459 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:25:23,459 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:25:23,719 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:25:25,740 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:25:25,740 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:25:31,037 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:25:31,041 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:25:31,135 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:25:31,135 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:25:31,246 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:25:33,259 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:25:33,259 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:25:38,855 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:25:38,864 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:25:38,940 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:25:38,940 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:25:39,104 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:25:41,185 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:25:41,186 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:25:46,618 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:25:46,626 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:25:46,715 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:25:46,715 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:25:46,821 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:25:48,833 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:25:48,834 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:25:54,058 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:25:54,065 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:25:54,146 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:25:54,146 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:25:54,259 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:25:56,271 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:25:56,273 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:26:01,543 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:26:01,561 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:26:01,728 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:26:01,728 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:26:01,835 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:26:03,848 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:26:03,848 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:26:09,157 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:26:09,171 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:26:09,288 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:26:09,288 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:26:09,417 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:26:11,422 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:26:11,422 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:26:16,875 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:26:16,881 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:26:16,979 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:26:16,979 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:26:17,386 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:26:19,397 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:26:19,397 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:26:24,771 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:26:24,784 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:26:24,905 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:26:24,905 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:26:25,037 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:26:27,056 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:26:27,056 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:26:32,326 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:26:32,335 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:26:32,434 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:26:32,434 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:26:32,574 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:26:35,006 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:26:35,006 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:26:40,495 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:26:40,502 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:26:40,588 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:26:40,588 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:26:40,717 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:26:42,726 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:26:42,726 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:26:47,985 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:26:47,990 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:26:48,076 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:26:48,076 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:26:48,585 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:26:50,597 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:26:50,599 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:26:55,866 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:26:55,871 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:26:55,985 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:26:55,985 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:26:56,199 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:26:58,240 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:26:58,240 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:27:03,732 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:27:03,736 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:27:03,816 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:27:03,816 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:27:04,072 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:27:06,084 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:27:06,085 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:27:11,796 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:27:11,805 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:27:11,883 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:27:11,883 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:27:11,981 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:27:13,994 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:27:13,994 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:27:19,318 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:27:19,324 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:27:19,447 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:27:19,447 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:27:19,589 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:27:21,597 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:27:21,597 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:27:26,920 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:27:26,930 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:27:27,104 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:27:27,104 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:27:27,493 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:27:29,627 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:27:29,627 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:27:35,681 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:27:35,696 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:27:36,052 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:27:36,054 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:27:36,570 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:27:38,584 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:27:38,584 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:27:43,890 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:27:43,906 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:27:44,157 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:27:44,180 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:27:45,195 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:27:47,216 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:27:47,216 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:27:53,175 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:27:53,202 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:27:53,326 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:27:53,326 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:27:53,578 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:27:55,586 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:27:55,589 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:28:01,084 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:28:01,113 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:28:01,347 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:28:01,349 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:28:01,649 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:28:03,660 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:28:03,660 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:28:09,506 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:28:09,513 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:28:09,625 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:28:09,626 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:28:09,807 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:28:11,817 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:28:11,817 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:28:17,315 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:28:17,328 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:28:17,446 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:28:17,446 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:28:17,626 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:28:19,639 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:28:19,642 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:28:24,960 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:28:24,977 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:28:25,102 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:28:25,102 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:28:25,315 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:28:27,319 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:28:27,319 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:28:32,617 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:28:32,625 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:28:32,746 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:28:32,748 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:28:32,924 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:28:34,977 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:28:34,977 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:28:40,432 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:28:40,441 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:28:40,579 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:28:40,579 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:28:40,772 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:28:42,786 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:28:42,786 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:28:48,086 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:28:48,095 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:28:48,189 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:28:48,189 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:28:48,315 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:28:50,325 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:28:50,332 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:28:55,646 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:28:55,661 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:28:55,768 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:28:55,768 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:28:55,993 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:28:58,049 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:28:58,049 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:29:03,418 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:29:03,428 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:29:03,557 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:29:03,557 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:29:03,700 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:29:05,737 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:29:05,737 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:29:11,220 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:29:11,228 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:29:11,335 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:29:11,335 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:29:11,457 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:29:13,503 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:29:13,503 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:29:18,992 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:29:19,009 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:29:19,195 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:29:19,195 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:29:19,410 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:29:21,437 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:29:21,437 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:29:26,915 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:29:26,921 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:29:27,089 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:29:27,089 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:29:27,265 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:29:29,698 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:29:29,700 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:29:35,640 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:29:35,656 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:29:35,780 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:29:35,780 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:29:36,038 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:29:38,061 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:29:38,061 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:29:43,370 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:29:43,379 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:29:43,534 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:29:43,534 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:29:43,662 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:29:45,682 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:29:45,682 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:29:51,041 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:29:51,100 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:29:51,536 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:29:51,536 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:29:51,840 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:29:53,865 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:29:53,865 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:29:59,730 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:29:59,768 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:29:59,980 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:29:59,980 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:30:00,243 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:30:02,252 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:30:02,252 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:30:08,151 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:30:08,177 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:30:08,345 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:30:08,346 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:30:08,612 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:30:10,713 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:30:10,713 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:30:16,048 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:30:16,053 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:30:16,219 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:30:16,219 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:30:17,619 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:30:19,646 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:30:19,648 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:30:24,856 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:30:24,866 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:30:25,047 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:30:25,049 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:30:25,338 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:30:27,374 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:30:27,374 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:30:33,111 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:30:33,123 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:30:33,262 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:30:33,264 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:30:33,628 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:30:35,779 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:30:35,781 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:30:41,336 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:30:41,348 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:30:41,478 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:30:41,480 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:30:41,621 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:30:43,636 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:30:43,636 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:30:49,295 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:30:49,308 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:30:49,575 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:30:49,575 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:30:50,051 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:30:52,085 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:30:52,093 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:30:57,900 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:30:57,910 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:30:58,030 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:30:58,030 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:30:58,231 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:31:00,248 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:31:00,248 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:31:06,071 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:31:06,125 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:31:06,274 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:31:06,274 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:31:06,644 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:31:08,652 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:31:08,652 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:31:13,873 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:31:13,883 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:31:13,991 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:31:13,991 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:31:14,176 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:31:16,207 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:31:16,207 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:31:22,072 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:31:22,085 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:31:22,231 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:31:22,234 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:31:22,418 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:31:24,432 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:31:24,432 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:31:29,742 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:31:29,742 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:31:29,832 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:31:29,845 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:31:29,964 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:31:31,990 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:31:31,991 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:31:37,265 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:31:37,274 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:31:37,612 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:31:37,612 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:31:37,928 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:31:39,950 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:31:39,950 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:31:45,239 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:31:45,245 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:31:45,329 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:31:45,329 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:31:45,451 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:31:47,461 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:31:47,461 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:31:52,779 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:31:52,785 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:31:52,874 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:31:52,874 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:31:52,980 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:31:54,989 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:31:54,989 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:32:00,393 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:32:00,395 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:32:00,487 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:32:00,487 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:32:00,623 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:32:02,634 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:32:02,634 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:32:07,888 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:32:07,896 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:32:07,995 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:32:07,995 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:32:08,112 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:32:10,123 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:32:10,123 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:32:15,361 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:32:15,366 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:32:15,471 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:32:15,471 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:32:15,603 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:32:17,613 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:32:17,613 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:32:22,825 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:32:22,837 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:32:22,913 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:32:22,913 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:32:23,055 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:32:25,062 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:32:25,062 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:32:30,416 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:32:30,422 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:32:30,511 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:32:30,511 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:32:30,631 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:32:32,650 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:32:32,650 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:32:38,013 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:32:38,024 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:32:38,226 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:32:38,226 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:32:38,443 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:32:40,509 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:32:40,509 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:32:46,365 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:32:46,375 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:32:46,456 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:32:46,463 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:32:46,595 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:32:48,606 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:32:48,606 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:32:54,040 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:32:54,050 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:32:54,168 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:32:54,168 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:32:54,778 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:32:56,785 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:32:56,785 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:33:02,050 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:33:02,056 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:33:02,155 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:33:02,155 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:33:02,514 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:33:04,904 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:33:04,904 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:33:10,213 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:33:10,223 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:33:10,328 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:33:10,330 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:33:10,460 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:33:12,559 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:33:12,560 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:33:18,199 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:33:18,204 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:33:18,304 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:33:18,306 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:33:18,466 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:33:20,563 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:33:20,563 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:33:25,927 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:33:25,933 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:33:26,256 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:33:26,256 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:33:26,367 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:33:28,377 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:33:28,377 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:33:33,660 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:33:33,665 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:33:33,751 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:33:33,754 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:33:33,912 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:33:36,012 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:33:36,012 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:33:41,370 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:33:41,378 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:33:41,461 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:33:41,461 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:33:41,603 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:33:43,611 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:33:43,611 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:33:48,990 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:33:49,107 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:33:49,541 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:33:49,541 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:33:49,657 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:33:51,666 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:33:51,666 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:33:56,901 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:33:56,907 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:33:56,993 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:33:56,993 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:33:57,107 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:33:59,192 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:33:59,192 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:34:04,793 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:34:04,856 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:34:05,004 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:34:05,004 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:34:05,229 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:34:07,284 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:34:07,284 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:34:12,883 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:34:12,888 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:34:12,975 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:34:12,976 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:34:13,119 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:34:15,144 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:34:15,144 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:34:20,442 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:34:20,450 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:34:20,918 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:34:20,918 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:34:21,349 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:34:23,361 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:34:23,361 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:34:28,600 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:34:28,609 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:34:28,687 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:34:28,689 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:34:28,807 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:34:30,809 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:34:30,809 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:34:36,016 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:34:36,024 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:34:36,097 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:34:36,097 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:34:36,228 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:34:38,239 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:34:38,239 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:34:43,499 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:34:43,501 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:34:43,579 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:34:43,579 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:34:43,685 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:34:45,699 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:34:45,699 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:34:51,004 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:34:51,012 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:34:51,102 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:34:51,102 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:34:51,223 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:34:53,238 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:34:53,242 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:34:58,482 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:34:58,491 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:34:58,571 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:34:58,571 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:34:58,690 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:35:00,705 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:35:00,705 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:35:06,038 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:35:06,048 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:35:06,139 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:35:06,139 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:35:06,306 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:35:08,316 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:35:08,316 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:35:13,566 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:35:13,573 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:35:13,660 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:35:13,660 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:35:13,837 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:35:15,946 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:35:15,947 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:35:25,535 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:35:25,614 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:35:27,432 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:35:27,432 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:38:13,502 [WARNING] Failed to save unverified session screenshot: Page.screenshot: Timeout 90000ms exceeded.
+Call log:
+  - taking page screenshot
+  - waiting for fonts to load...
+  - fonts loaded
+
+2026-07-15 11:38:17,013 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:38:17,015 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:38:23,315 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:38:23,382 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:38:26,394 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:38:26,395 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:38:33,453 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:38:35,683 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:38:35,683 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:38:41,613 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:38:41,674 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:38:45,083 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:38:45,083 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:38:50,049 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:38:52,284 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:38:52,285 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:38:57,571 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:38:57,594 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:38:58,007 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:38:58,015 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:38:59,522 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:39:01,640 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:39:01,640 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:39:07,395 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:39:07,405 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:39:07,874 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:39:07,875 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:39:08,095 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:39:10,116 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:39:10,116 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:39:15,883 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:39:15,962 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:39:16,193 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:39:16,193 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:39:17,436 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:39:19,739 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:39:19,740 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:39:25,540 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:39:25,547 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:39:26,333 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:39:26,333 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:39:28,744 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:39:30,782 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:39:30,783 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:39:35,830 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:39:35,913 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:39:36,624 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:39:36,624 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:39:38,262 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:39:40,288 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:39:40,288 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:39:45,816 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:39:45,834 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:39:46,074 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:39:46,074 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:39:46,256 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:39:48,283 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:39:48,284 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:39:54,413 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:39:54,434 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:39:54,886 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:39:54,886 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:39:56,690 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:39:59,988 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:39:59,989 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:40:05,363 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:40:05,373 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:40:05,577 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:40:05,579 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:40:06,151 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:40:08,370 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:40:08,371 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:40:14,834 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:40:14,846 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:40:15,619 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:40:15,619 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:40:17,563 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:40:19,623 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:40:19,624 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:40:25,537 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:40:25,557 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:40:26,148 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:40:26,148 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:40:26,495 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:40:28,515 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:40:28,533 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:40:33,826 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:40:33,845 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:40:34,004 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:40:34,004 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:40:34,230 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:40:36,327 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:40:36,327 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:40:41,957 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:40:41,985 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:40:42,160 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:40:42,160 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:40:42,333 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:40:44,340 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:40:44,340 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:40:50,308 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:40:50,319 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:40:50,713 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:40:50,718 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:40:51,495 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:40:53,540 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:40:53,542 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:41:00,352 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:41:02,105 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:41:02,539 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:41:02,540 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:41:04,440 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:41:06,746 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:41:06,747 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:41:12,677 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:41:12,713 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:41:13,078 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:41:13,087 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:41:13,504 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:41:15,555 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:41:15,555 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:41:22,537 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:41:22,601 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:41:23,039 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:41:23,040 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:41:23,994 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:41:26,010 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:41:26,010 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:41:32,075 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:41:32,101 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:41:32,325 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:41:32,326 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:41:32,570 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:41:34,592 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:41:34,592 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:41:40,668 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:41:40,697 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:41:40,949 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:41:40,950 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:41:41,857 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:41:43,914 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:41:43,914 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:41:49,165 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:41:49,180 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:41:49,357 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:41:49,357 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:41:50,534 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:41:53,188 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:41:53,190 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:41:59,350 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:41:59,372 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:41:59,651 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:41:59,652 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:42:01,307 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:42:03,466 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:42:03,467 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:42:09,104 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:42:09,112 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:42:09,244 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:42:09,245 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:42:09,458 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:42:11,647 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:42:11,647 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:42:18,549 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:42:18,658 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:42:19,227 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:42:19,229 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:42:21,958 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:42:24,006 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:42:24,007 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:42:29,200 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:42:29,210 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:42:29,428 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:42:29,428 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:42:29,609 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:42:31,641 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:42:31,642 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:42:36,701 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:42:36,710 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:42:36,838 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:42:36,838 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:42:37,133 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:42:39,297 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:42:39,297 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:42:45,576 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:42:45,597 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:42:45,793 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:42:45,794 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:42:46,004 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:42:48,014 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:42:48,014 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:42:53,873 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:42:53,890 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:42:54,087 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:42:54,087 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:42:54,320 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:42:56,356 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:42:56,356 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:43:02,241 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:43:02,287 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:43:02,751 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:43:02,753 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:43:03,247 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:43:05,307 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:43:05,308 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:43:11,160 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:43:11,206 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:43:12,412 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:43:12,417 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:43:16,136 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:43:18,153 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:43:18,154 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:43:24,224 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:43:24,273 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:43:24,543 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:43:24,544 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:43:25,337 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:43:27,613 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:43:27,613 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:43:35,599 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:43:35,687 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:43:36,858 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:43:36,860 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:43:38,022 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:43:40,085 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:43:40,085 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:43:45,126 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:43:45,140 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:43:45,303 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:43:45,305 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:43:46,498 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:43:48,536 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:43:48,536 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:43:54,483 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:43:54,554 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:43:55,175 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:43:55,175 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:43:55,442 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:43:57,446 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:43:57,447 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:44:03,217 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:44:03,223 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:44:03,466 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:44:03,466 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:44:03,788 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:44:05,838 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:44:05,838 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:44:11,421 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:44:11,454 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:44:11,636 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:44:11,637 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:44:12,932 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:44:14,985 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:44:14,986 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:44:21,124 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:44:21,142 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:44:21,302 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:44:21,303 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:44:21,560 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:44:23,654 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:44:23,654 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 11:44:28,692 [INFO] Page elements checking complete. has_input=True, has_profile=False, has_login=False
+2026-07-15 11:44:28,712 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 11:44:28,942 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 11:44:28,943 [WARNING] Session unverified: chat_input_exists=True, profile_exists=False, login_button_exists=False
+2026-07-15 11:44:29,340 [INFO] Saved diagnostics screenshot to logs/diagnostics/session_unverified.jpg
+2026-07-15 11:44:31,620 [ERROR] Manual login wait period timed out.
+2026-07-15 11:44:31,907 [INFO] Stopping Playwright driver...
+2026-07-15 11:46:10,983 [INFO] Playwright driver stopped successfully.
+2026-07-15 12:43:59,327 [INFO] Starting Playwright driver for ChatGPT...
+2026-07-15 12:44:05,248 [INFO] Launching Chromium context. Profile dir: 'C:\Users\sujay\Downloads\boundier_bot\browser_profile', Headless: False
+2026-07-15 12:44:05,248 [INFO] Attempting to launch system Google Chrome to bypass Google OAuth security checks...
+2026-07-15 12:44:09,524 [INFO] Sync: GITHUB_PAT and ENCRYPTION_KEY detected. Looking for persistent session Gist...
+2026-07-15 12:44:10,999 [INFO] Sync: Successfully loaded and decrypted persistent session from Gist.
+2026-07-15 12:44:11,028 [INFO] Successfully injected session cookies into browser context.
+2026-07-15 12:44:11,042 [INFO] Playwright driver initialized successfully.
+2026-07-15 12:44:13,560 [WARNING] Awaiting manual login. You have 300 seconds to log in using the browser window...
+2026-07-15 12:44:13,655 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 12:44:13,655 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 12:44:13,817 [INFO] Page elements checking complete. has_input=True, has_profile=True, has_login=False
+2026-07-15 12:44:13,827 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 12:44:13,951 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 12:44:13,951 [INFO] Session verified: Chat input and profile menu found (authenticated).
+2026-07-15 12:44:13,952 [INFO] Manual login verified! Resuming execution.
+2026-07-15 12:44:13,956 [INFO] Sync: Exporting and encrypting browser storage state to persist on Gist...
+2026-07-15 12:44:16,554 [INFO] Sync: Successfully updated existing session Gist: e9aa9f33d991a04bb64f0449f96ef1c2
+2026-07-15 12:44:16,599 [INFO] Stopping Playwright driver...
+2026-07-15 12:44:18,124 [INFO] Playwright driver stopped successfully.
+2026-07-15 15:02:13,937 [INFO] Starting Playwright driver for ChatGPT...
+2026-07-15 15:02:15,913 [INFO] Sync: GITHUB_PAT and ENCRYPTION_KEY detected. Looking for persistent session Gist...
+2026-07-15 15:02:17,143 [INFO] Sync: Successfully loaded and decrypted persistent session from Gist.
+2026-07-15 15:02:17,143 [INFO] Launching Chromium context. Profile dir: 'C:\Users\sujay\Downloads\boundier_bot\browser_profile', Headless: False
+2026-07-15 15:02:17,143 [INFO] Attempting to launch system Google Chrome to bypass Google OAuth security checks...
+2026-07-15 15:02:20,285 [INFO] Successfully injected session cookies into browser context.
+2026-07-15 15:02:20,294 [INFO] Playwright driver initialized successfully.
+2026-07-15 15:02:23,648 [WARNING] Awaiting manual login. You have 300 seconds to log in using the browser window...
+2026-07-15 15:02:23,731 [INFO] Session check diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 15:02:23,731 [INFO] Waiting for page elements to hydrate (polling up to 120 seconds)...
+2026-07-15 15:02:23,973 [INFO] Page elements checking complete. has_input=True, has_profile=True, has_login=False
+2026-07-15 15:02:23,979 [INFO] Post-hydration diagnostics - URL: https://chatgpt.com/ | Title: ChatGPT
+2026-07-15 15:02:24,086 [INFO] Page text content snippet: !function(){try{var d=document.documentElement,c=d.classList;c.remove('light','dark');var e=localStorage.getItem('theme');if('system'===e||(!e&&true)){var t='(prefers-color-scheme: dark)',m=window.matchMedia(t);if(m.media!==t||m.matches){d.style.colorScheme = 'dark';c.add('dark')}else{d.style.colorScheme = 'light';c.add('light')}}else if(e){c.add(e|| '')}if(e==='light'||e==='dark')d.style.colorSch
+2026-07-15 15:02:24,086 [INFO] Session verified: Chat input and profile menu found (authenticated).
+2026-07-15 15:02:24,086 [INFO] Manual login verified! Resuming execution.
+2026-07-15 15:02:24,086 [INFO] Sync: Exporting and encrypting browser storage state to persist on Gist...
+2026-07-15 15:02:25,923 [INFO] Sync: Successfully updated existing session Gist: e9aa9f33d991a04bb64f0449f96ef1c2
+2026-07-15 15:02:25,928 [INFO] Stopping Playwright driver...
+2026-07-15 15:02:26,698 [INFO] Playwright driver stopped successfully.

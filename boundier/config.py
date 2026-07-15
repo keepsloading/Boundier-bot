@@ -29,6 +29,7 @@ class BoundierConfig(BaseModel):
     discord: DiscordConfig
     playwright: PlaywrightConfig = Field(default_factory=PlaywrightConfig)
     memory: MemoryConfig = Field(default_factory=MemoryConfig)
+    max_users: int = 5  # How many Discord users can access this bot (1 = only you, 5 = you + 4 others)
 
 def load_config(config_path: str = "config.yaml") -> BoundierConfig:
     # Load .env file manually if it exists to avoid external dependency issues
