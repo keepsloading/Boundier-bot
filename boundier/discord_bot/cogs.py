@@ -25,8 +25,7 @@ def parse_citations(text: str):
     preamble_end = 0
     for i, line in enumerate(lines):
         stripped = line.strip()
-        # A "source blob" line: contains an http URL (not a markdown link) or ends with utm_source=chatgpt.com)
-        if re.search(r'https?://\S+', stripped) and not re.match(r'^\[.+\]\(https?://', stripped):
+        if re.search(r'https?://\S+', stripped) and not re.search(r'\[[^\]]+\]\(https?://[^\)]+\)', stripped):
             preamble_end = i + 1
         elif stripped == '' and preamble_end > 0:
             # First blank line after a source-blob line signals end of preamble
@@ -58,7 +57,7 @@ def parse_citations(text: str):
         else:
             # Clean up trailing "+1", "+2", etc.
             clean_name = re.sub(r'\s*\+\s*\d+\s*$', '', link_text).strip()
-            return f"[{clean_name}]"
+            return f"{clean_name} [{index}]"
             
     cleaned_text = re.sub(pattern, replace_link, text)
     # Remove consecutive empty lines (replace 3 or more newlines with exactly 2 newlines)

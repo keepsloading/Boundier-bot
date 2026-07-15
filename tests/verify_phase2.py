@@ -78,6 +78,7 @@ async def test_phase2():
     
     mock_thread = MagicMock(spec=discord.Thread)
     mock_thread.id = 111222
+    mock_thread.name = "yo-i-am-playing-gta"
     mock_thread.send = AsyncMock(return_value=MagicMock(spec=discord.Message))
     
     mock_new_channel.create_thread = AsyncMock(return_value=mock_thread)
@@ -92,6 +93,9 @@ async def test_phase2():
     mock_interaction.followup = MagicMock()
     mock_interaction.followup.send = AsyncMock()
     mock_interaction.user = MagicMock()
+    mock_interaction.user.id = 12345
+    mock_interaction.user.name = "Sujay"
+    mock_interaction.user.display_name = "Sujay"
     mock_interaction.user.mention = "@Sujay"
     
     from boundier.core.models import Session

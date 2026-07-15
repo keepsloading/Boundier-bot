@@ -32,6 +32,8 @@ async def test_phase3():
     mock_service = MagicMock()
     mock_service.page = mock_page
     mock_service.driver = MagicMock()
+    mock_service.driver.lease_page = AsyncMock(return_value=mock_page)
+    mock_service.driver.release_page = AsyncMock()
     mock_service.driver.ensure_authenticated = AsyncMock(return_value=True)
     mock_service.open_conversation = AsyncMock(return_value=True)
     mock_service.create_new_conversation = AsyncMock(return_value=True)
@@ -132,6 +134,10 @@ async def test_phase3():
     
     mock_interaction_403 = MagicMock(spec=discord.Interaction)
     mock_interaction_403.guild = mock_guild_403
+    mock_interaction_403.user = MagicMock()
+    mock_interaction_403.user.id = 12345
+    mock_interaction_403.user.name = "Sujay"
+    mock_interaction_403.user.display_name = "Sujay"
     mock_interaction_403.channel = mock_channel_403
     mock_interaction_403.response = MagicMock()
     mock_interaction_403.response.defer = AsyncMock()
@@ -157,6 +163,7 @@ async def test_phase3():
     
     mock_thread_ui = MagicMock(spec=discord.Thread)
     mock_thread_ui.id = 88888
+    mock_thread_ui.name = "gta-sa-adventures"
     mock_thread_ui.parent = MagicMock()
     mock_thread_ui.parent.name = "gta-sa"
     mock_reply_msg = MagicMock(spec=discord.Message)
@@ -253,6 +260,8 @@ async def test_phase3():
     mock_interaction_thread.guild = mock_guild_403
     mock_interaction_thread.channel = mock_thread_ui
     mock_interaction_thread.user = MagicMock()
+    mock_interaction_thread.user.id = 67890
+    mock_interaction_thread.user.name = "John"
     mock_interaction_thread.user.display_name = "John"
     mock_interaction_thread.response = MagicMock()
     mock_interaction_thread.response.defer = AsyncMock()
@@ -285,6 +294,8 @@ async def test_phase3():
     mock_msg_after.content = "Correct side of the tracks"
     mock_msg_after.author = MagicMock()
     mock_msg_after.author.bot = False
+    mock_msg_after.author.id = 12345
+    mock_msg_after.author.name = "Sujay"
     mock_msg_after.author.display_name = "Sujay"
     mock_msg_after.channel = mock_thread_ui
     
