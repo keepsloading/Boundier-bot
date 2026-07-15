@@ -63,7 +63,7 @@ class PlaywrightDriver:
             "--renderer-process-limit=1",
             "--disable-site-isolation-trials",
             "--disable-features=Translate,OptimizationHints,BackForwardCache,MediaRouter",
-            "--js-flags=--expose-gc --max-old-space-size=384"
+            "--js-flags=--expose-gc --max-old-space-size=256"
         ]
 
         if not self.config.playwright.headless:
@@ -109,17 +109,52 @@ class PlaywrightDriver:
         # Block non-essential heavy resources to optimize CPU/Memory and speed up loads
         async def route_intercept(route):
             req = route.request
+            url_lower = req.url.lower()
+            
+            # Telemetry/ad domains to block to save CPU and memory on Render
+            blocked_patterns = [
+                "sentry.io",
+                "datadoghq",
+                "google-analytics.com",
+                "mixpanel.com",
+                "segment.io",
+                "amplitude",
+                "hotjar",
+                "browser-intake",
+                "doubleclick.net",
+                "googleadservices.com",
+                "browser-intake-datadoghq.com"
+            ]
+            
+            if any(pattern in url_lower for pattern in blocked_patterns):
+                try:
+                    await route.abort()
+                    return
+                except Exception:
+                    pass
+            
             if req.resource_type in ("font", "media"):
-                await route.abort()
+                try:
+                    await route.abort()
+                except Exception:
+                    pass
             elif req.resource_type == "image":
                 # Only allow generated images and downloadable files to load, block external decorative UI images
-                url_lower = req.url.lower()
                 if "oaiusercontent" in url_lower or "/files/" in url_lower:
-                    await route.continue_()
+                    try:
+                        await route.continue_()
+                    except Exception:
+                        pass
                 else:
-                    await route.abort()
+                    try:
+                        await route.abort()
+                    except Exception:
+                        pass
             else:
-                await route.continue_()
+                try:
+                    await route.continue_()
+                except Exception:
+                    pass
 
         await self.context.route("**/*", route_intercept)
         
