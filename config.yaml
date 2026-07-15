@@ -4,6 +4,8 @@ discord:
   command_prefix: "/"
   watched_categories: []
 
+max_users: 5  # 1 = only you, 5 = you + 4 others
+
 playwright:
   headless: true
   user_data_dir: "browser_profile/"

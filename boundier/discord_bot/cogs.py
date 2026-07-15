@@ -216,11 +216,53 @@ class ResponseView(discord.ui.View):
         ))
 
 
+class YesSkipPrompt(discord.ui.View):
+    def __init__(self, author):
+        super().__init__(timeout=60.0)
+        self.author = author
+        self.value = None
+
+    @discord.ui.button(label="Yes", style=discord.ButtonStyle.success)
+    async def confirm(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user.id != self.author.id:
+            await interaction.response.send_message("Only the command sender can respond.", ephemeral=True)
+            return
+        self.value = True
+        self.stop()
+        await interaction.response.defer()
+
+    @discord.ui.button(label="Skip", style=discord.ButtonStyle.secondary)
+    async def skip(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user.id != self.author.id:
+            await interaction.response.send_message("Only the command sender can respond.", ephemeral=True)
+            return
+        self.value = False
+        self.stop()
+        await interaction.response.defer()
+
+
 class BoundierCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.bot.manager.events.register("ThreadRenamed", self.on_manager_thread_rename)
         self._thread_forbidden_channels = set()
+
+    def _is_chatgpt_logged_in(self) -> bool:
+        """Returns True if the ChatGPT browser session is currently verified as authenticated."""
+        try:
+            return getattr(self.bot.manager.service.driver, '_session_verified', False)
+        except Exception:
+            return False
+
+    def _is_server_admin(self, interaction: discord.Interaction) -> bool:
+        """Returns True if the interaction user has Administrator permission in the server."""
+        member = interaction.guild and interaction.guild.get_member(interaction.user.id)
+        if member and member.guild_permissions.administrator:
+            return True
+        # Also allow the server owner
+        if interaction.guild and interaction.guild.owner_id == interaction.user.id:
+            return True
+        return False
 
     async def on_manager_thread_rename(self, thread_id: int, channel_id: int, new_title: str):
         """Callback when ChatGPT generates a sidebar title. Renames Discord thread and parent channel."""
@@ -327,12 +369,13 @@ class BoundierCog(commands.Cog):
             if not (is_pinged or is_reply_to_bot):
                 return
             
-        # Check user restriction (Max 5 users)
+        # Check user restriction
         author_id = message.author.id
         author_name = message.author.name
-        if not self.bot.store.check_or_register_user(author_id, author_name):
+        max_u = getattr(self.bot.config, 'max_users', 5)
+        if not self.bot.store.check_or_register_user(author_id, author_name, max_users=max_u):
             try:
-                await message.reply("⚠️ Bot usage is restricted to a maximum of 5 registered users. The limit has been reached.")
+                await message.reply(f"⚠️ Access is limited to {max_u} user(s). The limit has been reached.")
             except Exception:
                 pass
             return
@@ -450,9 +493,10 @@ class BoundierCog(commands.Cog):
         # Check user restriction (Max 5 users)
         author_id = after.author.id
         author_name = after.author.name
-        if not self.bot.store.check_or_register_user(author_id, author_name):
+        max_u = getattr(self.bot.config, 'max_users', 5)
+        if not self.bot.store.check_or_register_user(author_id, author_name, max_users=max_u):
             try:
-                await after.reply("⚠️ Bot usage is restricted to a maximum of 5 registered users. The limit has been reached.")
+                await after.reply(f"⚠️ Access is limited to {max_u} user(s). The limit has been reached.")
             except Exception:
                 pass
             return
@@ -562,8 +606,9 @@ class BoundierCog(commands.Cog):
         # Check user restriction (Max 5 users)
         author_id = interaction.user.id
         author_name = interaction.user.name
-        if not self.bot.store.check_or_register_user(author_id, author_name):
-            await interaction.followup.send("⚠️ Bot usage is restricted to a maximum of 5 registered users. The limit has been reached.")
+        max_u = getattr(self.bot.config, 'max_users', 5)
+        if not self.bot.store.check_or_register_user(author_id, author_name, max_users=max_u):
+            await interaction.followup.send(f"⚠️ Access is limited to {max_u} user(s). The limit has been reached.")
             return
             
         current_channel = interaction.channel
@@ -681,10 +726,25 @@ class BoundierCog(commands.Cog):
         # Check user restriction (Max 5 users)
         author_id = interaction.user.id
         author_name = interaction.user.name
-        if not self.bot.store.check_or_register_user(author_id, author_name):
-            await interaction.followup.send("⚠️ Bot usage is restricted to a maximum of 5 registered users. The limit has been reached.")
+        max_u = getattr(self.bot.config, 'max_users', 5)
+        if not self.bot.store.check_or_register_user(author_id, author_name, max_users=max_u):
+            await interaction.followup.send(f"⚠️ Access is limited to {max_u} user(s). The limit has been reached.")
             return
-            
+
+        # Require ChatGPT login — /new always creates a new conversation, can't work without a session
+        if not self._is_chatgpt_logged_in():
+            embed = discord.Embed(
+                title="🔓 ChatGPT Login Required",
+                description=(
+                    "**/new** starts a brand-new ChatGPT conversation and isn't available without an active session.\n\n"
+                    "Run **Option [2] Authorize ChatGPT** in the setup terminal, then try again.\n\n"
+                    "You can still use **/ask** (continues an existing thread) or **/read** (reads last 7 messages in guest mode)."
+                ),
+                color=0xFF9900
+            )
+            await interaction.followup.send(embed=embed)
+            return
+
         # Enforce that the bot has Administrator permissions in the server
         if not guild.me.guild_permissions.administrator:
             await interaction.followup.send("⚠️ This command requires the bot to have Administrator permissions in the server.")
@@ -803,8 +863,17 @@ class BoundierCog(commands.Cog):
 
     @app_commands.command(name="login", description="Checks the current ChatGPT authentication status of the bot")
     async def check_login_status(self, interaction: discord.Interaction):
-        """Checks if the bot is authenticated with ChatGPT."""
+        """Checks if the bot is authenticated with ChatGPT. Admin-only."""
         await interaction.response.defer(ephemeral=True)
+
+        # Restrict to server admins only
+        if not self._is_server_admin(interaction):
+            await interaction.followup.send(
+                "⚠️ Only server administrators can check or manage the bot's login status.",
+                ephemeral=True
+            )
+            return
+
         try:
             is_logged_in = await self.bot.manager.service.driver.check_session_active(navigate=True)
             if is_logged_in:
@@ -847,6 +916,205 @@ class BoundierCog(commands.Cog):
         except Exception as e:
             logger.error(f"Error archiving thread {thread_id}: {e}", exc_info=True)
             await interaction.followup.send(f"Error archiving thread: {e}")
+
+    @app_commands.command(name="read", description="Reads the last 30 messages in the channel and executes a prompt on them")
+    @app_commands.allowed_installs(guilds=True, users=True)
+    @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
+    async def read(self, interaction: discord.Interaction, prompt: str):
+        """Reads the last 30 messages in the channel, filters long messages interactively, and executes a prompt."""
+        # Defer immediately to allow operations up to 15 mins
+        await interaction.response.defer(ephemeral=False)
+        
+        guild = interaction.guild
+        if not guild:
+            await interaction.followup.send("Commands can only be used in servers.")
+            return
+
+        # Check user restriction (Max 5 users)
+        author_id = interaction.user.id
+        author_name = interaction.user.name
+        max_u = getattr(self.bot.config, 'max_users', 5)
+        if not self.bot.store.check_or_register_user(author_id, author_name, max_users=max_u):
+            await interaction.followup.send(f"⚠️ Access is limited to {max_u} user(s). The limit has been reached.")
+            return
+
+        current_channel = interaction.channel
+        author_display_name = interaction.user.display_name
+
+        # 1. Determine message limit based on login state
+        logged_in = self._is_chatgpt_logged_in()
+        msg_limit = 30 if logged_in else 7
+        login_note = (
+            f"📖 Reading last **{msg_limit} messages**"
+            + (" *(log in via terminal to read up to 30)*" if not logged_in else "")
+            + "..."
+        )
+        status_msg = await interaction.followup.send(
+            embed=discord.Embed(description=login_note, color=0xFFFFFF)
+        )
+
+        # 2. Fetch messages in this channel
+        history_messages = []
+        try:
+            async for msg in current_channel.history(limit=msg_limit):
+                # Skip the bot's own deferred response to this /read command
+                interaction_meta = getattr(msg, 'interaction_metadata', None)
+                if msg.author.id == self.bot.user.id and interaction_meta and getattr(interaction_meta, 'name', None) == "read":
+                    continue
+                history_messages.append(msg)
+        except Exception as e:
+            logger.error(f"Error fetching channel history: {e}", exc_info=True)
+            await interaction.followup.send(f"⚠️ Failed to read channel history: {e}")
+            return
+
+        # We want the messages in chronological order for processing
+        history_messages.reverse()
+
+        # 2. Filter long messages interactively
+        messages_to_include = []
+        for msg in history_messages:
+            # We check if clean_content exceeds 1000 characters
+            content = msg.clean_content or ""
+            if len(content) > 1000:
+                embed = discord.Embed(
+                    title="⚠️ Long Message Detected",
+                    description=(
+                        f"A message from **{msg.author.display_name}** is very long ({len(content)} characters).\n"
+                        f"Do you want to include it in the context?\n\n"
+                        f"**Preview:**\n"
+                        f"```\n{content[:500]}...\n```"
+                    ),
+                    color=0xFFFFFF # Consistent white embed style
+                )
+                view = YesSkipPrompt(interaction.user)
+                prompt_msg = await interaction.followup.send(embed=embed, view=view)
+                await view.wait()
+                
+                # Check choice
+                if view.value is True:
+                    messages_to_include.append(msg)
+                try:
+                    await prompt_msg.delete()
+                except Exception:
+                    pass
+            else:
+                messages_to_include.append(msg)
+
+        # 3. Compile context
+        if not messages_to_include:
+            try:
+                await status_msg.delete()
+            except Exception:
+                pass
+            await interaction.followup.send("❌ No messages to read from history.")
+            return
+
+        # Delete the initial 'Reading...' status embed now that we're compiling
+        try:
+            await status_msg.delete()
+        except Exception:
+            pass
+
+        history_str = ""
+        for msg in messages_to_include:
+            sender = msg.author.display_name
+            content = msg.clean_content or ""
+            if not content and msg.attachments:
+                content = "[Attachment]"
+            history_str += f"[Speaker: {sender}]: {content}\n"
+
+        compiled_prompt = (
+            f"Here are the last {msg_limit} messages from the channel context:\n\n"
+            f"{history_str}\n"
+            f"Instruction/Prompt: {prompt}"
+        )
+
+        # 4. Route request - same thread-routing logic as /ask
+        # Register channel in DB if needed
+        channel_record = self.bot.store.get_channel(current_channel.id)
+        if not channel_record:
+            ch_name = current_channel.name
+            if not isinstance(ch_name, str):
+                ch_name = str(ch_name)
+            # Strip invalid path characters
+            ch_name = "".join(c for c in ch_name if c.isalnum() or c in ("-", "_", " "))
+            ch_name = ch_name.strip()
+            if not ch_name:
+                ch_name = f"channel-{current_channel.id}"
+            self.bot.store.save_channel(current_channel.id, ch_name, "")
+
+        thread_record = self.bot.store.get_thread(current_channel.id)
+        is_first = True
+        
+        if thread_record:
+            is_first = False
+            # If already inside a thread or DM, stream directly there
+            thread = current_channel
+            channel_id = thread_record[1]
+            channel_name = self.bot.store.get_channel(channel_id)[1]
+            
+            # Start streaming the prompt response
+            asyncio.create_task(self._process_message_stream(
+                thread=thread,
+                channel_id=channel_id,
+                channel_name=channel_name,
+                user_message=compiled_prompt,
+                file_paths=[],
+                is_first_response=is_first,
+                interaction=interaction,
+                author_name=author_display_name
+            ))
+        else:
+            # We are in a main channel, need to spawn/use a thread
+            # Verify bot permissions before attempting to create a thread
+            perms = current_channel.permissions_for(interaction.guild.me)
+            if not perms.create_public_threads:
+                logger.warning(f"Forbidden to create thread in channel {current_channel.id}. Falling back to direct channel response.")
+                # Save mapping to point directly to main channel ID
+                self.bot.store.save_thread(current_channel.id, current_channel.id, "NEW", "Direct Channel Chat", "", 0)
+                
+                asyncio.create_task(self._process_message_stream(
+                    thread=current_channel,
+                    channel_id=current_channel.id,
+                    channel_name=current_channel.name,
+                    user_message=compiled_prompt,
+                    file_paths=[],
+                    is_first_response=is_first,
+                    interaction=interaction,
+                    author_name=author_display_name
+                ))
+                return
+
+            try:
+                # Create thread
+                thread_name = f"Read History Context"
+                thread = await current_channel.create_thread(
+                    name=thread_name,
+                    type=discord.ChannelType.public_thread,
+                    auto_archive_duration=60
+                )
+                logger.info(f"Created new Discord thread: {thread.name} ({thread.id})")
+                
+                # Respond to parent interaction, indicating we are processing in the thread
+                embed = discord.Embed(
+                    description=f"Processing read request in thread: {thread.mention}",
+                    color=0xFFFFFF # Consistent white embed style
+                )
+                await interaction.followup.send(embed=embed)
+                
+                # Start streaming inside the new thread
+                asyncio.create_task(self._process_message_stream(
+                    thread=thread,
+                    channel_id=current_channel.id,
+                    channel_name=current_channel.name,
+                    user_message=compiled_prompt,
+                    file_paths=[],
+                    is_first_response=is_first,
+                    author_name=author_display_name
+                ))
+            except Exception as thread_err:
+                logger.error(f"Failed to create thread: {thread_err}", exc_info=True)
+                await interaction.followup.send(f"⚠️ Failed to create thread context: {thread_err}")
 
     async def _process_message_stream(
         self,

@@ -1,25 +1,24 @@
 # Boundier 🤖 <img src="Boundier.png" align="right" width="48" height="48">
 
-### 💬 Full ChatGPT on Discord: **No API key. No token costs. Zero.** 🚀
+### 💬 Your Private Portal to ChatGPT for Free (Without API): **No token costs.** 🚀
 
-[![Render Deployment](https://img.shields.io/badge/Deploy-Render-00c2cb?style=for-the-badge&logo=render&logoColor=white)](https://render.com)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![Playwright](https://img.shields.io/badge/Playwright-Automation-orange?style=for-the-badge&logo=playwright&logoColor=white)](https://playwright.dev)
 [![No API Cost](https://img.shields.io/badge/API%20Cost-%240-brightgreen?style=for-the-badge)](https://github.com/keepsloading/Boundier)
 [![ChatGPT](https://img.shields.io/badge/Powered%20by-ChatGPT%20Web-74aa9c?style=for-the-badge&logo=openai&logoColor=white)](https://chatgpt.com)
 
-> **Tired of paying per token? Boundier brings the full ChatGPT experience (including ChatGPT, web search, memory, and file uploads) directly into your Discord server, completely free.**
+> **Tired of paying per token? Boundier brings the full ChatGPT experience (including ChatGPT, web search, memory, and file uploads) directly into your personal Discord server, completely free.**
 
-**Boundier** is an **autonomous browser-based** Discord AI companion that drives **ChatGPT's real web interface** via headless Playwright automation. Instead of routing through the expensive OpenAI API, it authenticates as *you* in a cloud Chromium session and pipes live ChatGPT conversations straight into Discord threads, at **$0 per message**.
+**Boundier** is a **private connection** that links your personal Discord server straight to ChatGPT **for free (without an API)**. Instead of routing through the expensive OpenAI API, it automates a headless Chromium session to connect your actual ChatGPT account directly to Discord threads—giving you full access to web search, file uploads, and memory at **$0 per message**.
 
-The name signifies **"Breaking Boundaries"**: breaking free from API paywalls, rate limits, and token costs that make running an AI community bot prohibitively expensive.
+The name signifies **"Breaking Boundaries"**: breaking free from API paywalls, rate limits, and token costs that make bringing ChatGPT to your server prohibitively expensive.
 
 ---
 
 > [!WARNING]
 > ## DISCLAIMER: FOR LEARNING & EXPERIMENTAL PURPOSES ONLY
 >
-> **Boundier** is an experimental hobby project created to explore browser automation, Playwright, persistent browser sessions, and Discord-native AI workflows. It is **not intended for production use, commercial deployment, or as a replacement for official APIs.**
+> **Boundier** is an experimental hobby project created to explore browser automation, Playwright, persistent browser sessions, and Discord-native AI workflows. It is **intended as a personal assistant, not for production use, commercial deployment, or as a replacement for official APIs.**
 >
 > **This project is built with genuine respect for OpenAI and its work.** Boundier is **not affiliated with, endorsed by, or supported by OpenAI**, and is not intended to circumvent or replace OpenAI's official offerings.
 >
@@ -37,12 +36,11 @@ The name signifies **"Breaking Boundaries"**: breaking free from API paywalls, r
 * 🆓 **Zero API Cost:** Runs through your **personal ChatGPT account** in a headless Chromium browser: no OpenAI API key, no per-message billing, no rate-limit tiers. Every message costs the same: **nothing**.
 * 🧠 **Full ChatGPT Feature Set:** Because it drives the real web UI, you get **ChatGPT, web search, file analysis, ChatGPT Image 2 generation, document generation (file downloads), memory, and custom instructions**; the complete ChatGPT experience, not a stripped-down API subset.
 * 💾 **Native Memory & Personalization:** Inherits ChatGPT's built-in persistent memory and user profiles from your real account. No vector database, no embeddings pipeline; ChatGPT already remembers your users' preferences across sessions for free.
-* 🔄 **Private Gist Session Syncing:** Encrypts and syncs browser cookies/storage states to a private GitHub Gist, so the cloud host boots up pre-authenticated and automatically refreshes the session on every request.
-* 🔒 **Dynamic User Restriction:** Limits bot access to a maximum of **5 registered users** per instance. The first 5 Discord users to send a command are whitelisted, protecting the shared browser session from abuse.
+* 🔒 **Configurable Access:** Limit who can use the bot to between 1 and 5 people. Set `1` if it's just for you, or up to `5` to share it with a few others. Configured during setup via the terminal wizard.
 * 🧵 **Smart Thread Routing:** Every conversation lives in its own **Discord thread**, automatically titled to match ChatGPT's auto-generated sidebar topic, keeping your server channels organized.
 * 🎛️ **Interactive Discord UI:** Responses render in **clean embeds** with action buttons to copy text, view the original prompt, retry a generation, or browse web-search citation links.
-* ⚡ **Lightweight Cloud Hosting:** Custom JS scraping and throttled poll loops keep memory usage low enough to run on Render's **512 MB free tier**.
-* 📸 **Live Diagnostics Endpoint:** A secure web endpoint (`/diagnostics/...`) exposes browser screenshots for real-time health monitoring without SSH access.
+* ⚡ **Performance & Efficiency:** Custom JS scraping and throttled poll loops keep memory and CPU usage extremely low.
+* 📸 **Live Diagnostics:** Local diagnostics check validates the authentication status of your ChatGPT session and outputs a checklist report.
 
 ---
 
@@ -105,24 +103,16 @@ Boundier includes an interactive **Terminal Setup Wizard** (`terminal.py`) that 
    ```
 
 ### Terminal Menu Options:
-* **`[1] Interactive Configuration`**: Interactively configure your Discord Bot Token, Admin Channel, and (optionally) GitHub PAT / Encryption Key for online Gist syncing.
-* **`[2] Authorize ChatGPT`**: Opens a headed Chromium browser tab locally. Simply log in manually to your ChatGPT account. Once logged in, the terminal automatically exports your authenticated session state locally and pushes the encrypted backup to your Gist.
+* **`[1] Interactive Configuration`**: Interactively configure your Discord Bot Token and Admin Channel ID.
+* **`[2] Authorize ChatGPT`**: Opens a headed Chromium browser tab locally. Simply log in manually to your ChatGPT account to export and save your authenticated session state locally.
 * **`[3] Bootstrap SQLite Database`**: Creates the SQLite database tables and syncs your markdown files.
-* **`[4] Run Self-Diagnostics`**: Validates the authentication status of your ChatGPT session, tests Discord connectivity, verifies the GitHub API, and outputs a checklist report.
+* **`[4] Run Self-Diagnostics`**: Validates the authentication status of your ChatGPT session and tests Discord connectivity.
 * **`[5] Launch Boundier Discord Bot`**: Starts the Discord bot directly.
 
 ---
 
-### Cloud Deployment (Optional)
-To deploy Boundier to a cloud host (like Render) with automatic session syncing:
-1. Generate a **GitHub Personal Access Token (PAT)** with `gist` scope.
-2. Run Option **`[1]`** in the Boundier Terminal and enter your GitHub PAT and a custom Encryption Key (passphrase).
-3. Run Option **`[2]`** to authenticate. The session is now safely backed up on your Gist.
-4. Deploy the service to Render. Configure the following environment variables in your Render Dashboard:
-   * `DISCORD_TOKEN`: Your Discord bot application token.
-   * `GITHUB_PAT`: The GitHub PAT.
-   * `ENCRYPTION_KEY`: The passphrase chosen during setup.
-   * `PORT`: `10000` (Render health check).
+### ☁️ Cloud Deployment (Optional)
+For instructions on deploying Boundier to a cloud host (such as Render) with GitHub Gist session syncing, please see [Optional Cloud Deployment Guide](docs/deployment.md).
 
 ---
 

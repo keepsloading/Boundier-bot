@@ -330,7 +330,77 @@ async def test_phase3():
             args, kwargs = mock_stream.call_args
             assert kwargs.get("is_edit") is True, "is_edit flag was not passed as True for edited message stream!"
             logger.info("Verified: User message edits are successfully detected, bot stale responses are deleted, and generation is re-triggered with is_edit=True!")
+
+    # 4. VERIFY /read SLASH COMMAND AND YES/SKIP PROMPT
+    logger.info("Verifying /read slash command and Yes/Skip interactive prompting...")
+
+    # Mock normal messages history
+    mock_msg_normal = MagicMock(spec=discord.Message)
+    mock_msg_normal.clean_content = "Hello there"
+    mock_msg_normal.author = MagicMock()
+    mock_msg_normal.author.id = 555
+    mock_msg_normal.author.display_name = "UserA"
+    mock_msg_normal.interaction = None
+
+    # Mock long message history
+    mock_msg_long = MagicMock(spec=discord.Message)
+    mock_msg_long.clean_content = "A" * 1500  # > 1000 characters
+    mock_msg_long.author = MagicMock()
+    mock_msg_long.author.id = 666
+    mock_msg_long.author.display_name = "UserB"
+    mock_msg_long.interaction = None
+
+    async def mock_history_read(*args, **kwargs):
+        yield mock_msg_normal
+        yield mock_msg_long
+
+    mock_channel_read = MagicMock(spec=discord.TextChannel)
+    mock_channel_read.id = 77777
+    mock_channel_read.name = "general"
+    mock_channel_read.history = mock_history_read
+    mock_channel_read.permissions_for = MagicMock(return_value=MagicMock(create_public_threads=True))
+
+    mock_thread_read = MagicMock(spec=discord.Thread)
+    mock_thread_read.id = 99999
+    mock_thread_read.name = "Read History Context"
+    mock_channel_read.create_thread = AsyncMock(return_value=mock_thread_read)
+
+    mock_interaction_read = MagicMock(spec=discord.Interaction)
+    mock_interaction_read.guild = MagicMock()
+    mock_interaction_read.user = MagicMock()
+    mock_interaction_read.user.id = 12345
+    mock_interaction_read.user.name = "Sujay"
+    mock_interaction_read.user.display_name = "Sujay"
+    mock_interaction_read.channel = mock_channel_read
+    mock_interaction_read.response = MagicMock()
+    mock_interaction_read.response.defer = AsyncMock()
+    mock_interaction_read.followup = MagicMock()
+    mock_interaction_read.followup.send = AsyncMock()
+
+    # We mock YesSkipPrompt to simulate the user clicking "Yes" (confirm)
+    with patch("boundier.discord_bot.cogs.YesSkipPrompt") as mock_view_class:
+        mock_view_instance = MagicMock()
+        mock_view_instance.wait = AsyncMock()
+        mock_view_instance.value = True # User clicks Yes
+        mock_view_class.return_value = mock_view_instance
+
+        with patch.object(cog, '_process_message_stream', new=AsyncMock()) as mock_stream:
+            await cog.read.callback(
+                cog,
+                interaction=mock_interaction_read,
+                prompt="Summarize this chat"
+            )
             
+            # Assert process stream was called
+            mock_stream.assert_called_once()
+            args, kwargs = mock_stream.call_args
+            # User message contains history + prompt
+            user_message = kwargs.get("user_message")
+            assert "Hello there" in user_message
+            assert "A" * 1500 in user_message
+            assert "Summarize this chat" in user_message
+            logger.info("Verified: /read slash command interactively prompts and compiles context correctly!")
+
     logger.info("Phase 3 Mock Verification Completed successfully!")
     if os.path.exists(db_file):
         os.remove(db_file)
