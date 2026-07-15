@@ -891,6 +891,17 @@ class BoundierCog(commands.Cog):
             else:
                 reply_message = await thread.send(embed=embed)
                 
+            # Save stub mapping immediately to handle potential crashes during initialization
+            if not self.bot.store.get_thread(thread.id):
+                self.bot.store.save_thread(
+                    thread_id=thread.id,
+                    channel_id=channel_id,
+                    chatgpt_chat_id="NEW",
+                    title=thread.name if hasattr(thread, "name") else str(thread.id),
+                    summary="",
+                    message_count=0
+                )
+                
             buffer = ""
             last_update = 0.0
             
