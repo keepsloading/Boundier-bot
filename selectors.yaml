@@ -18,7 +18,7 @@ chatgpt:
   sidebar_history_items: 'a[href^="/c/"], a[href*="/c/"]'
   
   # Profile menu button indicating a logged-in user session
-  profile_menu_button: '[data-testid="profile-menu-button"]'
+  profile_menu_button: '[data-testid="profile-menu-button"], [data-testid="accounts-profile-button"]'
   
   # File input selector for uploading files
   file_input: 'input#upload-files'
