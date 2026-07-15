@@ -39,6 +39,29 @@ class PlaywrightDriver:
             "accept-language": "en-US,en;q=0.9"
         }
         
+        # Load persistent storage state from Gist or environment variable if present
+        storage_state_str = None
+        if os.environ.get("GITHUB_PAT") and os.environ.get("ENCRYPTION_KEY"):
+            storage_state_str = await self._load_gist_session_state()
+            
+        if not storage_state_str:
+            storage_state_str = os.environ.get("CHATGPT_STORAGE_STATE")
+            
+        storage_state = None
+        if storage_state_str:
+            try:
+                import json
+                state_dict = json.loads(storage_state_str)
+                if isinstance(state_dict, dict) and ("cookies" in state_dict or "origins" in state_dict):
+                    storage_state = state_dict
+                    logger.info("Sync: Valid JSON storage state (cookies + localStorage) loaded for launch.")
+                elif isinstance(state_dict, list):
+                    # Backward compatibility if only cookies list was stored
+                    storage_state = {"cookies": state_dict, "origins": []}
+                    logger.info("Sync: Cookie list parsed for launch.")
+            except Exception as e:
+                logger.error(f"Error parsing storage state: {e}")
+
         logger.info(f"Launching Chromium context. Profile dir: '{user_data_dir}', Headless: {self.config.playwright.headless}")
         
         args=[
@@ -80,7 +103,8 @@ class PlaywrightDriver:
                     extra_http_headers=extra_headers,
                     args=args,
                     channel="chrome",
-                    ignore_default_args=["--enable-automation"]
+                    ignore_default_args=["--enable-automation"],
+                    storage_state=storage_state
                 )
             except Exception as chrome_err:
                 logger.warning(f"Could not launch system Chrome ({chrome_err}). Falling back to default Playwright Chromium...")
@@ -91,7 +115,8 @@ class PlaywrightDriver:
                     user_agent=user_agent,
                     locale=locale,
                     extra_http_headers=extra_headers,
-                    args=args
+                    args=args,
+                    storage_state=storage_state
                 )
         else:
             self.context = await self.playwright.chromium.launch_persistent_context(
@@ -101,7 +126,8 @@ class PlaywrightDriver:
                 user_agent=user_agent,
                 locale=locale,
                 extra_http_headers=extra_headers,
-                args=args
+                args=args,
+                storage_state=storage_state
             )
         
         self.context.set_default_timeout(self.config.playwright.timeout_ms)
@@ -165,27 +191,7 @@ class PlaywrightDriver:
         """
         await self.context.add_init_script(init_script)
         
-        # Inject storage state cookies (from Gist if enabled, otherwise fallback to environment variable)
-        storage_state_str = None
-        if os.environ.get("GITHUB_PAT") and os.environ.get("ENCRYPTION_KEY"):
-            storage_state_str = await self._load_gist_session_state()
-            
-        if not storage_state_str:
-            storage_state_str = os.environ.get("CHATGPT_STORAGE_STATE")
-            
-        if storage_state_str:
-            try:
-                import json
-                cookies = json.loads(storage_state_str)
-                if isinstance(cookies, dict) and "cookies" in cookies:
-                    cookies = cookies["cookies"]
-                if isinstance(cookies, list):
-                    await self.context.add_cookies(cookies)
-                    logger.info("Successfully injected session cookies into browser context.")
-                else:
-                    logger.warning("Session cookies format is not in a valid JSON list/object format.")
-            except Exception as e:
-                logger.error(f"Error parsing/injecting session cookies: {e}")
+
         
         self._leased_pages = set()
         pages = self.context.pages
