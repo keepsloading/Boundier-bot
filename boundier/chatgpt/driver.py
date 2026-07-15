@@ -324,19 +324,40 @@ class PlaywrightDriver:
 
     async def solve_turnstile_if_present(self, page: Page) -> bool:
         """Detects and clicks Cloudflare Turnstile checkbox if present on the page."""
-        if getattr(page, "_turnstile_solved_count", 0) >= 3:
+        if getattr(page, "_turnstile_solved_count", 0) >= 10:
             return False
             
         try:
             for frame in page.frames:
                 if "cloudflare" in frame.url or "challenges" in frame.url:
                     logger.info("Cloudflare Turnstile challenge detected in iframe! Attempting auto-solve...")
+                    
+                    # Try direct element click first
                     checkbox = frame.locator('input[type="checkbox"], .cb-i, span.mark, label').first
                     if await checkbox.count() > 0 and await checkbox.is_visible():
                         await checkbox.click(force=True)
                         page._turnstile_solved_count = getattr(page, "_turnstile_solved_count", 0) + 1
-                        logger.info(f"[SUCCESS] Clicked Cloudflare Turnstile checkbox! ({page._turnstile_solved_count}/3)")
+                        logger.info(f"[SUCCESS] Clicked Cloudflare Turnstile checkbox! ({page._turnstile_solved_count}/10)")
                         return True
+                        
+                    # Fallback: Click center-left of the iframe from parent page context
+                    iframe_selectors = [
+                        'iframe[src*="challenges.cloudflare.com"]',
+                        'iframe[src*="cloudflare"]',
+                        'iframe[src*="challenges"]'
+                    ]
+                    for sel in iframe_selectors:
+                        loc = page.locator(sel).first
+                        if await loc.count() > 0 and await loc.is_visible():
+                            box = await loc.bounding_box()
+                            if box:
+                                # Standard Turnstile checkbox sits on the left side of the 300x65 widget
+                                click_x = box["x"] + min(40, box["width"] / 2)
+                                click_y = box["y"] + (box["height"] / 2)
+                                await page.mouse.click(click_x, click_y)
+                                page._turnstile_solved_count = getattr(page, "_turnstile_solved_count", 0) + 1
+                                logger.info(f"[SUCCESS] Clicked center-left coordinates of Turnstile iframe bounding box! ({page._turnstile_solved_count}/10)")
+                                return True
             return False
         except Exception as e:
             logger.warning(f"Error checking/solving Cloudflare Turnstile challenge: {e}")
