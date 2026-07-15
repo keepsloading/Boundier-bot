@@ -1,6 +1,6 @@
 # Boundier 🤖 <img src="Boundier.png" align="right" width="48" height="48">
 
-### 💬 Your Private Portal to ChatGPT for Free (Without API): **No token costs.** 🚀
+### 💬 Full ChatGPT on Your Discord Server — **for free, no API needed.** 🚀
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![Playwright](https://img.shields.io/badge/Playwright-Automation-orange?style=for-the-badge&logo=playwright&logoColor=white)](https://playwright.dev)
@@ -9,7 +9,7 @@
 
 > **Tired of paying per token? Boundier brings the full ChatGPT experience (including ChatGPT, web search, memory, and file uploads) directly into your personal Discord server, completely free.**
 
-**Boundier** is a **private connection** that links your personal Discord server straight to ChatGPT **for free (without an API)**. Instead of routing through the expensive OpenAI API, it automates a headless Chromium session to connect your actual ChatGPT account directly to Discord threads—giving you full access to web search, file uploads, and memory at **$0 per message**.
+**Boundier** connects your Discord server straight to ChatGPT **for free (without an API)**. Instead of routing through the expensive OpenAI API, it automates a headless Chromium session to link your actual ChatGPT account directly to Discord threads — giving you full access to web search, file uploads, memory, and image generation at **$0 per message**.
 
 The name signifies **"Breaking Boundaries"**: breaking free from API paywalls, rate limits, and token costs that make bringing ChatGPT to your server prohibitively expensive.
 
@@ -56,7 +56,6 @@ graph TD
     F -->|Turnstile Bypass| G[ChatGPT Portal]
     G -->|Stream Response| F
     F -->|JS Evaluation| E
-    E -->|Gist Sync Encryption| I[GitHub Gist]
     E -->|Stream Message| B
     B -->|Update Embed| A
 ```
@@ -83,7 +82,7 @@ Here is a preview of Boundier in action, showcasing its ChatGPT Image 2 generati
 * **`PlaywrightDriver` ([driver.py](file:///app/boundier/chatgpt/driver.py)):** Manages persistent Chromium contexts, injects decrypted session cookies, and handles Cloudflare Turnstile hydration checks.
 * **`ChatGPTService` ([service.py](file:///app/boundier/chatgpt/service.py)):** Performs page actions such as submitting prompts and files via JavaScript, polling generation streams, and capturing diagnostic screenshots.
 * **`SQLiteStore` ([sqlite_store.py](file:///app/boundier/storage/sqlite_store.py)):** Manages thread mappings, SQLite summaries, and user whitelist registration.
-* **`BoundierBot` ([bot.py](file:///app/boundier/discord_bot/bot.py)):** Initializes the Discord client, registers slash commands (`/ask`, `/new`), and listens to message events.
+* **`BoundierBot` ([bot.py](file:///app/boundier/discord_bot/bot.py)):** Initializes the Discord client, registers slash commands (`/ask`, `/new`, `/read`), and listens to message events.
 
 ---
 
@@ -125,10 +124,12 @@ discord:
   command_prefix: "/"
   watched_categories: []
 
+max_users: 5  # 1 = only you, up to 5 = you + 4 others
+
 playwright:
   headless: true
   user_data_dir: "browser_profile/"
-  timeout_ms: 30000
+  timeout_ms: 90000
   viewport:
     width: 1280
     height: 720
