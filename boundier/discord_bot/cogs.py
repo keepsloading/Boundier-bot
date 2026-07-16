@@ -150,9 +150,10 @@ class ResponseView(discord.ui.View):
         if content.endswith(" ▌"):
             content = content[:-2]
             
-        if len(content) <= 1900:
+        header = "📋 **Raw Markdown** *(Right-click this message -> **Copy Text** to copy the entire response)*:\n\n"
+        if len(content) + len(header) <= 2000:
             await interaction.response.send_message(
-                content=f"Here is the raw text for easy copying:\n```markdown\n{content}\n```",
+                content=f"{header}{content}",
                 ephemeral=True
             )
         else:
