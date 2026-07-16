@@ -613,7 +613,7 @@ class BoundierCog(commands.Cog):
         asyncio.create_task(self._process_message_stream(
             message.channel,
             thread_record["channel_id"],
-            message.channel.parent.name,
+            message.channel.parent.name if is_thread else message.channel.name,
             ref_context + message.content,
             file_paths,
             is_first_response=False,
@@ -738,7 +738,7 @@ class BoundierCog(commands.Cog):
         asyncio.create_task(self._process_message_stream(
             thread=after.channel,
             channel_id=thread_record["channel_id"],
-            channel_name=after.channel.parent.name,
+            channel_name=after.channel.parent.name if is_thread else after.channel.name,
             user_message=after.content,
             file_paths=[],
             is_first_response=False,
