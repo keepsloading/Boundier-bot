@@ -222,6 +222,31 @@ class YesSkipPrompt(discord.ui.View):
         await interaction.response.defer()
 
 
+class ThreadPromptView(discord.ui.View):
+    def __init__(self, author):
+        super().__init__(timeout=60.0)
+        self.author = author
+        self.value = None
+
+    @discord.ui.button(label="Yes", style=discord.ButtonStyle.success, emoji="🧵")
+    async def confirm(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user.id != self.author.id:
+            await interaction.response.send_message("Only the message author can respond.", ephemeral=True)
+            return
+        self.value = True
+        self.stop()
+        await interaction.response.defer()
+
+    @discord.ui.button(label="No", style=discord.ButtonStyle.secondary, emoji="❌")
+    async def cancel(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user.id != self.author.id:
+            await interaction.response.send_message("Only the message author can respond.", ephemeral=True)
+            return
+        self.value = False
+        self.stop()
+        await interaction.response.defer()
+
+
 class BoundierCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -310,6 +335,126 @@ class BoundierCog(commands.Cog):
         is_thread = isinstance(message.channel, discord.Thread)
         thread_id = message.channel.id
         
+        # 1. Detect if this is a reply to the bot's message in a main channel (Thread Continuation Prompt)
+        is_reply_to_bot = False
+        ref_msg = None
+        if not is_thread:
+            if message.reference and message.reference.message_id:
+                try:
+                    ref_msg = message.reference.resolved
+                    if not ref_msg or isinstance(ref_msg, discord.DeletedReferencedMessage):
+                        ref_msg = await message.channel.fetch_message(message.reference.message_id)
+                    if ref_msg and ref_msg.author.id == self.bot.user.id:
+                        is_reply_to_bot = True
+                except Exception:
+                    pass
+
+        if is_reply_to_bot:
+            # Check user restriction first
+            author_id = message.author.id
+            author_name = message.author.name
+            max_u = getattr(self.bot.config, 'max_users', 5)
+            if not self.bot.store.check_or_register_user(author_id, author_name, max_users=max_u):
+                try:
+                    await message.reply(f"⚠️ Access is limited to {max_u} user(s). The limit has been reached.")
+                except Exception:
+                    pass
+                return
+
+            # Ask the user if they'd like to migrate this conversation to a dedicated thread
+            embed = discord.Embed(
+                description="🧵 **Thread Continuation**: Would you like to continue this conversation inside a dedicated thread?",
+                color=0xFFFFFF
+            )
+            view = ThreadPromptView(message.author)
+            prompt_msg = await message.reply(embed=embed, view=view)
+            await view.wait()
+            
+            if view.value is True:
+                # YES - Create thread, copy initial message context, map ChatGPT session, stream response in thread
+                try:
+                    await prompt_msg.delete()
+                except Exception:
+                    pass
+                
+                # Fetch original prompt
+                original_prompt = ""
+                original_author = ""
+                try:
+                    async for msg in message.channel.history(limit=10, before=ref_msg):
+                        if msg.content.startswith("**") and "**: " in msg.content:
+                            parts = msg.content.split("**: ", 1)
+                            original_author = parts[0].replace("**", "").strip()
+                            original_prompt = parts[1].strip()
+                            break
+                except Exception as err:
+                    logger.warning(f"Could not retrieve original prompt: {err}")
+                    
+                if not original_prompt:
+                    original_prompt = "Initial Query"
+                    original_author = message.author.display_name
+                    
+                thread_name = f"📖 {original_prompt[:60]}"
+                
+                try:
+                    thread = await message.channel.create_thread(
+                        name=thread_name[:100],
+                        auto_archive_duration=60,
+                        type=discord.ChannelType.public_thread
+                    )
+                    
+                    # Replicate first two messages in the thread
+                    await thread.send(content=f"**{original_author}**: {original_prompt}")
+                    bot_embed = ref_msg.embeds[0] if ref_msg.embeds else discord.Embed(description=ref_msg.content, color=0xFFFFFF)
+                    await thread.send(embed=bot_embed)
+                    
+                    # Map the new thread to the existing ChatGPT chat ID
+                    thread_record = self.bot.store.get_thread(thread_id)
+                    chatgpt_chat_id = thread_record["chatgpt_chat_id"] if thread_record else "NEW"
+                    self.bot.store.save_thread(
+                        thread_id=thread.id,
+                        channel_id=message.channel.id,
+                        chatgpt_chat_id=chatgpt_chat_id,
+                        title=thread_name,
+                        summary="",
+                        message_count=2
+                    )
+                    
+                    # Post user's new message in the thread
+                    await thread.send(content=f"**{message.author.display_name}**: {message.content}")
+                    
+                    # Download attachments
+                    file_paths = []
+                    if message.attachments:
+                        file_paths = await self._download_attachments(message.attachments)
+                        
+                    # Stream response inside the new thread
+                    asyncio.create_task(self._process_message_stream(
+                        thread,
+                        message.channel.id,
+                        message.channel.name,
+                        message.content,
+                        file_paths,
+                        is_first_response=False,
+                        rename_parent=False,
+                        author_name=message.author.display_name
+                    ))
+                except Exception as thread_err:
+                    logger.error(f"Failed to migrate to thread: {thread_err}", exc_info=True)
+                    try:
+                        await message.channel.send(f"⚠️ Error creating thread: `{thread_err}`")
+                    except Exception:
+                        pass
+                return
+            else:
+                # NO / Timeout - delete prompt and ignore the message completely
+                try:
+                    await prompt_msg.delete()
+                except Exception:
+                    pass
+                return
+
+        # 2. Normal flow: Check if thread/channel has an active session mapping
         thread_record = self.bot.store.get_thread(thread_id)
         if not thread_record:
             if is_thread:
@@ -332,22 +477,60 @@ class BoundierCog(commands.Cog):
                     logger.warning(f"Could not find matching conversation in ChatGPT sidebar for thread '{message.channel.name}'.")
                     return
             else:
-                return # Not a tracked ChatGPT thread
+                # Main channel with no session: check if bot is pinged (casual ping fallback to /ask)
+                is_pinged = self.bot.user in message.mentions
+                if is_pinged:
+                    author_id = message.author.id
+                    author_name = message.author.name
+                    author_display_name = message.author.display_name
+                    max_u = getattr(self.bot.config, 'max_users', 5)
+                    if not self.bot.store.check_or_register_user(author_id, author_name, max_users=max_u):
+                        try:
+                            await message.reply(f"⚠️ Access is limited to {max_u} user(s). The limit has been reached.")
+                        except Exception:
+                            pass
+                        return
+                    
+                    # Clean ping from prompt content
+                    prompt = message.content
+                    prompt = prompt.replace(f"<@!{self.bot.user.id}>", "")
+                    prompt = prompt.replace(f"<@{self.bot.user.id}>", "")
+                    prompt = prompt.replace(self.bot.user.mention, "")
+                    prompt = re.sub(r'<@!?\d+>', '', prompt).strip()
+                    if not prompt:
+                        prompt = "Hello"
+                        
+                    # Save channel to DB
+                    self.bot.store.save_channel(message.channel.id, message.channel.name, "")
+                    
+                    # Download attachments
+                    file_paths = []
+                    if message.attachments:
+                        file_paths = await self._download_attachments(message.attachments)
+                        
+                    # Echo query (like /ask)
+                    await message.channel.send(content=f"**{author_display_name}**: {prompt}")
+                    
+                    # Stream response directly in the channel
+                    asyncio.create_task(self._process_message_stream(
+                        message.channel,
+                        message.channel.id,
+                        message.channel.name,
+                        prompt,
+                        file_paths,
+                        is_first_response=True,
+                        rename_parent=False,
+                        author_name=author_display_name,
+                        interaction=None
+                    ))
+                    return
+                else:
+                    return # Not pinged, ignore
             
         if not is_thread:
-            # For direct/on-the-spot channels, only reply if pinged or if replying to bot's message
+            # Direct channel with existing session: only reply if pinged
             is_pinged = self.bot.user in message.mentions
-            is_reply_to_bot = False
-            if message.reference and message.reference.message_id:
-                try:
-                    ref_msg = message.reference.resolved
-                    if not ref_msg or isinstance(ref_msg, discord.DeletedReferencedMessage):
-                        ref_msg = await message.channel.fetch_message(message.reference.message_id)
-                    if ref_msg and ref_msg.author.id == self.bot.user.id:
-                        is_reply_to_bot = True
-                except Exception:
-                    pass
-            if not (is_pinged or is_reply_to_bot):
+            if not is_pinged:
                 return
             
         # Check user restriction

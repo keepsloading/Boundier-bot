@@ -38,9 +38,9 @@ class BoundierBot(commands.Bot):
 
     async def on_ready(self):
         logger.info(f"Bot connected: Logged in as {self.user.name} ({self.user.id})")
-        activity = discord.Activity(type=discord.ActivityType.watching, name="Breaking Boundaries")
+        activity = discord.Game(name="Boundier")
         await self.change_presence(activity=activity)
-        logger.info("Activity status set to: Watching 'Breaking Boundaries'")
+        logger.info("Activity status set to: Playing 'Boundier'")
         
         try:
             await self.cleanup_stuck_responses()
