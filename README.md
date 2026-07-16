@@ -1,4 +1,4 @@
-# Boundier 🤖 <img src="Boundier.png" align="right" width="48" height="48">
+# Boundier 🤖 <img src="images/Boundier.png" align="right" width="48" height="48">
 
 ### 💬 ChatGPT on Your Discord Server **for free, no API needed.** 🚀
 
@@ -67,16 +67,16 @@ graph TD
 Here is a preview of Boundier in action, showcasing its ChatGPT Image 2 generation, document generation, and vision/analysis capabilities inside Discord:
 
 ### 📖 Context Reading (/read Summarization)
-![Context Reading](read-msg.png)
+![Context Reading](images/read-msg.png)
 
 ### 🖼️ Image Generation (ChatGPT Image 2)
-![Sports Car](sports-car.png)
+![Sports Car](images/sports-car.png)
 
 ### 📄 Document Generation (File Downloads)
-![Word Doc](word-doc.png)
+![Word Doc](images/word-doc.png)
 
 ### 👁️ Image Analysis & Vision (File Uploads)
-![GTA-SA](GTA-SA.png)
+![GTA-SA](images/GTA-SA.png)
 
 ---
 
