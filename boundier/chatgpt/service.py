@@ -251,11 +251,8 @@ class ChatGPTService:
 
                 # If we are on an existing conversation page, wait for history elements to load first
                 if "/c/" in self.page.url:
-                    try:
-                        logger.info("Waiting for existing conversation history elements to load...")
-                        await self.page.locator('[data-message-author-role], [data-turn], div.markdown').first.wait_for(state="attached", timeout=10000)
-                    except Exception as e:
-                        logger.warning(f"Timeout or error waiting for history elements to load: {e}")
+                    logger.info("Waiting for existing conversation history elements to load (up to 25s)...")
+                    await self.page.locator('[data-message-author-role], [data-turn], div.markdown').first.wait_for(state="attached", timeout=25000)
 
                 # Get the state of the last assistant bubble before submitting to prevent history hydration race conditions
                 # We avoid JSHandles to prevent Protocol errors if the DOM is refreshed/hydrated.
