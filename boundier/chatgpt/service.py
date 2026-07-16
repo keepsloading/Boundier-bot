@@ -56,6 +56,11 @@ class ChatGPTService:
                 logger.info(f"Sidebar link found. Clicking to trigger SPA transition to chat: {chat_id}")
                 await sidebar_link.first.click(force=True)
                 await self.page.locator(self.selectors.chat_input).first.wait_for(state="attached", timeout=10000)
+                # Wait for history elements to load
+                try:
+                    await self.page.locator('[data-message-author-role], [data-turn], div.markdown').first.wait_for(state="attached", timeout=5000)
+                except Exception:
+                    pass
                 logger.info(f"Successfully transitioned to conversation via sidebar: {chat_id}")
                 return True
         except Exception as spa_err:
@@ -64,6 +69,11 @@ class ChatGPTService:
         try:
             await self.page.goto(url, wait_until="domcontentloaded", timeout=self.driver.config.playwright.timeout_ms)
             await self.page.locator(self.selectors.chat_input).first.wait_for(state="attached", timeout=self.driver.config.playwright.timeout_ms)
+            # Wait for history elements to load
+            try:
+                await self.page.locator('[data-message-author-role], [data-turn], div.markdown').first.wait_for(state="attached", timeout=5000)
+            except Exception:
+                pass
             logger.info(f"Successfully opened conversation: {chat_id}")
             return True
         except Exception as e:
@@ -72,6 +82,10 @@ class ChatGPTService:
                 await self.page.goto(url, wait_until="domcontentloaded", timeout=self.driver.config.playwright.timeout_ms)
                 await self.page.reload(wait_until="domcontentloaded", timeout=self.driver.config.playwright.timeout_ms)
                 await self.page.locator(self.selectors.chat_input).first.wait_for(state="attached", timeout=self.driver.config.playwright.timeout_ms)
+                try:
+                    await self.page.locator('[data-message-author-role], [data-turn], div.markdown').first.wait_for(state="attached", timeout=5000)
+                except Exception:
+                    pass
                 logger.info(f"Successfully opened conversation on retry: {chat_id}")
                 return True
             except Exception as retry_err:
@@ -234,6 +248,14 @@ class ChatGPTService:
                             f"Please check selectors.yaml."
                         )
                         raise TimeoutError(f"Timeout waiting for enabled send button after file upload: {e}")
+
+                # If we are on an existing conversation page, wait for history elements to load first
+                if "/c/" in self.page.url:
+                    try:
+                        logger.info("Waiting for existing conversation history elements to load...")
+                        await self.page.locator('[data-message-author-role], [data-turn], div.markdown').first.wait_for(state="attached", timeout=10000)
+                    except Exception as e:
+                        logger.warning(f"Timeout or error waiting for history elements to load: {e}")
 
                 # Get the state of the last assistant bubble before submitting to prevent history hydration race conditions
                 # We avoid JSHandles to prevent Protocol errors if the DOM is refreshed/hydrated.
