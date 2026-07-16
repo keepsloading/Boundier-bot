@@ -791,6 +791,7 @@ class BoundierCog(commands.Cog):
                 self.bot.store.save_channel(target_channel.id, target_channel.name, "")
                 
         if target_channel.id in self._thread_forbidden_channels:
+            await interaction.followup.send(content=f"**{author_name}**: {prompt}")
             asyncio.create_task(self._process_message_stream(
                 target_channel,
                 target_channel.id,
@@ -800,7 +801,7 @@ class BoundierCog(commands.Cog):
                 is_first_response=True,
                 rename_parent=rename_parent,
                 author_name=author_name,
-                interaction=interaction,
+                interaction=None, # Separate message response
                 require_auth=True
             ))
             return
@@ -828,7 +829,7 @@ class BoundierCog(commands.Cog):
         except discord.Forbidden:
             logger.warning(f"Forbidden to create thread in channel {target_channel.id}. Falling back to direct channel response.")
             self._thread_forbidden_channels.add(target_channel.id)
-            await interaction.followup.send(f"⚠️ Thread creation is not permitted in {target_channel.mention}. Responding directly in the channel...")
+            await interaction.followup.send(content=f"**{author_name}**: {prompt}")
             asyncio.create_task(self._process_message_stream(
                 target_channel,
                 target_channel.id,
@@ -838,7 +839,7 @@ class BoundierCog(commands.Cog):
                 is_first_response=True,
                 rename_parent=rename_parent,
                 author_name=author_name,
-                interaction=interaction,
+                interaction=None, # Separate message response
                 require_auth=True
             ))
         except Exception as e:
@@ -940,7 +941,7 @@ class BoundierCog(commands.Cog):
                 cap_note = "30 (logged in)" if logged_in else "7 (log in via terminal for up to 30)"
                 await interaction.followup.send(
                     embed=discord.Embed(
-                        description=f"⚠️ Count capped at **{hard_cap}** — your current limit is {cap_note}.",
+                        description=f"⚠️ Count capped at **{hard_cap}** (your current limit is {cap_note}).",
                         color=0xFFFFFF
                     )
                 )
@@ -949,7 +950,7 @@ class BoundierCog(commands.Cog):
         status_msg = await interaction.followup.send(
             embed=discord.Embed(
                 description=f"📖 Reading last **{msg_limit}** message{'s' if msg_limit != 1 else ''}..."
-                + ("" if logged_in else f"  *(max {hard_cap} — log in via terminal for 30)*"),
+                + ("" if logged_in else f"  *(max {hard_cap}, log in via terminal for 30)*"),
                 color=0xFFFFFF
             )
         )
@@ -999,7 +1000,7 @@ class BoundierCog(commands.Cog):
                 continue
             if len(content) > 1000:
                 embed = discord.Embed(
-                    title="Long message — include it?",
+                    title="Long message: include it?",
                     description=(
                         f"**{msg.author.display_name}** sent a long message ({len(content):,} chars).\n\n"
                         f"**Preview:**\n```\n{content[:500]}…\n```"
@@ -1115,7 +1116,7 @@ class BoundierCog(commands.Cog):
                 )
                 await interaction.followup.send(
                     embed=discord.Embed(
-                        description=f"Read context compiled — responding in {thread.mention}",
+                        description=f"Read context compiled: responding in {thread.mention}",
                         color=0xFFFFFF
                     )
                 )
