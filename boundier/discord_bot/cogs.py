@@ -338,7 +338,7 @@ class BoundierCog(commands.Cog):
         # 1. Detect if this is a reply to the bot's message in a main channel (Thread Continuation Prompt)
         is_reply_to_bot = False
         ref_msg = None
-        if not is_thread:
+        if True:
             if message.reference and message.reference.message_id:
                 try:
                     ref_msg = message.reference.resolved
@@ -397,7 +397,8 @@ class BoundierCog(commands.Cog):
                 thread_name = f"📖 {original_prompt[:60]}"
                 
                 try:
-                    thread = await message.channel.create_thread(
+                    target_parent = message.channel.parent if is_thread else message.channel
+                    thread = await target_parent.create_thread(
                         name=thread_name[:100],
                         auto_archive_duration=60,
                         type=discord.ChannelType.public_thread
@@ -411,9 +412,12 @@ class BoundierCog(commands.Cog):
                     # Map the new thread to the existing ChatGPT chat ID
                     thread_record = self.bot.store.get_thread(thread_id)
                     chatgpt_chat_id = thread_record["chatgpt_chat_id"] if thread_record else "NEW"
+                    parent_channel_id = message.channel.parent_id if is_thread else message.channel.id
+                    parent_channel_name = message.channel.parent.name if is_thread else message.channel.name
+                    
                     self.bot.store.save_thread(
                         thread_id=thread.id,
-                        channel_id=message.channel.id,
+                        channel_id=parent_channel_id,
                         chatgpt_chat_id=chatgpt_chat_id,
                         title=thread_name,
                         summary="",
@@ -431,8 +435,8 @@ class BoundierCog(commands.Cog):
                     # Stream response inside the new thread
                     asyncio.create_task(self._process_message_stream(
                         thread,
-                        message.channel.id,
-                        message.channel.name,
+                        parent_channel_id,
+                        parent_channel_name,
                         message.content,
                         file_paths,
                         is_first_response=False,
@@ -778,31 +782,59 @@ class BoundierCog(commands.Cog):
         current_channel = interaction.channel
         author_name = interaction.user.display_name
         
+        # Check if the channel is a Discord Thread
+        is_thread = isinstance(current_channel, discord.Thread)
+        thread_record = self.bot.store.get_thread(current_channel.id)
+        
+        if is_thread:
+            if thread_record:
+                # Active ChatGPT thread: /ask should fail
+                await interaction.followup.send(
+                    "⚠️ This thread is already linked to an active ChatGPT conversation. Please type your queries directly without slash commands."
+                )
+                return
+            else:
+                # User-created thread: convert it into a ChatGPT convo
+                parent_channel = current_channel.parent
+                if not self.bot.store.get_channel(parent_channel.id):
+                    self.bot.store.save_channel(parent_channel.id, parent_channel.name, "")
+                
+                self.bot.store.save_thread(
+                    thread_id=current_channel.id,
+                    channel_id=parent_channel.id,
+                    chatgpt_chat_id="NEW",
+                    title=current_channel.name,
+                    summary="",
+                    message_count=0
+                )
+                thread_record = self.bot.store.get_thread(current_channel.id)
+                is_first = True
+        else:
+            # Main channel: register in channels if needed
+            channel_record = self.bot.store.get_channel(current_channel.id)
+            if not channel_record:
+                ch_name = current_channel.name
+                if not isinstance(ch_name, str):
+                    ch_name = str(ch_name)
+                ch_name = "".join(c for c in ch_name if c.isalnum() or c in ("-", "_", " "))
+                ch_name = ch_name.strip()
+                if not ch_name:
+                    ch_name = f"channel-{current_channel.id}"
+                self.bot.store.save_channel(current_channel.id, ch_name, "")
+                
+            if thread_record:
+                is_first = False
+            else:
+                is_first = True
+
         # Download attachment if present
         file_paths = []
         if attachment:
             file_paths = await self._download_attachments([attachment])
-        
-        # Register channel in DB if needed
-        channel_record = self.bot.store.get_channel(current_channel.id)
-        if not channel_record:
-            ch_name = current_channel.name
-            if not isinstance(ch_name, str):
-                ch_name = str(ch_name)
-            # Strip invalid path characters for Windows compatibility
-            ch_name = "".join(c for c in ch_name if c.isalnum() or c in ("-", "_", " "))
-            ch_name = ch_name.strip()
-            if not ch_name:
-                ch_name = f"channel-{current_channel.id}"
-            self.bot.store.save_channel(current_channel.id, ch_name, "")
             
-        thread_record = self.bot.store.get_thread(current_channel.id)
-        is_first = True
         history_context = None
         
-        if thread_record:
-            is_first = False
-            is_thread = isinstance(current_channel, discord.Thread)
+        if thread_record and not is_first:
             # Fetch last 10 messages for history context
             history_messages = []
             try:
@@ -849,12 +881,15 @@ class BoundierCog(commands.Cog):
         # Respond to the slash command with the user query first (like /new initial message)
         await interaction.followup.send(content=f"**{author_name}**: {prompt}")
         
+        parent_id = current_channel.parent_id if is_thread else current_channel.id
+        parent_name = current_channel.parent.name if is_thread else current_channel.name
+
         asyncio.create_task(self._process_message_stream(
-            thread=current_channel,
-            channel_id=current_channel.id,
-            channel_name=current_channel.name,
-            user_message=prompt,
-            file_paths=file_paths,
+            current_channel,
+            parent_id,
+            parent_name,
+            prompt,
+            file_paths,
             is_first_response=is_first,
             rename_parent=False,
             history_context=history_context,

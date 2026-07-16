@@ -276,12 +276,11 @@ async def test_phase3():
                 prompt="Wrong side of the tracks"
             )
             
-            # Verify stream called with history context containing our mock message
-            mock_stream.assert_called_once()
-            args, kwargs = mock_stream.call_args
-            assert "history_context" in kwargs
-            assert "[Speaker: Sujay]\nWhat mission are you playing?" in kwargs["history_context"], f"History context formatting incorrect: '{kwargs['history_context']}'"
-            assert kwargs.get("author_name") == "John", f"Expected current author name 'John', got '{kwargs.get('author_name')}'"
+            # Verify stream NOT called because /ask fails inside active ChatGPT thread
+            mock_stream.assert_not_called()
+            mock_interaction_thread.followup.send.assert_called_once()
+            args, kwargs = mock_interaction_thread.followup.send.call_args
+            assert "linked to an active ChatGPT conversation" in args[0]
     # 4.6 VERIFY MESSAGE EDIT EVENT DETECTION & CHATGPT EDIT PROPAGATION
     logger.info("Verifying message edit detection and propagation pipeline...")
     
